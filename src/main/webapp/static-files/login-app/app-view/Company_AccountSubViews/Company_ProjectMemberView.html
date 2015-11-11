@@ -1,0 +1,184 @@
+<style>
+	.projectMemberView_buttons {
+		width: 100%;
+		background-color: transparent;
+		border-width: 1px;
+		border-radius: 4px;
+		border-color: #ddd;
+		overflow: hidden;
+		margin: 2px;
+	}
+	.projectMemberView_buttons:hover{
+		background-color:rgba(239, 177, 177, 1);
+	}
+	
+	.projectMemberView_deleteProject:hover{
+		background-color:rgba(239, 177, 177, 1);
+	}
+	
+	.projectMemberView_AddMember:hover{
+		background-color: greenyellow;
+	}
+	
+	.projectMemberView_HVCenter_project{
+		width:300px;
+		height:300px;
+		position:fixed;
+		left:50%;
+		top:40%;
+		margin:-100px 0 0 -150px;
+	}
+
+	.projectMemberView_btn-file {
+	    position: relative;
+	    overflow: hidden;
+	}
+	.projectMemberView_btn-file input[type=file] {
+	    position: absolute;
+	    top: 0;
+	    right: 0;
+	    min-width: 100%;
+	    min-height: 100%;
+	    font-size: 100px;
+	    text-align: right;
+	    filter: alpha(opacity=0);
+	    opacity: 0;
+	    outline: none;
+	    background: white;
+	    cursor: inherit;
+	    display: block;
+	}
+</style>
+
+<div class="panel panel-default" ng-app="app" ng-controller="Company_ProjectMemberController as vm">
+	<div class="panel-heading">
+		<div>
+			<span><H4 style="display:inline-block">Projects</H4></span>
+			<span style="float:right;width: 50%;margin-right: 20px;">
+				<div class="input-group">
+					<input type="text" class="form-control" placeholder="Project Name" ng-model="vm.projectNameToAdd">
+					<span class="input-group-btn">
+						<button class="btn btn-default projectMemberView_AddMember" type="button" 
+							ng-click="vm.CreateANewProject(vm.projectNameToAdd)">Project</button>
+					</span>
+				</div>
+			</span>			
+		</div>
+	</div>  
+	<div class="panel-body">
+		<!-- repeat for all projects -->
+	 	<div class="panel panel-default" ng-repeat="(key, values) in vm.projectMember">
+			<div class="panel-heading">
+				<span>
+					<h5 style="display:inline-block">{{key}}</h5>
+				</span>
+				<span style="float: right;">
+					<div class="btn-group" role="group" aria-label="...">
+					
+						<button type="button" class="btn btn-default projectMemberView_deleteProject" 
+							ng-click="vm.DeleteAProject(key)">Project</button>
+							
+						<button type="button" class="btn btn-default" 
+							ng-click="vm.pd.ProjectEditProjectDialog_Toggle(key)">Edit</button>
+							
+						<button type="button" class="btn btn-default projectMemberView_AddMember" 
+							ng-click="vm.projectEditMemberDialog_Toggle(key,values)">Member</button>
+					</div>
+				</span>
+				
+			</div>
+			<div class="panel-body"> 
+				<div class="container-fluid">
+					<div class="row"> 
+						<div ng-repeat='n in values track by $index'>						
+							<div class="col-md-3">
+								<button class="btn projectMemberView_buttons" type="button"
+								 ng-click="vm.DeleteAMemberFromAProject(key,n)">{{n}}</button>
+							</div>
+							
+													
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- file upload dialog -->
+	<div style="z-index: 10;height:125px;width:500px;margin:-100px 0 0 -250px;" 
+		class="panel panel-default projectMemberView_HVCenter_project"
+		ng-show="vm.pd.projectEditProjectDialog_dialogShow">
+		<div class="panel-heading">
+			<span><H4 style="display:inline-block">{{vm.pd.projectEditProjectDialog_projectName}}: File Upload</H4></span>
+			<span style="float:right;">
+				<button class="btn btn-default projectMemberView_deleteProject" type="button" 
+						style="float:right;margin-right:10px" 
+						ng-click="vm.pd.projectEditProjectDialog_dialogShow = false;"> Cancel
+				</button>
+			</span>
+		</div>
+		<div class="panel-body">
+			<div class="input-group">
+				<span style="display:inline-flex">
+				<div class="progress" style="width: 270px;height: 34px;">
+					<div class="progress-bar" role="progressbar" aria-valuenow="70"
+						aria-valuemin="0" aria-valuemax="100" 
+						style="padding-right: 0px;margin-right: -2px;width: {{vm.pd.progress}}%">
+						<!-- <span ng-if="vm.pd.progress"
+							style="font-size: 18px;text-align: center;vertical-align: middle;line-height: 34px;">	
+							{{vm.pd.progress}}
+						</span> -->
+					</div>
+				</div>
+				<div class="input-group-btn">
+				  	<span class="btn btn-default projectMemberView_btn-file">
+					    Select 
+					    <input ng-file-upload-directive	type="file">						
+					</span>
+					<button class="btn btn-default projectMemberView_AddMember" 
+						ng-click="vm.pd.UploadFileAProjectFile(vm.GetUserName(),vm.pd.projectEditProjectDialog_projectName,fileUploadDirective.file)"
+						type="button">Upload</button>
+					<button class="btn btn-default projectMemberView_deleteProject" type="button">Delete</button>
+				</div>
+			</div>			
+		</div>
+	</div>
+
+	<!--  add/remove members dialog -->
+	<div style="z-index: 10;" class="panel panel-default projectMemberView_HVCenter_project" 
+		ng-show="vm.projectEditMemberDialog">
+		<div class="panel-heading">
+			<span><H4 style="display:inline-block">Project Add Member</H4></span>
+			<span style="float:right;">
+				<button class="btn btn-default" type="button" 
+						style="float:right;margin-right:10px" 
+						ng-click="vm.projectEditMemberDialog = false;"> Close
+				</button>
+			</span>
+		
+		</div>
+		<div class="panel-body" style="max-height: 75%;overflow-y: auto;">
+			<div class="list-group">
+				<button type="button" style="width: 100%;" class="btn btn-default list-group-item projectMemberView_AddMember" 
+					ng-repeat="pemd_m in vm.projectEditMemberDialog_members" 
+					ng-click="vm.projectEditMemberDialog = false;vm.projectEditMemberDialog_AddMember(vm.projectEditMemberDialog_project, pemd_m)">
+					{{pemd_m}}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,31 @@
+
+<style>
+	.member_accountView_HVCenter_model{
+		width:300px;
+		height:300px;
+		position:fixed;
+		left:50%;
+		top:50%;
+		margin:-100px 0 0 -150px;
+	}
+</style>
+<div ng-repeat="memberProject in vm.projectsMemberIsAPartOf">	
+	<div class="panel panel-default col-md-2 col-md-offset-1" style="padding: 0px;">
+	<div class="panel-heading">{{memberProject}}</div>
+		<div class="panel-body">
+			<button type="button" class="btn btn-default center-block"
+				ng-click="vm.md.ToggleAndSetModel(GetUserName(),memberProject,GetMemberName())">Explore
+			</button>				
+		</div>
+	</div>
+</div>
+
+<!-- model dialog -->
+
+<div class="panel panel-default member_accountView_HVCenter_model" ng-show="vm.md.modelVisible"
+	style="z-index: 10;height:500px;width:500px;margin:-250px 0 0 -250px;">
+	<div class="panel-body" style="height: 100%;width: auto;margin: auto;">
+		<embed src="{{vm.md.modelToLoad}}" style="height:100%;width:100%;"
+		type="application/vnd.unity" pluginspage="http://www.unity3d.com/unity-web-player-2.x" title="memberProject">				
+	</div>
+</div>

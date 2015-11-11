@@ -1,0 +1,109 @@
+<style>
+	.memberCreateMemberButtons:hover{
+		background-color: greenyellow;
+	}
+	.memberDeleteButtons:hover{
+		background-color:rgba(239, 177, 177, 1);
+	}
+	.HVCenter{
+		width:300px;
+		height:200px;
+		position:fixed;
+		left:50%;
+		top:40%;
+		margin:-100px 0 0 -150px;
+	}
+</style>
+
+<div class="panel panel-default" ng-controller="Company_MemberController as vm">
+	
+	<div class="panel-heading">
+		<div>
+			<span><H4 style="display:inline-block">Members</H4></span>
+			<span style="float:right;width: 60%;margin-right: 10px;">
+				<button class="btn btn-default memberCreateMemberButtons" type="button" 
+						style="float:right;margin-right:10px" 
+						ng-click="vm.createMemberDialog = !vm.createMemberDialog;
+								  vm.memberNameToCreate = '';
+								  vm.memberPasswordToCreate = '';"> Member
+				</button>
+			</span>			
+		</div>
+	</div>
+
+	<div class="panel-body">
+		<!-- repeat for all members -->	 	
+		<div class = "btn-group-vertical" style="width:100%">						
+			
+			<div ng-repeat="member in vm.members"  >
+				<div class="input-group" style="padding:2px">
+					<input type="text" class="form-control" style="background-color:transparent;cursor: default;" 
+						id="exampleInputAmount" placeholder="{{member}}" 
+						ng-bind="member" readonly>
+					<span class="input-group-btn">
+					    <button type = "button" class = "btn btn-default"					   	
+						   	ng-click="vm.createMemberDialog = true;
+									  vm.GetMemberData(member);">Edit
+					   	</button>
+					   	<button type = "button" class = "btn btn-default memberDeleteButtons" 					   	
+							ng-click="vm.DeleteMember(member);">Delete
+					   	</button>
+				   </span>
+			   	</div>
+		</div>		
+	</div>
+
+	<div id="CreateMemberDialogId" style="z-index: 10" class="panel panel-default HVCenter" 
+		ng-show="vm.createMemberDialog">
+		<div class="panel-heading">
+			<H4>Create/Update Member</H4>
+		</div>
+		<div class="panel-body">
+			<input type="text" style="margin-bottom:5px" class="form-control" placeholder="Name" 
+				ng-model="vm.memberNameToCreate">
+			<input type="text" style="margin-bottom:5px" class="form-control" placeholder="Password" 
+				ng-model="vm.memberPasswordToCreate">
+		
+			<div class="btn-group btn-group-justified" role="group" aria-label="...">
+			  <div class="btn-group" role="group">
+			    <button type="button" class="btn btn-default memberCreateMemberButtons" 
+			    	ng-click="vm.MemberDialogAccept(); vm.createMemberDialog=false;">Accept
+			    </button>
+			  </div>
+			  <div class="btn-group" role="group">
+			    <button type="button" class="btn btn-default memberDeleteButtons" 
+			    	ng-click="vm.createMemberDialog=false;">Cancel
+			    </button>
+			  </div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

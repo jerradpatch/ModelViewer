@@ -1,0 +1,85 @@
+<style>
+
+.Company_LoginView_HVCenterStyle{
+		width:300px;
+		position:fixed;
+		left:50%;
+		top:40%;
+		margin:-100px 0 0 -150px;
+	}
+</style>
+<div >	                
+	<div >
+	    <h2>Company Login</h2>
+	    <div ng-show="vm.error" class="alert alert-danger">{{vm.error}}</div>
+	    <form name="form" ng-submit="vm.login()" role="form">
+	        <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && (form.username.$error.required || form.username.$error.maxlength)}">
+	            <label>Company Name</label>
+	            <input type="text" name="username" class="form-control" ng-model="vm.username" 
+	            	ng-maxlength="{{CONSTANTS.Company_LoginController.COMPANY_LOGIN_FORM.COMPANY_NAME.MAXIMUM_LENGTH}}" required />
+	            <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Company Name is required</span>
+	            <span ng-show="form.username.$error.maxlength" class="help-block">Company Name exceeds the maximum length of {{CONSTANTS.Company_LoginController.COMPANY_LOGIN_FORM.COMPANY_NAME.MAXIMUM_LENGTH}} characters</span>
+	        </div>
+	        <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && (form.password.$error.required || form.password.$error.maxlength) }">
+	            <label>Password</label>
+	            <input type="password" name="password" class="form-control" ng-model="vm.password" 
+	            	ng-maxlength="{{CONSTANTS.Company_LoginController.COMPANY_LOGIN_FORM.PASSWORD.MAXIMUM_LENGTH}}" required />
+	            <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
+	            <span ng-show="form.password.$error.maxlength" class="help-block">Password exceeds the maximum length of {{CONSTANTS.Company_LoginController.COMPANY_LOGIN_FORM.PASSWORD.MAXIMUM_LENGTH}} characters</span>
+	        </div>
+	        <div class="form-actions">
+	            <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Login</button>
+	            <button type="button" class="btn btn-default" ng-click="Company_LoginView_registrationDialog_show=!Company_LoginView_registrationDialog_show">
+	     
+	            	Register
+	            </button>
+	        </div>
+	    </form>
+	</div>
+</div>
+
+<span id="Company_LoginView_registrationDialog" ng-show="Company_LoginView_registrationDialog_show">
+	<div class="panel panel-default col-md-6 col-md-offset-3 Company_LoginView_HVCenterStyle"
+		style="padding:0px;">
+		<div style="padding:10px;">
+		    <h2>Register</h2>
+		    <div ng-show="vm.rd.error" class="alert alert-danger">{{vm.rd.error}}</div>
+		    <form name="regForm" style="padding:10px;"
+		    	ng-submit="vm.rd.RegisterCompany(vm.rd.company.companyName,vm.rd.company.passwordA,vm.rd.company.passwordB,vm.rd.company.email)" 
+		    	role="form">
+		        <div class="form-group" ng-class="{ 'has-error': regForm.companyName.$dirty && (regForm.companyName.$error.required || regForm.companyName.$error.maxlength) }">
+		            <label>Company Name</label>		    
+		            <input type="text" name="companyName" class="form-control" ng-model="vm.rd.company.companyName" 
+		            	ng-maxlength="{{CONSTANTS.Company_LoginController.COMPANY_REGISTRATION_FORM.COMPANY_NAME.MAXIMUM_LENGTH}}" required />
+		            <span ng-show="regForm.companyName.$dirty && regForm.companyName.$error.required" class="help-block">Company Name is required</span>
+		            <span ng-show="regForm.companyName.$error.maxlength" class="help-block">Company Name exceeds the maximum length of {{CONSTANTS.Company_LoginController.COMPANY_REGISTRATION_FORM.COMAPNY_NAME.MAXIMUM_LENGTH}} characters</span>
+		        </div>
+ 		        <div class="form-group" ng-class="{ 'has-error': regForm.passwordA.$dirty && (regForm.passwordA.$error.required || regForm.passwordA.$error.maxlength)  }">
+		            <label>Password</label>
+		            <input type="password" name="passwordA" class="form-control" ng-model="vm.rd.company.passwordA" 
+		            	ng-maxlength="{{CONSTANTS.Company_LoginController.COMPANY_REGISTRATION_FORM.PASSWORD.MAXIMUM_LENGTH}}" required />
+		            <span ng-show="regForm.passwordA.$dirty && regForm.passwordA.$error.required" class="help-block">Password is required</span>
+		            <span ng-show="regForm.passwordA.$error.maxlength" class="help-block">Password exceeds the maximum length of {{CONSTANTS.Company_LoginController.COMPANY_REGISTRATION_FORM.PASSWORD.MAXIMUM_LENGTH}} characters</span>
+		        </div>
+		        <div class="form-group" ng-class="{ 'has-error': regForm.passwordB.$dirty && (regForm.passwordA.$error.required || regForm.passwordA.$error.maxlength)  }">
+		            <label>Password Confirmation</label>
+		            <input type="password" name="passwordB" class="form-control" ng-model="vm.rd.company.passwordB" 
+		            	ng-maxlength="{{CONSTANTS.Company_LoginController.COMPANY_REGISTRATION_FORM.PASSWORD.MAXIMUM_LENGTH}}" required />
+		            <span ng-show="regForm.passwordB.$dirty && regForm.passwordB.$error.required" class="help-block">Password Confirmation is required</span>
+		            <span ng-show="regForm.passwordB.$error.maxlength" class="help-block">Password Confirmation exceeds the maximum length of {{CONSTANTS.Company_LoginController.COMPANY_REGISTRATION_FORM.PASSWORD.MAXIMUM_LENGTH}} characters</span>
+		        </div>
+		        <div class="form-group" ng-class="{ 'has-error': regForm.email.$dirty && (regForm.email.$error.required || regForm.email.$error.maxlength)  }">
+		            <label >Email</label>
+		            <input type="email" name="email" class="form-control" ng-model="vm.rd.company.email" 
+		            	ng-maxlength="{{CONSTANTS.Company_LoginController.COMPANY_REGISTRATION_FORM.EMAIL.MAXIMUM_LENGTH}}" required />
+		            <span ng-show="regForm.email.$dirty && regForm.email.$error.required" class="help-block">Email is required</span>
+		            <span ng-show="regForm.email.$error.maxlength" class="help-block">Email exceeds the maximum length of {{CONSTANTS.Company_LoginController.COMPANY_REGISTRATION_FORM.EMAIL.MAXIMUM_LENGTH}} characters</span>
+		        </div>
+		        <div class="form-actions"> 
+		            <button type="submit" ng-disabled="regForm.$invalid || vm.rd.dataLoading" class="btn btn-primary">Register</button>
+		            <button type="button" class="btn btn-default" ng-click="Company_LoginView_registrationDialog_show=false">Cancel</button>
+		        </div> 
+			</form>
+		</div>
+	</div>
+</span>
