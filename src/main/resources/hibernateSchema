@@ -2,12 +2,15 @@
 
 
 CREATE TABLE `ProjectMemberModel` (
-  `userName` varchar(20) NOT NULL,
-  `projectName` varchar(20) NOT NULL,
-  `member` varchar(20) NOT NULL,
-  PRIMARY KEY (userName,projectName,member),
-  FOREIGN KEY (userName) REFERENCES UserModel(userName)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='latin1_swedish_ci';
+  `userName` varchar(30) NOT NULL,
+  `projectName` varchar(30) NOT NULL,
+  `member` varchar(30) NOT NULL,
+  PRIMARY KEY (`userName`,`projectName`,`member`),
+  KEY `userProject` (`userName`,`projectName`),
+  KEY `userMember` (`userName`,`member`),
+  CONSTRAINT `ProjectMemberModel_ibfk_1` FOREIGN KEY (`userName`) REFERENCES `UserModel` (`userName`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='latin1_swedish_ci'
+
 create index userProject on ProjectMemberModel (userName,projectName);
 create index userMember on ProjectMemberModel (userName,member);
 
@@ -18,9 +21,16 @@ insert into ProjectMemberModel values ("u1","p1","m4");
 
 
 CREATE TABLE `MemberModel` (
-  `userName` varchar(20) NOT NULL,
-  `member` varchar(20) NOT NULL,
+  `userName` varchar(30) NOT NULL,
+  `member` varchar(30) NOT NULL,
   `password` varchar(20) NOT NULL,
   PRIMARY KEY (`userName`,`member`),
-  FOREIGN KEY (`userName`) REFERENCES `UserModel` (`userName`)
-) 
+  CONSTRAINT `MemberModel_ibfk_1` FOREIGN KEY (`userName`) REFERENCES `UserModel` (`userName`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='latin1_swedish_ci'
+
+CREATE TABLE `UserModel` (
+  `userName` varchar(30) NOT NULL,
+  `password` varchar(20) NOT NULL,
+  `email` varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`userName`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='latin1_swedish_ci'
