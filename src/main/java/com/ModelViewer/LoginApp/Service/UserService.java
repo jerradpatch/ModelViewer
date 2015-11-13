@@ -60,7 +60,7 @@ public class UserService {
 		if(um == null){
 			userDAO.CreateUserByModel(userModel);
 		} else {
-			return "{ \"success\": false, \"message\":\"This user name already exists, please choose another\"}";
+			return "{ \"success\": false, \"message\":\"This company name already exists, please choose another\"}";
 			
 		}
 		return "{ \"success\": true, \"message\": \"\" }";

@@ -1,15 +1,16 @@
-
-
+CREATE TABLE `UserModel` (
+  `userName` varchar(30) NOT NULL,
+  `password` varchar(20) NOT NULL,
+  `email` varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`userName`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='latin1_swedish_ci';
 
 CREATE TABLE `ProjectMemberModel` (
   `userName` varchar(30) NOT NULL,
   `projectName` varchar(30) NOT NULL,
   `member` varchar(30) NOT NULL,
-  PRIMARY KEY (`userName`,`projectName`,`member`),
-  KEY `userProject` (`userName`,`projectName`),
-  KEY `userMember` (`userName`,`member`),
-  CONSTRAINT `ProjectMemberModel_ibfk_1` FOREIGN KEY (`userName`) REFERENCES `UserModel` (`userName`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='latin1_swedish_ci'
+  PRIMARY KEY (`userName`,`projectName`,`member`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='latin1_swedish_ci';
 
 create index userProject on ProjectMemberModel (userName,projectName);
 create index userMember on ProjectMemberModel (userName,member);
@@ -26,11 +27,7 @@ CREATE TABLE `MemberModel` (
   `password` varchar(20) NOT NULL,
   PRIMARY KEY (`userName`,`member`),
   CONSTRAINT `MemberModel_ibfk_1` FOREIGN KEY (`userName`) REFERENCES `UserModel` (`userName`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='latin1_swedish_ci'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='latin1_swedish_ci';
 
-CREATE TABLE `UserModel` (
-  `userName` varchar(30) NOT NULL,
-  `password` varchar(20) NOT NULL,
-  `email` varchar(50) NOT NULL DEFAULT '',
-  PRIMARY KEY (`userName`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='latin1_swedish_ci'
+CREATE USER 'jerrad'@'localhost' IDENTIFIED BY 'darrej';
+GRANT ALL PRIVILEGES ON * . * TO 'jerrad'@'localhost';

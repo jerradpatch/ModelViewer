@@ -68,7 +68,7 @@
 		            <span ng-show="regForm.passwordB.$dirty && regForm.passwordB.$error.required" class="help-block">Password Confirmation is required</span>
 		            <span ng-show="regForm.passwordB.$error.maxlength" class="help-block">Password Confirmation exceeds the maximum length of {{CONSTANTS.Company_LoginController.COMPANY_REGISTRATION_FORM.PASSWORD.MAXIMUM_LENGTH}} characters</span>
 		        </div>
-		        <div class="form-group" ng-class="{ 'has-error': regForm.email.$dirty && (regForm.email.$error.required || regForm.email.$error.maxlength)  }">
+		        <div class="form-group" ng-class="{ 'has-error': regForm.email.$dirty && (regForm.email.$error.required || regForm.email.$error.maxlength || regForm.email.$invalid)  }">
 		            <label >Email</label>
 		            <input type="email" name="email" class="form-control" ng-model="vm.rd.company.email" 
 		            	ng-maxlength="{{CONSTANTS.Company_LoginController.COMPANY_REGISTRATION_FORM.EMAIL.MAXIMUM_LENGTH}}" required />
