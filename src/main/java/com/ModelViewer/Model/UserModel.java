@@ -1,5 +1,7 @@
 package com.ModelViewer.Model;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,11 +15,17 @@ public class UserModel {
     @Column(name="userName")
 	private String userName;
 	
-	@Column(name="password")
+	@Column
 	private String password;
 	
-	@Column(name="email")
+	@Column
 	private String email;
+	
+	@Column
+	private Timestamp dateCreated;
+	
+	@Column
+	private Timestamp dateLastLoggedIn;
 	
 	public String getUserName() {
 		return userName;
@@ -36,6 +44,18 @@ public class UserModel {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public Timestamp getDateCreated() {
+		return dateCreated;
+	}
+	public void setDateCreated(Timestamp dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+	public Timestamp getDateLastLoggedIn() {
+		return dateLastLoggedIn;
+	}
+	public void setDateLastLoggedIn(Timestamp dateLastLoggedIn) {
+		this.dateLastLoggedIn = dateLastLoggedIn;
 	}
 	
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ModelViewer.DAO.MemberDAO;
+import com.ModelViewer.DAO.UserDAO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,6 +27,10 @@ public class MemberService {
 	
 	@Inject
 	MemberDAO memberDAO;
+	
+	@Inject
+	UserDAO userDAO;
+	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -37,20 +42,33 @@ public class MemberService {
 	}
 	
 	@RequestMapping(value = "/GetAListOfMembers", method = RequestMethod.GET)
-	public String GetListOfMember(@RequestParam(value = "userName", required = true) String userName) 
+	public String GetListOfMember(
+			@RequestParam(value = "userName", required = true) String userName,
+			@RequestParam(value = "companyP", required = true) String companyPassword)
+			
 			throws JsonProcessingException {
 		
 		logger.info("GetListOfMember request recieved: "+userName);
 		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
+		
 		return mapper.writeValueAsString(memberDAO.GetListOfMember(userName));
-	}	
+	}
+	
 	@RequestMapping(value = "/GetMemberData", method = RequestMethod.GET)
 	public String GetMemberData(
 			@RequestParam(value = "userName", required = true) String userName,
-			@RequestParam(value = "member", required = true) String member)
+			@RequestParam(value = "member", required = true) String member,
+			@RequestParam(value = "companyP", required = true) String companyPassword)
 			throws JsonProcessingException {
 		
 		logger.info("GetMemberData request recieved: "+userName+" member: "+member);
+		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
 		
 		return mapper.writeValueAsString(memberDAO.GetMemberData(userName, member));
 	}
@@ -59,22 +77,35 @@ public class MemberService {
 	public String CreateUpdateAMember(
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "member", required = true) String member,
-			@RequestParam(value = "password", required = true) String password)
+			@RequestParam(value = "password", required = true) String password,
+			@RequestParam(value = "companyP", required = true) String companyPassword)
 					throws JsonProcessingException {
 		
 		logger.info("CreateUpdateAMember request recieved: "+userName);
+		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
+		
 		memberDAO.CreateUpdateAMember(userName,member,password);
-		return "success";
+		return new ReturnedObject(true,"").ToJSONString();
 	}
 	
 	@RequestMapping(value = "/DeleteAMember", method = RequestMethod.GET)
 	public String DeleteAMember(
 			@RequestParam(value = "userName", required = true) String userName,
-			@RequestParam(value = "member", required = true) String member)
+			@RequestParam(value = "member", required = true) String member,
+			@RequestParam(value = "companyP", required = true) String companyPassword)
 			throws JsonProcessingException {
+		
 		logger.info("DeleteAMember request recieved: "+userName);
+		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
+		
 		memberDAO.DeleteAMember(userName,member);
-		return "success";
+		return new ReturnedObject(true,"").ToJSONString();
 	}
 		
 }

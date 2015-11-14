@@ -27,13 +27,13 @@
             return $http.post(baseUrl+'CreateUser', {"userName": userName,"password": password, "email": email}).then(handleSuccess);
         }
  
-        function UpdateUserByUserName(userName) {
-            return $http.put(baseUrl+'GetUserByUserName', {params:{"userName": userName }}).then(handleSuccess, handleError('Error updating user'));
-        }
+//        function UpdateUserByUserName(userName, companyP) {
+//            return $http.put(baseUrl+'GetUserByUserName', {params:{"userName": userName }}).then(handleSuccess, handleError('Error updating user'));
+//        }
  
-        function DeleteByUserName(userName) {
-            return null;//$http.delete(baseUrl+'DeleteByUserName', {params:{"userName": userName }}).then(handleSuccess, handleError('Error deleting user'));
-        }
+//        function DeleteByUserName(userName) {
+//            return null;//$http.delete(baseUrl+'DeleteByUserName', {params:{"userName": userName }}).then(handleSuccess, handleError('Error deleting user'));
+//        }
  
         // private functions
         	//error handeling angular way---- always a success unless internal server error/exception then its always an error

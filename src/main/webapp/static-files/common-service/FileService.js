@@ -16,8 +16,8 @@
     	service.GetFileAProjectFile = GetFileAProjectFile;
     	service.GetFileAProjectFile_link = GetFileAProjectFile_link;
     	
-        function GetFileAProjectFile(userName,projectName,file) {
-            return $http.get(baseUrlMember+'GetFileAProjectFile', {params:{"userName": userName, "projectName": projectName, "member":member }})
+        function GetFileAProjectFile(userName,projectName,file,companyP) {
+            return $http.get(baseUrlMember+'GetFileAProjectFile', {params:{"userName": userName, "projectName": projectName, "member":member, "companyP": companyP}})
             	.then(handleSuccess, handleError('Error MemberService.GetMemberData'));        	
         }
 

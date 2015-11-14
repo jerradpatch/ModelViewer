@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ModelViewer.DAO.MemberDAO;
 import com.ModelViewer.DAO.ProjectMemberDAO;
+import com.ModelViewer.DAO.UserDAO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Controller
@@ -29,13 +30,21 @@ public class MemberAndProjectMemberHybridService {
 	@Inject
 	ProjectMemberDAO projectMemberDAO;
 	
+	@Inject
+	UserDAO userDAO;
+	
 	@RequestMapping(value = "/DeleteMember", method = RequestMethod.GET)
 	public String DeleteMember(
 			@RequestParam(value = "userName", required = true) String userName,
-			@RequestParam(value = "member", required = true) String member)
+			@RequestParam(value = "member", required = true) String member,
+			@RequestParam(value = "companyP", required = true) String companyPassword)
 			throws JsonProcessingException {
 		
 		logger.info("DeleteMember request recieved: "+userName);
+		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
 		
 		memberDAO.DeleteAMember(userName, member);
 		projectMemberDAO.DeleteAMemberFromAllProject(userName, member);

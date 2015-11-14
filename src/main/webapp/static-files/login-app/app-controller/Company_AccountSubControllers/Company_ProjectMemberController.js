@@ -7,8 +7,8 @@
         .controller('Company_ProjectMemberController', Company_ProjectMemberController)
         .directive('ngFileUploadDirective', ngFileUploadDirective);
  
-    Company_ProjectMemberController.$inject = ['$location','$cookieStore','$rootScope','$scope','ProjectMemberService','MemberService','FileService'];
-    function Company_ProjectMemberController($location, $cookieStore, $rootScope,$scope,ProjectMemberService,MemberService,FileService) {
+    Company_ProjectMemberController.$inject = ['AuthService','$scope','ProjectMemberService','MemberService','FileService'];
+    function Company_ProjectMemberController(AuthService,$scope,ProjectMemberService,MemberService,FileService) {
 
     	//local area
     	var vm = this;
@@ -79,34 +79,28 @@
         	vm.pd.projectEditProjectDialog_dialogShow = !vm.pd.projectEditProjectDialog_dialogShow;       	
         }
 
-        function UploadFileAProjectFile(userName,projectName,file){
-        	
-        	//alert(userName+" "+projectName+" "+file);
-        	
-        	FileService.UploadFileAProjectFile(userName, projectName, file);
+        function UploadFileAProjectFile(projectName,file){
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+        	FileService.UploadFileAProjectFile(userName, projectName, file,pass);
         }
                 
         
         //add member button dialog area
         function projectEditMemberDialog_AddMember (project, member){
-        	if($rootScope.globals){
-        		if($rootScope.globals.currentUser){
-        			if($rootScope.globals.currentUser.userName){
-        			var userName = $rootScope.globals.currentUser.userName;
-        			ProjectMemberService.CreateAMember(userName,project,member) 
-        				.then(function (response) {
-			                if (response.success) {			
-			                	var databaseMembers = response.message;			                	
-			                	RefreshElements();
-			                	vm.projectEditMemberDialog_project = null;
-			                } else {			                	
-			                	vm.error = response.message;
-			                	vm.projectEditMemberDialog_members = null;
-			                }
-				        });
-        			}
-        		}
-        	}        	
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+			ProjectMemberService.CreateAMember(userName,project,member,pass) 
+				.then(function (response) {
+	                if (response.success) {			
+	                	var databaseMembers = response.message;			                	
+	                	RefreshElements();
+	                	vm.projectEditMemberDialog_project = null;
+	                } else {			                	
+	                	vm.error = response.message;
+	                	vm.projectEditMemberDialog_members = null;
+	                }
+				});	        	
         }
         
                
@@ -114,119 +108,84 @@
     		if(vm.projectEditMemberDialog){
     			vm.projectEditMemberDialog = false;
     		} else {
-	        	if($rootScope.globals){
-	        		if($rootScope.globals.currentUser){
-	        			if($rootScope.globals.currentUser.userName){
-	        			var userName = $rootScope.globals.currentUser.userName;
-	        			MemberService.GetAListOfMembers(userName) 
-	        				.then(function (response) {
-				                if (response.success) {			
-				                	var databaseMembers = response.message;			                	
-				                	vm.projectEditMemberDialog_members = SubtractBSetFromASet(databaseMembers, members);
-				                	vm.projectEditMemberDialog_project = project;
-				                	vm.projectEditMemberDialog = true;
-				                } else {			                	
-				                	vm.error = response.message;
-				                	vm.projectEditMemberDialog_members = null;
-				                	vm.projectEditMemberDialog = false;
-				                }
-					        });
-	        			}
-	        		}
-	        	}	
+            	var pass = AuthService.GetPassword();
+            	var userName = AuthService.GetUser();
+    			MemberService.GetAListOfMembers(userName,pass) 
+    				.then(function (response) {
+		                if (response.success) {			
+		                	var databaseMembers = response.message;			                	
+		                	vm.projectEditMemberDialog_members = SubtractBSetFromASet(databaseMembers, members);
+		                	vm.projectEditMemberDialog_project = project;
+		                	vm.projectEditMemberDialog = true;
+		                } else {			                	
+		                	vm.error = response.message;
+		                	vm.projectEditMemberDialog_members = null;
+		                	vm.projectEditMemberDialog = false;
+		                }
+			        });
     		}
     	}
     	
     	//base dom functions
         function GetProjectMembersHashmapByUserName() {     	
-        	if($rootScope.globals){
-        		if($rootScope.globals.currentUser){
-        			if($rootScope.globals.currentUser.userName){
-        			var userName = $rootScope.globals.currentUser.userName;
-        			ProjectMemberService.GetHashMapOfProjectAndMember(userName) 
-        				.then(function (response) {
-			                if (response.success) {			                   
-			                    vm.error = null;
-			                    vm.projectMember = response.message;
-			                } else {			                	
-			                	vm.error = response.message;
-			                	vm.projectMember = null;
-			                }
-				        });
-        			}
-        		}
-        	}
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+			ProjectMemberService.GetHashMapOfProjectAndMember(userName,pass) 
+				.then(function (response) {
+	                if (response.success) {			                   
+	                    vm.error = null;
+	                    vm.projectMember = response.message;
+	                } else {			                	
+	                	vm.error = response.message;
+	                	vm.projectMember = null;
+	                }
+		        });	
         }
         
         function DeleteAProject (projectName){
-        	if($rootScope.globals){
-        		if($rootScope.globals.currentUser){
-        			if($rootScope.globals.currentUser.userName){
-        			var userName = $rootScope.globals.currentUser.userName;
-        			ProjectMemberService.DeleteAProject(userName,projectName) 
-        				.then(function (response) {
-			                if (response.success) {			                   
-			                    vm.error = null;
-			                    RefreshElements();
-			                } else {
-			                	 //alert(response);
-			                	vm.error = response.message;
-			                }
-			                
-				        });
-        			}
-        		}
-        	}        	 	
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+			ProjectMemberService.DeleteAProject(userName,projectName,pass) 
+				.then(function (response) {
+	                if (response.success) {			                   
+	                    vm.error = null;
+	                    RefreshElements();
+	                } else {
+	                	 //alert(response);
+	                	vm.error = response.message;
+	                }
+	                
+		        });        	 	
         }
         
         function DeleteAMemberFromAProject (projectName, member){
-        	if($rootScope.globals){
-        		if($rootScope.globals.currentUser){
-        			if($rootScope.globals.currentUser.userName){
-        			var userName = $rootScope.globals.currentUser.userName;
-        			ProjectMemberService.DeleteAMemberFromAProject(userName,projectName,member) 
-        				.then(function (response) {
-			                if (response.success) {			                   
-			                    vm.error = null;
-			                    RefreshElements();
-			                } else {			                	
-			                	vm.error = response.message;
-			                }
-				        });
-        			}
-        		}
-        	}        	 	
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+			ProjectMemberService.DeleteAMemberFromAProject(userName,projectName,member,pass) 
+				.then(function (response) {
+	                if (response.success) {			                   
+	                    vm.error = null;
+	                    RefreshElements();
+	                } else {			                	
+	                	vm.error = response.message;
+	                }
+		        });      	       	 	
         }
         	
         function CreateANewProject (projectName){
-        	if($rootScope.globals){
-        		if($rootScope.globals.currentUser){
-        			if($rootScope.globals.currentUser.userName){
-        			var userName = $rootScope.globals.currentUser.userName;
-        			ProjectMemberService.CreateANewProject(userName,projectName) 
-        				.then(function (response) {
-			                if (response.success) {			                   
-			                    vm.error = null;
-			                    RefreshElements();
-			                } else {			                	
-			                	vm.error = response.message;
-			                }
-				        });
-        			}
-        		}
-        	}        	    	
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+			ProjectMemberService.CreateANewProject(userName,projectName,pass) 
+				.then(function (response) {
+	                if (response.success) {			                   
+	                    vm.error = null;
+	                    RefreshElements();
+	                } else {			                	
+	                	vm.error = response.message;
+	                }
+		        });       	    	
         }
-        
-    	function GetUserName(){
-        	if($rootScope.globals){
-        		if($rootScope.globals.currentUser){
-        			if($rootScope.globals.currentUser.userName){
-        				var userName = $rootScope.globals.currentUser.userName;
-        				return userName;
-        			}
-        		}
-        	}     		   		
-    	} 
+
     	
         //private functions
         function RefreshElements(){

@@ -23,30 +23,30 @@
         
         return service;
        
-        function GetProjectsMemberIsAPartOf(userName,member){
-            return $http.get(baseUrl+'GetProjectsMemberIsAPartOf', {params:{"userName": userName,"member": member }}).then(handleSuccess, handleError('Error UserService.GetHashMapOfProjectAndMember'));       	
+        function GetProjectsMemberIsAPartOf(userName,member, companyP){
+            return $http.get(baseUrl+'GetProjectsMemberIsAPartOf', {params:{"userName": userName,"member": member, "companyP": companyP }}).then(handleSuccess, handleError('Error UserService.GetHashMapOfProjectAndMember'));       	
         }
         
-        function GetHashMapOfProjectAndMember(userName) {
-            return $http.get(baseUrl+'GetHashMapOfProjectAndMember', {params:{"userName": userName }}).then(handleSuccess, handleError('Error UserService.GetHashMapOfProjectAndMember'));
+        function GetHashMapOfProjectAndMember(userName, companyP) {
+            return $http.get(baseUrl+'GetHashMapOfProjectAndMember', {params:{"userName": userName, "companyP": companyP }}).then(handleSuccess, handleError('Error UserService.GetHashMapOfProjectAndMember'));
         }
         
-        function GetAListOfMembers(userName) {
-            return $http.get(baseUrl+'getAListOfMembers', {params:{"userName": userName }}).then(handleSuccess, handleError('Error UserService.getAListOfMembers'));
+        function GetAListOfMembers(userName, companyP) {
+            return $http.get(baseUrl+'getAListOfMembers', {params:{"userName": userName, "companyP": companyP }}).then(handleSuccess, handleError('Error UserService.getAListOfMembers'));
         }
         
-        function DeleteAProject(userName,projectName) {
-        	return $http.get(baseUrl+'DeleteAProject', {params:{"userName": userName, "projectName":projectName }}).then(handleSuccess, handleError('Error UserService.DeleteAProject'));
+        function DeleteAProject(userName,projectName, companyP) {
+        	return $http.get(baseUrl+'DeleteAProject', {params:{"userName": userName, "projectName":projectName, "companyP": companyP }}).then(handleSuccess, handleError('Error UserService.DeleteAProject'));
         }
-        function DeleteAMemberFromAProject(userName,projectName, member) {
-        	return $http.get(baseUrl+'DeleteAMemberFromAProject', {params:{"userName": userName, "projectName":projectName, "member":member }}).then(handleSuccess, handleError('Error UserService.DeleteAMember'));
+        function DeleteAMemberFromAProject(userName,projectName, member, companyP) {
+        	return $http.get(baseUrl+'DeleteAMemberFromAProject', {params:{"userName": userName, "projectName":projectName, "member":member, "companyP": companyP }}).then(handleSuccess, handleError('Error UserService.DeleteAMember'));
         }
         
-        function CreateANewProject(userName,projectName) {
-        	return $http.get(baseUrl+'CreateANewProject', {params:{"userName": userName, "projectName":projectName }}).then(handleSuccess, handleError('Error UserService.CreateANewProject'));
+        function CreateANewProject(userName,projectName, companyP) {
+        	return $http.get(baseUrl+'CreateANewProject', {params:{"userName": userName, "projectName":projectName, "companyP": companyP }}).then(handleSuccess, handleError('Error UserService.CreateANewProject'));
         }
-        function CreateAMember(userName,projectName,member) {
-        	return $http.get(baseUrl+'CreateAMember', {params:{"userName": userName,"projectName": projectName,"member":member }}).then(handleSuccess, handleError('Error UserService.CreateAMember'));
+        function CreateAMember(userName,projectName,member, companyP) {
+        	return $http.get(baseUrl+'CreateAMember', {params:{"userName": userName,"projectName": projectName,"member":member, "companyP": companyP }}).then(handleSuccess, handleError('Error UserService.CreateAMember'));
         }        
         
  

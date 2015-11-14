@@ -24,19 +24,19 @@
         return service;
        
         
-        function GetAListOfMembers(userName) {
-            return $http.get(baseUrlMember+'GetAListOfMembers', {params:{"userName": userName }}).then(handleSuccess, handleError('Error MemberService.getAListOfMembers'));
+        function GetAListOfMembers(userName, companyP) {
+            return $http.get(baseUrlMember+'GetAListOfMembers', {params:{"userName": userName, "companyP": companyP}}).then(handleSuccess, handleError('Error MemberService.getAListOfMembers'));
         }
-        function GetMemberData(userName,member) {
-            return $http.get(baseUrlMember+'GetMemberData', {params:{"userName": userName, "member":member }}).then(handleSuccess, handleError('Error MemberService.GetMemberData'));        	
+        function GetMemberData(userName,member, companyP) {
+            return $http.get(baseUrlMember+'GetMemberData', {params:{"userName": userName, "member":member, "companyP": companyP }}).then(handleSuccess, handleError('Error MemberService.GetMemberData'));        	
         }
         //hybrid service
-        function DeleteMember(userName,member) {
-        	return $http.get(baseUrlHybrid+'DeleteMember', {params:{"userName": userName, "member":member }}).then(handleSuccess, handleError('Error MemberService.DeleteAMember'));
+        function DeleteMember(userName,member, companyP) {	
+        	return $http.get(baseUrlHybrid+'DeleteMember', {params:{"userName": userName, "member":member, "companyP": companyP }}).then(handleSuccess, handleError('Error MemberService.DeleteAMember'));
         }
         
-        function CreateUpdateAMember(userName,member,password) {
-        	return $http.get(baseUrlMember+'CreateUpdateAMember', {params:{"userName": userName, "member":member, "password":password }}).then(handleSuccess, handleError('Error MemberService.CreateAMember'));
+        function CreateUpdateAMember(userName,member,memberPassword, companyP) {
+        	return $http.get(baseUrlMember+'CreateUpdateAMember', {params:{"userName": userName, "member":member, "password":memberPassword, "companyP": companyP}}).then(handleSuccess, handleError('Error MemberService.CreateAMember'));
         }        
         
  

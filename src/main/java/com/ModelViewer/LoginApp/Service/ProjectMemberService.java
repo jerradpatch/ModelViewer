@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ModelViewer.DAO.ProjectMemberDAO;
+import com.ModelViewer.DAO.UserDAO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,6 +28,11 @@ public class ProjectMemberService {
 	
 	@Inject
 	ProjectMemberDAO projectMemberDAO;
+	
+	@Inject
+	UserDAO userDAO;
+	
+	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -36,16 +42,33 @@ public class ProjectMemberService {
 		
 		return "hello world";
 	}
+	
 	@RequestMapping(value = "/GetListOfProjectsAndMembers", method = RequestMethod.GET)
-	public String GetListOfProjectsAndMembers(@RequestParam(value = "userName", required = true) String userName) throws JsonProcessingException {
+	public String GetListOfProjectsAndMembers(
+			@RequestParam(value = "userName", required = true) String userName, 
+			@RequestParam(value = "companyP", required = true) String companyPassword)
+					throws JsonProcessingException {
+
 		logger.info("GetListOfProjectsAndMembers request recieved: "+userName);
+		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
 		
 		return mapper.writeValueAsString(projectMemberDAO.GetListOfProjectsAndMembers(userName));
 	}
 
 	@RequestMapping(value = "/GetHashMapOfProjectAndMember", method = RequestMethod.GET)
-	public String GetHashMapOfProjectAndMember(@RequestParam(value = "userName", required = true) String userName) throws JsonProcessingException {
+	public String GetHashMapOfProjectAndMember(
+			@RequestParam(value = "userName", required = true) String userName,
+			@RequestParam(value = "companyP", required = true) String companyPassword)
+					throws JsonProcessingException {
+		
 		logger.info("GetHashMapOfProjectAndMember request recieved: "+userName);
+		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
 		
 		return mapper.writeValueAsString(projectMemberDAO.GetHashMapOfProjectAndMember(userName));
 	}
@@ -53,10 +76,15 @@ public class ProjectMemberService {
 	@RequestMapping(value = "/GetProjectsMemberIsAPartOf", method = RequestMethod.GET)
 	public String GetProjectsMemberIsAPartOf(
 			@RequestParam(value = "userName", required = true) String userName,
-			@RequestParam(value = "member", required = true) String member)
+			@RequestParam(value = "member", required = true) String member,
+			@RequestParam(value = "companyP", required = true) String companyPassword)
 					throws JsonProcessingException {
 		
 		logger.info("GetProjectsMemberIsAPartOf request recieved username: "+userName +" member:"+member);
+		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
 		
 		return mapper.writeValueAsString(projectMemberDAO.GetProjectsMemberIsAPartOf(userName,member));
 	}
@@ -70,22 +98,33 @@ public class ProjectMemberService {
 	
 	@RequestMapping(value = "/CreateANewProject", method = RequestMethod.GET)
 	public String CreateANewProject(@RequestParam(value = "userName", required = true) String userName,
-			@RequestParam(value = "projectName", required = true) String projectName)		
+			@RequestParam(value = "projectName", required = true) String projectName,
+			@RequestParam(value = "companyP", required = true) String companyPassword)
 			throws JsonProcessingException {
 		
 		logger.info("CreateANewProject request recieved: "+userName+"projectNAme: "+projectName);
 		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
+		
 		projectMemberDAO.CreateANewProject(userName,projectName);
 		return mapper.writeValueAsString("success");
 	}
+	
 	@RequestMapping(value = "/CreateAMember", method = RequestMethod.GET)
 	public String CreateAMemberInAProject(
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "projectName", required = true) String projectName,
-			@RequestParam(value = "member", required = true) String member)		
+			@RequestParam(value = "member", required = true) String member,
+			@RequestParam(value = "companyP", required = true) String companyPassword)
 			throws JsonProcessingException {
 		
 		logger.info("CreateAMember request recieved: "+userName+" projectName:"+projectName+" member: "+member);
+		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
 		
 		projectMemberDAO.CreateAMember(userName,projectName,member);
 		return mapper.writeValueAsString("success");
@@ -94,10 +133,15 @@ public class ProjectMemberService {
 	
 	@RequestMapping(value = "/DeleteAProject", method = RequestMethod.GET)
 	public String DeleteAProject(@RequestParam(value = "userName", required = true) String userName,
-			@RequestParam(value = "projectName", required = true) String projectName)		
+			@RequestParam(value = "projectName", required = true) String projectName,
+			@RequestParam(value = "companyP", required = true) String companyPassword)
 			throws JsonProcessingException {
 		
 		logger.info("DeleteAProject request recieved: "+userName+"projectName: "+projectName);
+		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
 		
 		projectMemberDAO.DeleteAProject(userName,projectName);
 		return mapper.writeValueAsString("success");
@@ -105,22 +149,33 @@ public class ProjectMemberService {
 	
 	@RequestMapping(value = "/DeleteAMemberFromAllProjects", method = RequestMethod.GET)
 	public String DeleteAMemberFromAllProjects(@RequestParam(value = "userName", required = true) String userName,
-			@RequestParam(value = "member", required = true) String member)		
+			@RequestParam(value = "member", required = true) String member,
+			@RequestParam(value = "companyP", required = true) String companyPassword)
 			throws JsonProcessingException {
 		
 		logger.info("DeleteAMember request recieved: "+userName+"member: "+member);
+		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
 		
 		projectMemberDAO.DeleteAMemberFromAllProject(userName,member);
 		return mapper.writeValueAsString("success");
 	}
+	
 	@RequestMapping(value = "/DeleteAMemberFromAProject", method = RequestMethod.GET)
 	public String DeleteAMemberFromAProject(
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "projectName", required = true) String projectName,
-			@RequestParam(value = "member", required = true) String member)		
+			@RequestParam(value = "member", required = true) String member,
+			@RequestParam(value = "companyP", required = true) String companyPassword)
 			throws JsonProcessingException {
 		
 		logger.info("DeleteAMember request recieved: "+userName+"member: "+member);
+		
+		if(!userDAO.ComparePasswords(userName, companyPassword)){
+			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		}
 		
 		projectMemberDAO.DeleteAMemberFromAProject(userName,projectName,member);
 		return mapper.writeValueAsString("success"); 

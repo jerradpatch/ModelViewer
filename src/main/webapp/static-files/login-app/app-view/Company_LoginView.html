@@ -27,7 +27,12 @@
 	            <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
 	            <span ng-show="form.password.$error.maxlength" class="help-block">Password exceeds the maximum length of {{CONSTANTS.Company_LoginController.COMPANY_LOGIN_FORM.PASSWORD.MAXIMUM_LENGTH}} characters</span>
 	        </div>
-	        <div class="form-actions">
+	        <div class="form-actions">(function () {
+    'use strict';
+ 
+    angular
+        .module('app')
+        .factory('FileService', FileService);
 	            <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Login</button>
 	            <button type="button" class="btn btn-default" ng-click="Company_LoginView_registrationDialog_show=!Company_LoginView_registrationDialog_show">
 	     

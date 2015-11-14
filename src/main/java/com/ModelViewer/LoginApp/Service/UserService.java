@@ -2,6 +2,8 @@ package com.ModelViewer.LoginApp.Service;
 
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Calendar;
 
 import javax.inject.Inject;
 
@@ -47,6 +49,7 @@ public class UserService {
 		return mapper.writeValueAsString(userDAO.GetUserByUserName(userName));
 	}
 	
+	
 	@RequestMapping(value = "/CreateUser", method = RequestMethod.POST)
 	public String CreateUser(@RequestBody(required = true) String jsonUserModel) throws IOException {
 		
@@ -58,6 +61,9 @@ public class UserService {
 
 		UserModel um = userDAO.GetUserByUserName(userModel.getUserName());
 		if(um == null){
+			Long currentTime = System.currentTimeMillis();
+			userModel.setDateCreated(new Timestamp(currentTime));
+			userModel.setDateLastLoggedIn(new Timestamp(currentTime));
 			userDAO.CreateUserByModel(userModel);
 		} else {
 			return "{ \"success\": false, \"message\":\"This company name already exists, please choose another\"}";

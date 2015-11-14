@@ -5,8 +5,8 @@
         .module('app')
         .controller('Company_MemberController', Company_MemberController);
  
-    Company_MemberController.$inject = ['$location','$cookieStore','$scope','$rootScope','MemberService'];
-    function Company_MemberController($location, $cookieStore, $scope, $rootScope, MemberService) {
+    Company_MemberController.$inject = ['AuthService','$scope','MemberService'];
+    function Company_MemberController(AuthService, $scope, MemberService) {
         var vm = this;       
 
         vm.createMemberDialog= false;
@@ -23,6 +23,7 @@
     	vm.CreateUpdateAMember = CreateUpdateAMember;
     	vm.RefreshElements = RefreshElements;
 
+    	//messages//////////////////////////////
         //recieving message
         $scope.$on('refreshElementsEvent_child', function() { 
         	//alert("reieved on child");
@@ -36,93 +37,73 @@
         	$scope.$emit('refreshElementsEvent_parent');
         }       
         
-        //dialog functions
+        ////////////dialog functions//////////////
         function MemberDialogAccept() {
         	CreateUpdateAMember(vm.memberNameToCreate,vm.memberPasswordToCreate);
         }
         function GetMemberData(member) {
-        	if($rootScope.globals){
-        		if($rootScope.globals.currentUser){
-        			if($rootScope.globals.currentUser.userName){
-        			var userName = $rootScope.globals.currentUser.userName;
-        			MemberService.GetMemberData(userName,member) 
-        				.then(function (response) {
-			                if (response.success) {
-			                    var message = response.message;
-			                    vm.memberNameToCreate = message.member;
-			                    vm.memberPasswordToCreate = message.password;
-			                } else {
-			                	vm.memberNameToCreate = "";
-			                    vm.memberPasswordToCreate = "";
-			                	vm.error = response.message;
-			                }
-			            });
-        			}
-        		}
-        	}	       	
-        }
-        
-        //private functions   
-        function RefreshElements() { 
-        	GetAListOfMembers();
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+			MemberService.GetMemberData(userName,member,pass) 
+				.then(function (response) {
+	                if (response.success) {
+	                    var message = response.message;
+	                    vm.memberNameToCreate = message.member;
+	                    vm.memberPasswordToCreate = message.password;
+	                } else {
+	                	vm.memberNameToCreate = "";
+	                    vm.memberPasswordToCreate = "";
+	                	vm.error = response.message;
+	                }
+	            });	       	
         }
         
         function GetAListOfMembers() {   	
-        	if($rootScope.globals){
-        		if($rootScope.globals.currentUser){
-        			if($rootScope.globals.currentUser.userName){
-        			var userName = $rootScope.globals.currentUser.userName;
-        			MemberService.GetAListOfMembers(userName) 
-        				.then(function (response) {
-			                if (response.success) {
-			                    vm.members = response.message;
-			                    vm.error = null;
-			                } else {
-			                	vm.members = null;
-			                	vm.error = response.message;
-			                }
-			            });
-        			}
-        		}
-        	}
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+			MemberService.GetAListOfMembers(userName,pass) 
+				.then(function (response) {
+	                if (response.success) {
+	                    vm.members = response.message;
+	                    vm.error = null;
+	                } else {
+	                	vm.members = null;
+	                	vm.error = response.message;
+	                }
+	            });	
         }
-        //hybrid
+        //////////////hybrid services////////////////////////
         function DeleteMember (member){
-        	if($rootScope.globals){
-        		if($rootScope.globals.currentUser){
-        			if($rootScope.globals.currentUser.userName){
-        			var userName = $rootScope.globals.currentUser.userName;
-        			MemberService.DeleteMember(userName,member) 
-        				.then(function (response) {
-			                if (response.success) {			                   
-			                    vm.error = null;
-			                    RefreshPageElements();
-			                } else {			                	
-			                	vm.error = response.message;
-			                }
-				        });
-        			}
-        		}
-        	}        	 	
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+			MemberService.DeleteMember(userName,member,pass) 
+				.then(function (response) {
+	                if (response.success) {			                   
+	                    vm.error = null;
+	                    RefreshPageElements();
+	                } else {			                	
+	                	vm.error = response.message;
+	                }
+		        });       	 	
         }
         
         function CreateUpdateAMember (member,password){
-        	if($rootScope.globals){
-        		if($rootScope.globals.currentUser){
-        			if($rootScope.globals.currentUser.userName){
-        			var userName = $rootScope.globals.currentUser.userName;
-        			MemberService.CreateUpdateAMember(userName,member,password) 
-        				.then(function (response) {
-			                if (response.success) {			                   
-			                    vm.error = null;
-			                    RefreshElements();
-			                } else {			                	
-			                	vm.error = response.message;
-			                }
-				        });
-        			}
-        		}
-        	}        	 	
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+			MemberService.CreateUpdateAMember(userName,member,password,pass) 
+				.then(function (response) {
+	                if (response.success) {			                   
+	                    vm.error = null;
+	                    RefreshElements();
+	                } else {			                	
+	                	vm.error = response.message;
+	                }
+		        });      	 	
+        }
+        
+        ////////////////private functions  /////////////////////// 
+        function RefreshElements() { 
+        	GetAListOfMembers();
         }
         
         return vm;
