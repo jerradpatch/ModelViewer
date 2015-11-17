@@ -11,8 +11,10 @@ public interface UserDAO {
 //	public UserModel UpdateByUserName(String name);
 //	public UserModel DeleteByUserName(String name);
 	public void DeleteByModel(UserModel name);
+	public void UpdateUserLoginToCurrentTime(String userName);
 	
 	public boolean ComparePasswords(String userName, String password);
+	
 	
 
 }

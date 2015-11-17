@@ -13,14 +13,14 @@
         var service = {};
  
     	service.baseUrl = baseUrl;
-        service.GetUserByUserName = GetUserByUserName;
+        service.ComparePasswordsForUser = ComparePasswordsForUser;
         service.CreateUser = CreateUser;
-        service.GetUserByUserName = GetUserByUserName;
-        service.DeleteByUserName = DeleteByUserName;
+//      service.GetUserByUserName = GetUserByUserName;
+//      service.DeleteByUserName = DeleteByUserName;
  
       
-        function GetUserByUserName(userName) {
-            return $http.get(baseUrl+'GetUserByUserName', {params:{"userName": userName }}).then(handleSuccess, handleError);
+        function ComparePasswordsForUser(userName, password) {
+            return $http.get(baseUrl+'ComparePasswordsForUser', {params:{"userName": userName,"password": password }}).then(handleSuccess, handleError);
         }
  
         function CreateUser(userName,password,email) { 

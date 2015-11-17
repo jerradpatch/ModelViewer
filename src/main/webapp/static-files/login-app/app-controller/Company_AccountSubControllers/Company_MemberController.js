@@ -3,7 +3,24 @@
  
     angular
         .module('app')
-        .controller('Company_MemberController', Company_MemberController);
+        .constant("CONSTANTS", {
+        	"Company_MemberController" : {
+	        	"CREATE_MEMBER_FORM" : {
+	        		"MEMBER" : {
+	        			"MAXIMUM_LENGTH": 30 },
+	        		"PASSWORD": {
+	        			"MAXIMUM_LENGTH": 20 }      		
+	        	}
+        	}
+         })
+        .controller('Company_MemberController', Company_MemberController)
+        .run(function ($rootScope, CONSTANTS) {
+        	if("CONSTANTS" in $rootScope){
+        		$rootScope.CONSTANTS.Company_MemberController = CONSTANTS.Company_MemberController;
+        	}else {
+        		$rootScope.CONSTANTS = CONSTANTS;
+        	}
+        });
  
     Company_MemberController.$inject = ['AuthService','$scope','MemberService'];
     function Company_MemberController(AuthService, $scope, MemberService) {

@@ -7,27 +7,31 @@
         	"Company_LoginController" : {
 	        	"COMPANY_LOGIN_FORM" : {
 	        		"COMPANY_NAME" : {
-	        			"MAXIMUM_LENGTH": 20 },
+	        			"MAXIMUM_LENGTH": 50 },
 	        		"PASSWORD": {
 	        			"MAXIMUM_LENGTH": 20 }      		
 	        	},
 		    	"COMPANY_REGISTRATION_FORM" : {
 		    		"COMPANY_NAME" : {
-		    			"MAXIMUM_LENGTH": 20 },
+		    			"MAXIMUM_LENGTH": 50 },
 		    		"PASSWORD": {
 		    			"MAXIMUM_LENGTH": 20 },
 	    			"EMAIL": {
-		    			"MAXIMUM_LENGTH": 20 }
+		    			"MAXIMUM_LENGTH": 30 }
 		    	}
         	}
          })
         .controller('Company_LoginController', Company_LoginController)
         .run(function ($rootScope, CONSTANTS) {
-        	$rootScope.CONSTANTS = CONSTANTS;
+        	if("CONSTANTS" in $rootScope){
+        		$rootScope.CONSTANTS.Company_LoginController = CONSTANTS.Company_LoginController;
+        	}else {
+        		$rootScope.CONSTANTS = CONSTANTS;
+        	}
         });
  
-    Company_LoginController.$inject = ['AuthService','UserService'];
-    function Company_LoginController(AuthService, UserService) {
+    Company_LoginController.$inject = ['$location','AuthService','UserService'];
+    function Company_LoginController($location,AuthService,UserService) {
         var vm = this;
         
         vm.successLoginLocation = '/Company_AccountView';
@@ -40,41 +44,23 @@
         vm.rd.RegisterCompany = RegisterCompany;
         
 
-        function login() {
-            //vm.dataLoading = true;
-            Login(vm.username, vm.password, function (response) {
-                if (response.success) {
-                	AuthService.SetCredentials(vm.username, vm.password);
-                    $location.path(vm.successLoginLocation);
-                } else {
-                    //FlashService.Error(response.message);
-                	vm.error = response.message;
-                	//vm.username = '';
-                	//vm.password = '';
-                    //vm.dataLoading = false;
-                }
-            });
+        function login() {       	
+        	UserService.ComparePasswordsForUser(vm.username,vm.password)
+            .then(function (response) {
+            	if("success" in response){
+	            	if(response.success){
+	            		AuthService.SetCredentials(vm.username, vm.password, "");
+	                    $location.path(vm.successLoginLocation);
+	            	} else {
+	            		if("message" in response){
+	            			vm.error = response.message;
+	            		} else {
+	            			vm.error = "";
+	            		}
+	            	}
+            	}
+            });       
         };
-
-        //go to the user service and check if the passwords match
-        function Login(username, password, callback) {
-
-            var ret;
-            UserService.GetUserByUserName(username)
-                .then(function (response) {
-                	if(response.success){
-                		var user = response.message;
-	                    if (user !== null && user.password === password) {
-	                    	ret = { success: true };
-	                    } else {
-	                    	ret = { success: false, message: 'Username or password is incorrect' };
-	                    }
-                	} else {
-                		ret = { success: false, message: response.message };
-                	}
-                    callback(ret);
-                });
-        }
         
         //////////// RD DIALOG  area//////////////////
         function RegisterCompany(companyName,passwordA,passwordB,email){
@@ -84,7 +70,7 @@
 		                if (response.success) {			                	
 	                		//alert(JSON.stringify(response));
 		                    vm.rd.error = null;
-		                    SetCredentials(vm.username, vm.password);
+		                    AuthService.SetCredentials(companyName, passwordA);
 		                    $location.path(vm.successLoginLocation);
 		                    return;
 		                }			                	

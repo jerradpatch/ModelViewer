@@ -1,5 +1,6 @@
 package com.ModelViewer.DAOImpl;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -32,7 +33,7 @@ public class UserDAOImpl implements UserDAO{
 	
 	public String GetUserPasswordByUserName(String userName){
 		Session session = this.sessionFactory.openSession();
-        Criteria userQuery = session.createCriteria(ProjectMemberModel.class);
+        Criteria userQuery = session.createCriteria(UserModel.class);
         userQuery.add(Restrictions.eq("userName",userName));
         userQuery.setProjection(Projections.property("password"));
         String password = (String) userQuery.uniqueResult();
@@ -63,7 +64,18 @@ public class UserDAOImpl implements UserDAO{
         
         return;
 	}
-
+	public void UpdateUserLoginToCurrentTime(String userName) {
+		
+		Session session = this.sessionFactory.openSession();
+        UserModel um = GetUserByUserName(userName);
+        Transaction tx = session.beginTransaction();
+        session.update(um);
+        um.setDateLastLoggedIn(new Timestamp(System.currentTimeMillis()));
+        tx.commit();
+        session.close();
+             
+        return;
+	}
 	public UserModel UpdateByUserName(String UserName) {
 		// TODO Auto-generated method stub
 		return null;

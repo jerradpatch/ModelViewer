@@ -11,15 +11,15 @@ import javax.persistence.JoinColumn;
 public class ProjectMemberModel {
 
 	@Id
-	@JoinColumn(nullable=false)
+	@Column
 	private String userName;
 	
 	@Id
-	@Column(length=20,nullable=false)
+	@Column
 	private String projectName;
 	
 	@Id
-	@Column(length=20,nullable=false)
+	@Column
 	private String member;
 	
 	public String getUserName() {

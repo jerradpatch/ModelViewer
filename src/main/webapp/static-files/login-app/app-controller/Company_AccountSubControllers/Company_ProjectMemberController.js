@@ -3,54 +3,72 @@
  
     angular
         .module('app')
-        .constant()
+        .constant("CONSTANTS", {
+        	"Member_LoginController" : {
+        	"MEMBER_LOGIN_FORM" : {
+        		"PROJECT_NAME" : {
+        			"MAXIMUM_LENGTH": 30 },
+        		"MEMBER" : {
+        			"MAXIMUM_LENGTH": 30 },
+        		"PASSWORD": {
+        			"MAXIMUM_LENGTH": 20 },      		
+        		}  
+        	}
+         })
         .controller('Company_ProjectMemberController', Company_ProjectMemberController)
-        .directive('ngFileUploadDirective', ngFileUploadDirective);
+        .directive('ngFileUploadDirective', ngFileUploadDirective)
+        .run(function ($rootScope, CONSTANTS) {
+        	if("CONSTANTS" in $rootScope){
+        		$rootScope.CONSTANTS.Company_MemberController = CONSTANTS.Company_MemberController;
+        	}else {
+        		$rootScope.CONSTANTS = CONSTANTS;
+        	}
+        });
  
     Company_ProjectMemberController.$inject = ['AuthService','$scope','ProjectMemberService','MemberService','FileService'];
     function Company_ProjectMemberController(AuthService,$scope,ProjectMemberService,MemberService,FileService) {
 
-    	//local area
+    	//local area//////////////
     	var vm = this;
     	
-    	//varibles
+    	//varibles//////////////
     	vm.projectMember = new GetProjectMembersHashmapByUserName();
     	vm.error = null;
     	vm.projectEditMemberDialog = false;
     	vm.projectEditMemberDialog_members = null;
     	vm.projectEditMemberDialog_project = null;
-    	//functions
+    	//functions///////////
     	vm.GetProjectMembersHashmapByUserName = GetProjectMembersHashmapByUserName;
     	vm.RefreshElements = RefreshElements;
     	vm.DeleteAProject = DeleteAProject;
     	vm.DeleteAMemberFromAProject = DeleteAMemberFromAProject;
     	vm.CreateANewProject = CreateANewProject;
-    	vm.GetUserName = GetUserName;
     	
-    	//edit member dialog area
+    	//edit member dialog area//////
     	//functions
-    	vm.projectEditMemberDialog_Toggle = projectEditMemberDialog_Toggle;
-    	vm.projectEditMemberDialog_AddMember = projectEditMemberDialog_AddMember;
+    	vm.ProjectEditMemberDialog_Toggle = ProjectEditMemberDialog_Toggle;
+    	vm.ProjectEditMemberDialog_AddMember = ProjectEditMemberDialog_AddMember;
     	
-    	//edit project dialog area
+    	//edit project dialog area/////////
     	var pd = {};
     	vm.pd = pd;
-    	//varibles
+
     	vm.pd.projectEditProjectDialog_projectName = null;
     	vm.pd.projectEditProjectDialog_dialogShow = false;
     	vm.pd.progress =0;
-    	//functions
+
     	vm.pd.ProjectEditProjectDialog_Toggle = ProjectEditProjectDialog_Toggle;
     	vm.pd.UploadFileAProjectFile = UploadFileAProjectFile;
     	
     	
-        //recieving message, page needed to be refreshed
+    	
+        //recieving message, page needed to be refreshed//////////////////////
         $scope.$on('refreshElementsEvent_child', function() { 
         	//alert("reieved on child");
         	RefreshElements();        
         });
     	
-        //FileService events
+        //FileService events////////////////////////////////////
         $scope.$on('FileService.progress', function(event,data) {
         	$scope.$apply(function(){
         		vm.pd.progress = data;
@@ -71,8 +89,7 @@
 //        });
         
         
-        //edit/add project information dialog area
-        
+        //edit/add project information dialog area/////////////////////////       
         function ProjectEditProjectDialog_Toggle(project){
         	//functionality, file upload, delete file uploaded, display current model uploaded- with timestamp
         	vm.pd.projectEditProjectDialog_projectName = project;
@@ -84,10 +101,9 @@
         	var userName = AuthService.GetUser();
         	FileService.UploadFileAProjectFile(userName, projectName, file,pass);
         }
-                
         
-        //add member button dialog area
-        function projectEditMemberDialog_AddMember (project, member){
+        ///add members to a project dialog ////////////////////////////
+        function ProjectEditMemberDialog_AddMember (project, member){
         	var pass = AuthService.GetPassword();
         	var userName = AuthService.GetUser();
 			ProjectMemberService.CreateAMember(userName,project,member,pass) 
@@ -104,7 +120,7 @@
         }
         
                
-    	function projectEditMemberDialog_Toggle (project,members) { 
+    	function ProjectEditMemberDialog_Toggle (project,members) { 
     		if(vm.projectEditMemberDialog){
     			vm.projectEditMemberDialog = false;
     		} else {
@@ -126,7 +142,7 @@
     		}
     	}
     	
-    	//base dom functions
+    	//base functions//////////////////
         function GetProjectMembersHashmapByUserName() {     	
         	var pass = AuthService.GetPassword();
         	var userName = AuthService.GetUser();
@@ -187,7 +203,7 @@
         }
 
     	
-        //private functions
+        //private functions/////////////////////////
         function RefreshElements(){
         	GetProjectMembersHashmapByUserName();     	
         }

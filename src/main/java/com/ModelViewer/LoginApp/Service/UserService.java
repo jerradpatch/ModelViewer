@@ -42,11 +42,24 @@ public class UserService {
 		return "hello world";
 	}
 	
-	@RequestMapping(value = "/GetUserByUserName", method = RequestMethod.GET)
-	public String GetUserByUserName(@RequestParam(value = "userName", required = true) String userName) throws JsonProcessingException {
+	@RequestMapping(value = "/ComparePasswordsForUser", method = RequestMethod.GET)
+	public String ComparePasswordsForUser(
+			@RequestParam(value = "userName", required = true) String userName,
+			@RequestParam(value = "password", required = true) String password) 
+					throws JsonProcessingException {
+		
 		logger.info("GetUserByUserName request recieved: "+userName);
 		
-		return mapper.writeValueAsString(userDAO.GetUserByUserName(userName));
+		if(userDAO.GetUserPasswordByUserName(userName).equals(password)){
+			//update current user logged in time
+			userDAO.UpdateUserLoginToCurrentTime(userName);
+			//return done
+			ReturnedObject ro = new ReturnedObject(true,"");
+			return ro.ToJSONString();
+		} else {
+			ReturnedObject ro = new ReturnedObject(false,"Passwords do not match");
+			return ro.ToJSONString();
+		}
 	}
 	
 	
@@ -57,6 +70,7 @@ public class UserService {
 		
 		StringBuilder log = new StringBuilder("CreateUser request recieved: ");
 		log.append(userModel.getUserName()).append(" email: ").append(userModel.getEmail());
+		
 		logger.info(log.toString());
 
 		UserModel um = userDAO.GetUserByUserName(userModel.getUserName());

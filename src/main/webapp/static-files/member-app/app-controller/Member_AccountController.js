@@ -5,12 +5,12 @@
         .module('app')
         .controller('Member_AccountController', Member_AccountController);
  
-    Member_AccountController.$inject = ['$rootScope','ProjectMemberService','FileService'];
-    function Member_AccountController($rootScope, ProjectMemberService, FileService) {
+    Member_AccountController.$inject = ['AuthService','$rootScope','ProjectMemberService','FileService'];
+    function Member_AccountController(AuthService,$rootScope, ProjectMemberService, FileService) {
     	
     	var vm = this;
     	
-    	vm.projectsMemberIsAPartOf = GetProjectsMemberIsAPartOf(GetUserName(),GetMemberName());
+    	vm.projectsMemberIsAPartOf = GetProjectsMemberIsAPartOf();
     	
     	vm.GetProjectsMemberIsAPartOf = GetProjectsMemberIsAPartOf;
 
@@ -21,20 +21,26 @@
     	vm.md.modelVisible = false;
     	vm.md.modelToLoad = null;
     	
-    	function ToggleAndSetModel(userName, projectName, member){    
+    	function ToggleAndSetModel(projectName){    
     		if(vm.md.modelVisible){
     			vm.md.modelToLoad = null;
     			vm.md.modelVisible = false;
     		}else {
-    			vm.md.modelToLoad = FileService.GetFileAProjectFile_link(userName,projectName,member);
+            	var memberPass = AuthService.GetPassword();
+            	var userName = AuthService.GetUser();
+            	var member = AuthService.GetMember();
+            	
+    			vm.md.modelToLoad = FileService.GetFileAProjectFile_link(userName,projectName,member,memberPass);
     			vm.md.modelVisible = true;
     		}
     	}
     	
-    	function GetProjectsMemberIsAPartOf(userName,member){
+    	function GetProjectsMemberIsAPartOf(){
             var ret;
-            //alert(userName+" "+member);
-            ProjectMemberService.GetProjectsMemberIsAPartOf(userName,member)
+        	var memberPass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+        	var member = AuthService.GetMember();
+            ProjectMemberService.GetProjectsMemberIsAPartOf(userName,member,memberPass)
                 .then(function (response) {
                 	if(response.success){
                 		var data = response.message;
@@ -49,28 +55,6 @@
                 	}
                 });   		  		
     	}
-    	
-    	//private functions
-    	function GetMemberName(){
-        	if($rootScope.globals){
-        		if($rootScope.globals.currentUser){
-        			if($rootScope.globals.currentUser.member){
-        				var member = $rootScope.globals.currentUser.member;
-        				return member;
-        			}
-        		}
-        	}   		
-    	}
-    	function GetUserName(){
-        	if($rootScope.globals){
-        		if($rootScope.globals.currentUser){
-        			if($rootScope.globals.currentUser.userName){
-        				var userName = $rootScope.globals.currentUser.userName;
-        				return userName;
-        			}
-        		}
-        	}     		   		
-    	}    	
     	
     	
     	return vm;

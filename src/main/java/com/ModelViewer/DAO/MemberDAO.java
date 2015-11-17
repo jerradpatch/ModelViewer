@@ -10,4 +10,5 @@ public interface MemberDAO {
 	public void CreateUpdateAMember(String userName, String member, String password);
 	public void DeleteAMember(String userName, String member);
 	public MemberModel GetMemberData(String userName, String member);
+	public boolean ComparePasswords(String userName, String member, String password);
 }

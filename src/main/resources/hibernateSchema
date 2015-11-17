@@ -1,9 +1,11 @@
 CREATE TABLE `UserModel` (
   `userName` varchar(30) NOT NULL,
   `password` varchar(20) NOT NULL,
-  `email` varchar(50) NOT NULL DEFAULT '',
+  `email` varchar(50) NOT NULL,
+  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateLastLoggedIn` timestamp NOT NULL,
   PRIMARY KEY (`userName`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='latin1_swedish_ci';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='latin1_swedish_ci'
 
 CREATE TABLE `ProjectMemberModel` (
   `userName` varchar(30) NOT NULL,

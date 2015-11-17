@@ -8,6 +8,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.ModelViewer.DAO.MemberDAO;
@@ -47,6 +48,18 @@ public class MemberDAOImpl implements MemberDAO{
         return memberModel;
 	}
 	
+	public String GetMemberPassword(String userName, String member){
+        Session session = this.sessionFactory.openSession();
+        Criteria userQuery = session.createCriteria(MemberModel.class);
+        userQuery.add(Restrictions.eq("userName",userName));
+        userQuery.add(Restrictions.eq("member",member));
+        userQuery.setProjection(Projections.property("password"));
+        userQuery.setMaxResults(1);
+        String password = (String) userQuery.uniqueResult();
+        session.close();
+        return password;
+	}
+	
 	public void CreateAMember(String userName, String member, String password) {
 
 		Session session = this.sessionFactory.openSession();
@@ -75,5 +88,15 @@ public class MemberDAOImpl implements MemberDAO{
 			.setString("member", new String(member))
 			.executeUpdate();
 		session.close();
+	}
+	
+	/* if passwords for use = return true, else false */
+	public boolean ComparePasswords(String userName, String member, String password){
+		
+		String passwordDB = GetMemberPassword(userName,member);
+		if(password.equals(passwordDB)){
+			return true;
+		}
+		return false;
 	}
 }

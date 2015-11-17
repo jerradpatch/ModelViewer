@@ -57,20 +57,23 @@ public class MemberService {
 		return mapper.writeValueAsString(memberDAO.GetListOfMember(userName));
 	}
 	
-	@RequestMapping(value = "/GetMemberData", method = RequestMethod.GET)
-	public String GetMemberData(
+	@RequestMapping(value = "/ComparePasswordsForMember", method = RequestMethod.GET)
+	public String ComparePasswordsForMember(
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "member", required = true) String member,
-			@RequestParam(value = "companyP", required = true) String companyPassword)
+			@RequestParam(value = "memberPassword", required = true) String memberPassword)
 			throws JsonProcessingException {
 		
 		logger.info("GetMemberData request recieved: "+userName+" member: "+member);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
-		}
-		
-		return mapper.writeValueAsString(memberDAO.GetMemberData(userName, member));
+		if(memberDAO.ComparePasswords(userName, member, memberPassword)){
+			ReturnedObject ro = new ReturnedObject(true,"");
+			return ro.ToJSONString();
+		} else {
+			ReturnedObject ro = new ReturnedObject(false,"Passwords do not match");
+			return ro.ToJSONString();
+		}	
+	
 	}
 	
 	@RequestMapping(value = "/CreateUpdateAMember", method = RequestMethod.GET)

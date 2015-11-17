@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ModelViewer.DAO.MemberDAO;
 import com.ModelViewer.DAO.ProjectMemberDAO;
 import com.ModelViewer.DAO.UserDAO;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,6 +32,9 @@ public class ProjectMemberService {
 	
 	@Inject
 	UserDAO userDAO;
+	
+	@Inject
+	MemberDAO memberDAO;
 	
 	
 	/**
@@ -77,12 +81,13 @@ public class ProjectMemberService {
 	public String GetProjectsMemberIsAPartOf(
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "member", required = true) String member,
-			@RequestParam(value = "companyP", required = true) String companyPassword)
+			@RequestParam(value = "companyP", required = true) String memberPassword)
 					throws JsonProcessingException {
 		
 		logger.info("GetProjectsMemberIsAPartOf request recieved username: "+userName +" member:"+member);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
+		//look up if member is in this company and password given matches password in DB
+		if(!memberDAO.ComparePasswords(userName, member,memberPassword)){
 			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
 		}
 		

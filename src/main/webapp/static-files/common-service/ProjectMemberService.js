@@ -23,8 +23,8 @@
         
         return service;
        
-        function GetProjectsMemberIsAPartOf(userName,member, companyP){
-            return $http.get(baseUrl+'GetProjectsMemberIsAPartOf', {params:{"userName": userName,"member": member, "companyP": companyP }}).then(handleSuccess, handleError('Error UserService.GetHashMapOfProjectAndMember'));       	
+        function GetProjectsMemberIsAPartOf(userName,member, companyMemberP){
+            return $http.get(baseUrl+'GetProjectsMemberIsAPartOf', {params:{"userName": userName,"member": member, "companyP": companyMemberP }}).then(handleSuccess, handleError('Error UserService.GetHashMapOfProjectAndMember'));       	
         }
         
         function GetHashMapOfProjectAndMember(userName, companyP) {

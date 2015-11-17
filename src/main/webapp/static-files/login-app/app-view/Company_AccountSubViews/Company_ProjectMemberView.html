@@ -82,7 +82,7 @@
 							ng-click="vm.pd.ProjectEditProjectDialog_Toggle(key)">Edit</button>
 							
 						<button type="button" class="btn btn-default projectMemberView_AddMember" 
-							ng-click="vm.projectEditMemberDialog_Toggle(key,values)">Member</button>
+							ng-click="vm.ProjectEditMemberDialog_Toggle(key,values)">Member</button>
 					</div>
 				</span>
 				
@@ -158,7 +158,7 @@
 			<div class="list-group">
 				<button type="button" style="width: 100%;" class="btn btn-default list-group-item projectMemberView_AddMember" 
 					ng-repeat="pemd_m in vm.projectEditMemberDialog_members" 
-					ng-click="vm.projectEditMemberDialog = false;vm.projectEditMemberDialog_AddMember(vm.projectEditMemberDialog_project, pemd_m)">
+					ng-click="vm.projectEditMemberDialog = false;vm.ProjectEditMemberDialog_AddMember(vm.projectEditMemberDialog_project, pemd_m)">
 					{{pemd_m}}
 				</button>
 			</div>
