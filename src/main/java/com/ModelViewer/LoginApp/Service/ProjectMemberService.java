@@ -1,6 +1,9 @@
 package com.ModelViewer.LoginApp.Service;
 
 
+import java.util.HashMap;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ModelViewer.DAO.MemberDAO;
 import com.ModelViewer.DAO.ProjectMemberDAO;
 import com.ModelViewer.DAO.UserDAO;
+import com.ModelViewer.Model.ProjectMemberModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,6 +27,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/ProjectMemberService")
 public class ProjectMemberService {
 	
+	private static final String EMPTY_STRING = "";
+	private final static String NO_PROJECT_AND_MEMBER = "No project and members found";
+	private final static String ACCESS_FORBIDDEN = "Access Forbbiden";
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	
 	private ObjectMapper mapper = new ObjectMapper();
@@ -55,12 +62,30 @@ public class ProjectMemberService {
 
 		logger.info("GetListOfProjectsAndMembers request recieved: "+userName);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(companyPassword)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
 		
-		return mapper.writeValueAsString(projectMemberDAO.GetListOfProjectsAndMembers(userName));
+		List<ProjectMemberModel> pandM = projectMemberDAO.GetListOfProjectsAndMembers(userName,ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	} else if(pandM == null){
+    		ro.setSuccess(false);
+    		ro.setMessage(NO_PROJECT_AND_MEMBER);
+    		return ro.ToJSONString();
+		} else {
+    		ro.setSuccess(true);
+    		ro.setMessage(mapper.writeValueAsString(pandM));
+    		return ro.ToJSONString();
+    	}
 	}
+
 
 	@RequestMapping(value = "/GetHashMapOfProjectAndMember", method = RequestMethod.GET)
 	public String GetHashMapOfProjectAndMember(
@@ -70,11 +95,28 @@ public class ProjectMemberService {
 		
 		logger.info("GetHashMapOfProjectAndMember request recieved: "+userName);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(companyPassword)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
 		
-		return mapper.writeValueAsString(projectMemberDAO.GetHashMapOfProjectAndMember(userName));
+		HashMap<String, List<String>> hpm = projectMemberDAO.GetHashMapOfProjectAndMember(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	} else if(hpm == null){
+    		ro.setSuccess(false);
+    		ro.setMessage(NO_PROJECT_AND_MEMBER);
+    		return ro.ToJSONString();
+		} else {
+    		ro.setSuccess(true);
+    		ro.setMessage(mapper.writeValueAsString(hpm));
+    		return ro.ToJSONString();
+    	}
 	}
 	
 	@RequestMapping(value = "/GetProjectsMemberIsAPartOf", method = RequestMethod.GET)
@@ -87,19 +129,29 @@ public class ProjectMemberService {
 		logger.info("GetProjectsMemberIsAPartOf request recieved username: "+userName +" member:"+member);
 		
 		//look up if member is in this company and password given matches password in DB
-		if(!memberDAO.ComparePasswords(userName, member,memberPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = memberDAO.GetMemberPassword(userName,member,ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(memberPassword)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
 		
-		return mapper.writeValueAsString(projectMemberDAO.GetProjectsMemberIsAPartOf(userName,member));
+		List<String> projects = projectMemberDAO.GetProjectsMemberIsAPartOf(userName,member,ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	} else if(projects == null){
+    		ro.setSuccess(false);
+    		ro.setMessage(NO_PROJECT_AND_MEMBER);
+    		return ro.ToJSONString();
+		} else {
+    		ro.setSuccess(true);
+    		ro.setMessage(mapper.writeValueAsString(projects));
+    		return ro.ToJSONString();
+    	}		
 	}
-	
-//	@RequestMapping(value = "/GetAListOfMembers", method = RequestMethod.GET)
-//	public String GetAListOfMembers(@RequestParam(value = "userName", required = true) String userName) throws JsonProcessingException {
-//		logger.info("GetAListOfMembers request recieved: "+userName);
-//		
-//		return mapper.writeValueAsString(projectMemberDAO.GetAListOfMembers(userName));
-//	}
 	
 	@RequestMapping(value = "/CreateANewProject", method = RequestMethod.GET)
 	public String CreateANewProject(@RequestParam(value = "userName", required = true) String userName,
@@ -109,12 +161,24 @@ public class ProjectMemberService {
 		
 		logger.info("CreateANewProject request recieved: "+userName+"projectNAme: "+projectName);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(passwordFound)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
 		
-		projectMemberDAO.CreateANewProject(userName,projectName);
-		return mapper.writeValueAsString("success");
+		projectMemberDAO.CreateANewProject(userName,projectName,ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	} else {
+    		ro.setSuccess(true);
+    		ro.setMessage(EMPTY_STRING);
+    		return ro.ToJSONString();
+    	}
 	}
 	
 	@RequestMapping(value = "/CreateAMember", method = RequestMethod.GET)
@@ -127,12 +191,24 @@ public class ProjectMemberService {
 		
 		logger.info("CreateAMember request recieved: "+userName+" projectName:"+projectName+" member: "+member);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(passwordFound)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
 		
-		projectMemberDAO.CreateAMember(userName,projectName,member);
-		return mapper.writeValueAsString("success");
+		projectMemberDAO.CreateAMember(userName,projectName,member,ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	} else {
+    		ro.setSuccess(true);
+    		ro.setMessage(EMPTY_STRING);
+    		return ro.ToJSONString();
+    	}
 
 	}
 	
@@ -144,12 +220,24 @@ public class ProjectMemberService {
 		
 		logger.info("DeleteAProject request recieved: "+userName+"projectName: "+projectName);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(passwordFound)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
 		
-		projectMemberDAO.DeleteAProject(userName,projectName);
-		return mapper.writeValueAsString("success");
+		projectMemberDAO.DeleteAProject(userName,projectName,ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	} else {
+    		ro.setSuccess(true);
+    		ro.setMessage(EMPTY_STRING);
+    		return ro.ToJSONString();
+    	}
 	}
 	
 	@RequestMapping(value = "/DeleteAMemberFromAllProjects", method = RequestMethod.GET)
@@ -160,12 +248,24 @@ public class ProjectMemberService {
 		
 		logger.info("DeleteAMember request recieved: "+userName+"member: "+member);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(passwordFound)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
 		
-		projectMemberDAO.DeleteAMemberFromAllProject(userName,member);
-		return mapper.writeValueAsString("success");
+		projectMemberDAO.DeleteAMemberFromAllProject(userName,member,ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	} else {
+    		ro.setSuccess(true);
+    		ro.setMessage(EMPTY_STRING);
+    		return ro.ToJSONString();
+    	}
 	}
 	
 	@RequestMapping(value = "/DeleteAMemberFromAProject", method = RequestMethod.GET)
@@ -178,11 +278,23 @@ public class ProjectMemberService {
 		
 		logger.info("DeleteAMember request recieved: "+userName+"member: "+member);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(passwordFound)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
 		
-		projectMemberDAO.DeleteAMemberFromAProject(userName,projectName,member);
-		return mapper.writeValueAsString("success"); 
+		projectMemberDAO.DeleteAMemberFromAProject(userName,projectName,member, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	} else {
+    		ro.setSuccess(true);
+    		ro.setMessage(EMPTY_STRING);
+    		return ro.ToJSONString();
+    	}
 	}
 }

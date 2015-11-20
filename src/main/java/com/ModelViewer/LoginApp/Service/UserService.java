@@ -3,7 +3,6 @@ package com.ModelViewer.LoginApp.Service;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Calendar;
 
 import javax.inject.Inject;
 
@@ -25,7 +24,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ResponseBody
 @RequestMapping("/UserService")
 public class UserService {
-	
+	private static final String EMPTY_STRING = "";
+	private final static String USER_EXISTS = "This company name already exists, please choose another";
+	private final static String ACCESS_FORBIDDEN = "Access Forbbiden";
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	
 	private ObjectMapper mapper = new ObjectMapper();
@@ -50,16 +51,23 @@ public class UserService {
 		
 		logger.info("GetUserByUserName request recieved: "+userName);
 		
-		if(userDAO.GetUserPasswordByUserName(userName).equals(password)){
-			//update current user logged in time
-			userDAO.UpdateUserLoginToCurrentTime(userName);
-			//return done
-			ReturnedObject ro = new ReturnedObject(true,"");
-			return ro.ToJSONString();
-		} else {
-			ReturnedObject ro = new ReturnedObject(false,"Passwords do not match");
-			return ro.ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(password)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
+    	userDAO.UpdateUserLoginToCurrentTime(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	} else {
+    		ro.setSuccess(true);
+    		ro.setMessage(EMPTY_STRING);
+    		return ro.ToJSONString();
+    	}
 	}
 	
 	
@@ -73,17 +81,26 @@ public class UserService {
 		
 		logger.info(log.toString());
 
-		UserModel um = userDAO.GetUserByUserName(userModel.getUserName());
-		if(um == null){
-			Long currentTime = System.currentTimeMillis();
-			userModel.setDateCreated(new Timestamp(currentTime));
-			userModel.setDateLastLoggedIn(new Timestamp(currentTime));
-			userDAO.CreateUserByModel(userModel);
-		} else {
-			return "{ \"success\": false, \"message\":\"This company name already exists, please choose another\"}";
-			
+		ReturnedObject ro = new ReturnedObject();
+		UserModel um = userDAO.GetUserByUserName(userModel.getUserName(),ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}
+    	
+		if(um != null){
+    		ro.setSuccess(false);
+    		ro.setMessage(USER_EXISTS);
+    		return ro.ToJSONString();			
 		}
-		return "{ \"success\": true, \"message\": \"\" }";
+		
+		Long currentTime = System.currentTimeMillis();
+		userModel.setDateCreated(new Timestamp(currentTime));
+		userModel.setDateLastLoggedIn(new Timestamp(currentTime));
+		userDAO.CreateUserByModel(userModel,ro);
+
+		ro.setSuccess(true);
+		ro.setMessage(EMPTY_STRING);
+		return ro.ToJSONString();
 	}
 	
 }

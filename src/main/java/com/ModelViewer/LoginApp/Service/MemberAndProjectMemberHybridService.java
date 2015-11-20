@@ -20,6 +20,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 @RequestMapping("/MemberAndProjectMemberHybridService")
 public class MemberAndProjectMemberHybridService {
 
+	private final static String ACCESS_FORBIDDEN = "Access Forbbiden";
+	private final static String CANNOT_MEMEBER_PROJECT = "MemberAndProject connot delete member";
+	
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	
 	//private ObjectMapper mapper = new ObjectMapper();
@@ -42,14 +45,29 @@ public class MemberAndProjectMemberHybridService {
 		
 		logger.info("DeleteMember request recieved: "+userName);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+		if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(companyPassword)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
 		
-		memberDAO.DeleteAMember(userName, member);
-		projectMemberDAO.DeleteAMemberFromAllProject(userName, member);
+		memberDAO.DeleteAMember(userName, member, ro);
+		if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}
 		
-		return "sucess";
+		projectMemberDAO.DeleteAMemberFromAllProject(userName, member, ro);
+		if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}
+		
+		ro.setSuccess(false);
+		ro.setMessage(CANNOT_MEMEBER_PROJECT);
+		return ro.ToJSONString();	
 	}
 	
 }

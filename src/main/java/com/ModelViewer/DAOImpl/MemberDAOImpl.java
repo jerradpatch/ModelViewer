@@ -12,8 +12,8 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.ModelViewer.DAO.MemberDAO;
+import com.ModelViewer.LoginApp.Service.ReturnedObject;
 import com.ModelViewer.Model.MemberModel;
-import com.ModelViewer.Model.UserModel;
 
 public class MemberDAOImpl implements MemberDAO{
 
@@ -22,7 +22,7 @@ public class MemberDAOImpl implements MemberDAO{
         this.sessionFactory = sessionFactory;
     }
 	
-	public List<String> GetListOfMember(String UserName) {
+	public List<String> GetListOfMember(String UserName, ReturnedObject ro) {
         Session session = this.sessionFactory.openSession();
         Criteria memberQuery = session.createCriteria(MemberModel.class);
         memberQuery.add(Restrictions.eq("userName",UserName));
@@ -37,7 +37,7 @@ public class MemberDAOImpl implements MemberDAO{
         return members;
 	}
 	
-	public MemberModel GetMemberData(String userName, String member){
+	public MemberModel GetMemberData(String userName, String member, ReturnedObject ro){
         Session session = this.sessionFactory.openSession();
         Criteria userQuery = session.createCriteria(MemberModel.class);
         userQuery.add(Restrictions.eq("userName",userName));
@@ -48,7 +48,7 @@ public class MemberDAOImpl implements MemberDAO{
         return memberModel;
 	}
 	
-	public String GetMemberPassword(String userName, String member){
+	public String GetMemberPassword(String userName, String member, ReturnedObject ro){
         Session session = this.sessionFactory.openSession();
         Criteria userQuery = session.createCriteria(MemberModel.class);
         userQuery.add(Restrictions.eq("userName",userName));
@@ -60,7 +60,7 @@ public class MemberDAOImpl implements MemberDAO{
         return password;
 	}
 	
-	public void CreateAMember(String userName, String member, String password) {
+	public void CreateAMember(String userName, String member, String password, ReturnedObject ro) {
 
 		Session session = this.sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
@@ -74,14 +74,14 @@ public class MemberDAOImpl implements MemberDAO{
 
 	}
 	
-	public void CreateUpdateAMember(String userName, String member, String password) {
-		if(GetMemberData(userName,member) != null){
-			DeleteAMember(userName,member);			
+	public void CreateUpdateAMember(String userName, String member, String password, ReturnedObject ro) {
+		if(GetMemberData(userName,member,ro) != null){
+			DeleteAMember(userName,member,ro);			
 		}
-		CreateAMember(userName, member, password);
+		CreateAMember(userName, member, password, ro);
 	}
 	
-	public void DeleteAMember(String userName, String member){
+	public void DeleteAMember(String userName, String member, ReturnedObject ro){
 		Session session=this.sessionFactory.openSession(); 
 		String hql = "delete from MemberModel mm where mm.userName= :userName and mm.member= :member"; 
 		session.createQuery(hql).setString("userName", new String(userName))
@@ -91,12 +91,12 @@ public class MemberDAOImpl implements MemberDAO{
 	}
 	
 	/* if passwords for use = return true, else false */
-	public boolean ComparePasswords(String userName, String member, String password){
-		
-		String passwordDB = GetMemberPassword(userName,member);
-		if(password.equals(passwordDB)){
-			return true;
-		}
-		return false;
-	}
+//	public boolean ComparePasswords(String userName, String member, String password){
+//		
+//		String passwordDB = GetMemberPassword(userName,member);
+//		if(password.equals(passwordDB)){
+//			return true;
+//		}
+//		return false;
+//	}
 }

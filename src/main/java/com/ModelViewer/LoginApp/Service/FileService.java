@@ -31,7 +31,7 @@ public class FileService {
 	
 	@Inject
 	ProjectMemberDAO projectMemberDAO;
-	
+	private static final String EMPTY_STRING = "";
 	private static final String FILE_BASE_LOCATION ="/userData/userProjects/";
 	private static final String MODEL_NAME = "model.unity3d";
 	
@@ -40,14 +40,20 @@ public class FileService {
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "projectName", required = true) String projectName,
 			@RequestParam(value = "file", required = true) MultipartFile fileMultiPart
-			){
+			) throws IOException{
 
 		String status = null;
         if (!fileMultiPart.isEmpty()) {
         	
         	logger.info("uploading: "+userName+" "+projectName);
         	//validate that this user, check if this project exists for this user
-        	projectMemberDAO.GetProjectMemberModel(userName, projectName, "");
+        	ReturnedObject ro = new ReturnedObject();
+        	projectMemberDAO.GetProjectMemberModel(userName, projectName, "", ro);
+        	if(ro.isSuccess() == false){
+        		return ro.ToJSONString();
+        	}
+        	
+        	BufferedOutputStream stream = null;
         	//upload the file
             try {
             	//@TODO change this to stream instead of completely save to memory before writing to file.
@@ -57,16 +63,21 @@ public class FileService {
                 byte[] bytes = fileMultiPart.getBytes();
                 File file = new File(path.toString());
                 file.getParentFile().mkdirs();
-                BufferedOutputStream stream =
-                        new BufferedOutputStream(new FileOutputStream(file));
+                stream = new BufferedOutputStream(new FileOutputStream(file));
                 stream.write(bytes);
-                stream.close();
-                status = "{\"status\":\"success\",\"message\":\"path = "+path.toString()+"\"}";
-                return status;
+                
+                ro.setSuccess(true);
+                ro.setMessage(EMPTY_STRING);
+                return ro.ToJSONString();
             } catch (Exception e) {
-            	status =  "{\"status\":\"error\",\"message\":\""+e.getMessage()+"\"}";
+                ro.setSuccess(false);
+                ro.setMessage(e.getMessage());
+                logger.error(e.getMessage());
+                return ro.ToJSONString();               
             } finally {
-            	logger.info(status);
+            	if(stream != null){
+            		stream.close();
+            	}
             }
             
         } else {
@@ -82,24 +93,31 @@ public class FileService {
 			@RequestParam(value = "projectName", required = true) String projectName,
 			@RequestParam(value = "member", required = true) String member,
 			HttpServletResponse response
-			){
+			) throws IOException{
 		
 		StringBuilder path = new StringBuilder(FILE_BASE_LOCATION);
     	path.append(userName).append("/").append(projectName).append("/").append(MODEL_NAME);
     	
+    	InputStream is = null;
 	    try {
 	    	File file = new File(path.toString());
 	    	logger.info("get a file path: "+path);
 	        // get your file as InputStream
-	        InputStream is = new BufferedInputStream(new FileInputStream(file));
+	        is = new BufferedInputStream(new FileInputStream(file));
 	        // copy it to response's OutputStream
 	        org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
 	        response.flushBuffer();
 	        is.close();
 	      } catch (IOException ex) {
-	        logger.info("Error writing file to output stream. Filename was '{}'");
-	        throw new RuntimeException("IOError writing file to output stream");
+	        logger.error("Error writing file to output stream. Filename was '{}'");
+
+	      } finally{
+	    	  if(is != null){
+	    		  is.close();
+	    	  }
+	    	  
 	      }
+	    		  
 	}
 
 }

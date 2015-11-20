@@ -1,5 +1,7 @@
 package com.ModelViewer.LoginApp.Service;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -21,6 +23,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/MemberService")
 public class MemberService {
 
+	private static final String EMPTY_STRING = "";
+	private final static String NO_MEMBER = "No members found";
+	private final static String ACCESS_FORBIDDEN = "Access Forbbiden";
+	
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	
 	private ObjectMapper mapper = new ObjectMapper();
@@ -50,11 +56,28 @@ public class MemberService {
 		
 		logger.info("GetListOfMember request recieved: "+userName);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(companyPassword)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
 		
-		return mapper.writeValueAsString(memberDAO.GetListOfMember(userName));
+		List<String> members = memberDAO.GetListOfMember(userName,ro);
+		if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	} else if(members == null){
+    		ro.setSuccess(false);
+    		ro.setMessage(NO_MEMBER);
+    		return ro.ToJSONString();
+		} else {
+    		ro.setSuccess(true);
+    		ro.setMessage(mapper.writeValueAsString(members));
+    		return ro.ToJSONString();
+    	}
 	}
 	
 	@RequestMapping(value = "/ComparePasswordsForMember", method = RequestMethod.GET)
@@ -66,13 +89,20 @@ public class MemberService {
 		
 		logger.info("GetMemberData request recieved: "+userName+" member: "+member);
 		
-		if(memberDAO.ComparePasswords(userName, member, memberPassword)){
-			ReturnedObject ro = new ReturnedObject(true,"");
-			return ro.ToJSONString();
-		} else {
-			ReturnedObject ro = new ReturnedObject(false,"Passwords do not match");
-			return ro.ToJSONString();
-		}	
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = memberDAO.GetMemberPassword(userName,member,ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(memberPassword)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
+		}
+    	
+    	ro.setSuccess(true);
+    	ro.setMessage(EMPTY_STRING);
+	
+		return ro.ToJSONString();
 	
 	}
 	
@@ -86,12 +116,24 @@ public class MemberService {
 		
 		logger.info("CreateUpdateAMember request recieved: "+userName);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(companyPassword)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
 		
-		memberDAO.CreateUpdateAMember(userName,member,password);
-		return new ReturnedObject(true,"").ToJSONString();
+		memberDAO.CreateUpdateAMember(userName,member,password,ro);
+		if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	} else {
+    		ro.setSuccess(true);
+    		ro.setMessage(EMPTY_STRING);
+    		return ro.ToJSONString();
+    	}
 	}
 	
 	@RequestMapping(value = "/DeleteAMember", method = RequestMethod.GET)
@@ -103,12 +145,24 @@ public class MemberService {
 		
 		logger.info("DeleteAMember request recieved: "+userName);
 		
-		if(!userDAO.ComparePasswords(userName, companyPassword)){
-			return new ReturnedObject(false,"Access Forbbiden").ToJSONString();
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}else if(passwordFound == null || !passwordFound.equals(companyPassword)){
+    		ro.setSuccess(false);
+    		ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
 		}
 		
-		memberDAO.DeleteAMember(userName,member);
-		return new ReturnedObject(true,"").ToJSONString();
+		memberDAO.DeleteAMember(userName,member,ro);
+		if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	} else {
+    		ro.setSuccess(true);
+    		ro.setMessage(EMPTY_STRING);
+    		return ro.ToJSONString();
+    	}
 	}
 		
 }

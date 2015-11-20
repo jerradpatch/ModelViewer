@@ -1,7 +1,6 @@
 package com.ModelViewer.DAOImpl;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -11,7 +10,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.ModelViewer.DAO.UserDAO;
-import com.ModelViewer.Model.ProjectMemberModel;
+import com.ModelViewer.LoginApp.Service.ReturnedObject;
 import com.ModelViewer.Model.UserModel;
 
 public class UserDAOImpl implements UserDAO{
@@ -21,7 +20,7 @@ public class UserDAOImpl implements UserDAO{
         this.sessionFactory = sessionFactory;
     }
 	
-	public UserModel GetUserByUserName(String userName) {
+	public UserModel GetUserByUserName(String userName, ReturnedObject ro) {
         Session session = this.sessionFactory.openSession();
         Criteria userQuery = session.createCriteria(UserModel.class);
         userQuery.add(Restrictions.eq("userName",userName));
@@ -31,7 +30,7 @@ public class UserDAOImpl implements UserDAO{
         return userModel;
 	}
 	
-	public String GetUserPasswordByUserName(String userName){
+	public String GetUserPasswordByUserName(String userName, ReturnedObject ro){
 		Session session = this.sessionFactory.openSession();
         Criteria userQuery = session.createCriteria(UserModel.class);
         userQuery.add(Restrictions.eq("userName",userName));
@@ -42,14 +41,14 @@ public class UserDAOImpl implements UserDAO{
         return password;
 	}
 
-	public void CreateUserByModel(UserModel user) {
+	public void CreateUserByModel(UserModel user, ReturnedObject ro) {
 		Session session = this.sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         session.persist(user);
         tx.commit();
         session.close();
 	}
-	public void CreateUserByValues(String userName, String password, String email) {
+	public void CreateUserByValues(String userName, String password, String email, ReturnedObject ro) {
 		
 		UserModel um = new UserModel();
 		um.setUserName(userName);
@@ -64,10 +63,10 @@ public class UserDAOImpl implements UserDAO{
         
         return;
 	}
-	public void UpdateUserLoginToCurrentTime(String userName) {
+	public void UpdateUserLoginToCurrentTime(String userName, ReturnedObject ro) {
 		
 		Session session = this.sessionFactory.openSession();
-        UserModel um = GetUserByUserName(userName);
+        UserModel um = GetUserByUserName(userName, ro);
         Transaction tx = session.beginTransaction();
         session.update(um);
         um.setDateLastLoggedIn(new Timestamp(System.currentTimeMillis()));
@@ -76,12 +75,12 @@ public class UserDAOImpl implements UserDAO{
              
         return;
 	}
-	public UserModel UpdateByUserName(String UserName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	public UserModel UpdateByUserName(String UserName, ReturnedObject ro) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
-	public void DeleteByModel(UserModel UserName) {
+	public void DeleteByModel(UserModel UserName, ReturnedObject ro) {
 		Session session = this.sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         session.delete(UserName);
@@ -91,16 +90,16 @@ public class UserDAOImpl implements UserDAO{
 	}
 	
 	/* if passwords for use = return true, else false */
-	public boolean ComparePasswords(String userName, String password){
-		if(userName == null || userName.isEmpty() || password == null || password.isEmpty()){
-			return false;
-		}
-		
-		String passwordDB = GetUserPasswordByUserName(userName);
-		if(password.equals(passwordDB)){
-			return true;
-		}
-		return false;
-	}
+//	public boolean ComparePasswords(String userName, String password){
+//		if(userName == null || userName.isEmpty() || password == null || password.isEmpty()){
+//			return false;
+//		}
+//		
+//		String passwordDB = GetUserPasswordByUserName(userName);
+//		if(password.equals(passwordDB)){
+//			return true;
+//		}
+//		return false;
+//	}
 
 }

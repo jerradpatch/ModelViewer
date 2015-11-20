@@ -33,13 +33,24 @@
     </beans:bean>
      
      <!--  DAO configurations -->
-    <bean id="UserDAO" class="com.ModelViewer.DAOImpl.UserDAOImpl">
+    <bean id="UserDAOImpl" class="com.ModelViewer.DAOImpl.UserDAOImpl">
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
 	</bean>
-    <bean id="ProjectMemberDAO" class="com.ModelViewer.DAOImpl.ProjectMemberDAOImpl">
+    <bean id="ProjectMemberDAOImpl" class="com.ModelViewer.DAOImpl.ProjectMemberDAOImpl">
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
 	</bean>	
-	<bean id="MemberDAO" class="com.ModelViewer.DAOImpl.MemberDAOImpl">
+	<bean id="MemberDAOImpl" class="com.ModelViewer.DAOImpl.MemberDAOImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+	</bean>
+	
+	<!-- DAO Validation -->
+	 <bean id="UserDAO" class="com.ModelViewer.DAOImpl.UserDAOValidation">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+	</bean>
+    <bean id="ProjectMemberDAO" class="com.ModelViewer.DAOImpl.ProjectMemberDAOValidation">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+	</bean>	
+	<bean id="MemberDAO" class="com.ModelViewer.DAOImpl.MemberDAOValidation">
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
 	</bean>
 	

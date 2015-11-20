@@ -11,6 +11,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.ModelViewer.DAO.ProjectMemberDAO;
+import com.ModelViewer.LoginApp.Service.ReturnedObject;
 import com.ModelViewer.Model.ProjectMemberModel;
 
 
@@ -22,7 +23,7 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
         this.sessionFactory = sessionFactory;
     }
 	
-	public List<ProjectMemberModel> GetListOfProjectsAndMembers(String UserName) {
+	public List<ProjectMemberModel> GetListOfProjectsAndMembers(String UserName, ReturnedObject ro) {
         Session session = this.sessionFactory.openSession();
         Criteria userQuery = session.createCriteria(ProjectMemberModel.class);
         userQuery.add(Restrictions.eq("userName",UserName));
@@ -32,8 +33,8 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
         return projectMembersModelList;
 	}
 	
-	public HashMap<String,List<String>> GetHashMapOfProjectAndMember(String userName){
-		List<ProjectMemberModel> list = GetListOfProjectsAndMembers(userName);
+	public HashMap<String,List<String>> GetHashMapOfProjectAndMember(String userName, ReturnedObject ro){
+		List<ProjectMemberModel> list = GetListOfProjectsAndMembers(userName,ro);
 		
 		HashMap<String,List<String>> projectMembers = new HashMap<String,List<String>>();
 		for(ProjectMemberModel item : list){
@@ -53,7 +54,7 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<String> GetProjectsMemberIsAPartOf(String userName, String member) {
+	public List<String> GetProjectsMemberIsAPartOf(String userName, String member, ReturnedObject ro) {
         Session session = this.sessionFactory.openSession();
         Criteria userQuery = session.createCriteria(ProjectMemberModel.class);
         userQuery.add(Restrictions.eq("userName",userName));
@@ -65,7 +66,7 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
         return projects;
 	}
 	
-	public ProjectMemberModel GetProjectMemberModel(String userName, String projectName, String member) {
+	public ProjectMemberModel GetProjectMemberModel(String userName, String projectName, String member, ReturnedObject ro) {
         Session session = this.sessionFactory.openSession();
         Criteria userQuery = session.createCriteria(ProjectMemberModel.class);
         userQuery.add(Restrictions.eq("userName",userName));
@@ -77,7 +78,7 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
         return projectMembersModelList;
 	}
 	
-	public void CreateANewProject(String userName, String projectName){
+	public void CreateANewProject(String userName, String projectName, ReturnedObject ro){
 		Session session = this.sessionFactory.openSession();
 		session.beginTransaction();
 				
@@ -90,7 +91,7 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
 		session.getTransaction().commit();
 		session.close();		
 	}
-	public void CreateAMember(String userName, String projectName, String member){
+	public void CreateAMember(String userName, String projectName, String member, ReturnedObject ro){
 		Session session = this.sessionFactory.openSession();
 		session.beginTransaction();
 				
@@ -104,7 +105,7 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
 		session.close();		
 	}
 	
-	public void DeleteAProject(String userName, String projectName){
+	public void DeleteAProject(String userName, String projectName, ReturnedObject ro){
 		Session session=this.sessionFactory.openSession(); 
 		String hql = "delete from ProjectMemberModel pmm where pmm.userName= :userName and pmm.projectName= :projectName"; 
 		session.createQuery(hql).setString("userName", new String(userName))
@@ -113,7 +114,7 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
 		session.close();
 	}
 	
-	public void DeleteAMemberFromAllProject(String userName, String member){
+	public void DeleteAMemberFromAllProject(String userName, String member, ReturnedObject ro){
 		Session session=this.sessionFactory.openSession(); 
 		String hql = " delete from ProjectMemberModel pmm where ( pmm.userName = :userName ) and ( pmm.member = :member ) "; 
 		session.createQuery(hql).setString("userName", new String(userName))
@@ -121,7 +122,7 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
 			.executeUpdate();
 		session.close();
 	}
-	public void DeleteAMemberFromAProject(String userName,String projectName,String member){
+	public void DeleteAMemberFromAProject(String userName,String projectName,String member, ReturnedObject ro){
 		Session session=this.sessionFactory.openSession(); 
 		String hql = " delete from ProjectMemberModel pmm where ( pmm.userName = :userName ) and "
 				+ "( pmm.projectName = :projectName ) and ( pmm.member = :member ) "; 

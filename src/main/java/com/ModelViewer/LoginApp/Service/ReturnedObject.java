@@ -1,10 +1,13 @@
 package com.ModelViewer.LoginApp.Service;
 
 public class ReturnedObject {
-	public boolean success;
-	public String message;
+	private boolean success;
+
+	private String message;
 	
-	
+	public ReturnedObject(){
+		super();
+	}
 
 	public ReturnedObject(boolean success, String message) {
 		super();
@@ -12,7 +15,17 @@ public class ReturnedObject {
 		this.message = message;
 	}
 
+	public boolean isSuccess() {
+		return success;
+	}
 
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
 	public String ToJSONString(){
 		return "{ \"success\":"+success+", \"message\": \""+message+"\" }";
