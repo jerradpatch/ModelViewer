@@ -5,8 +5,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import com.ModelViewer.DAO.ProjectMemberDAO;
-import com.ModelViewer.DAOImpl.ProjectMemberDAOImpl;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
 import com.ModelViewer.Model.ProjectMemberModel;
 
@@ -15,14 +16,15 @@ public class ProjectMemberDAOValidation implements ProjectMemberDAO{
 	private final ValidateUtil vu = new ValidateUtil();
 	
 	@Inject
-	ProjectMemberDAOImpl projectMemberDAOImpl;
+	@Qualifier("ProjectMemberDAOImpl")
+	ProjectMemberDAO projectMemberDAO;
 	
 	public List<ProjectMemberModel> GetListOfProjectsAndMembers(String userName, ReturnedObject ro) {
 		vu.validateUserName(userName, ro);
 		if(!ro.isSuccess()){
 			return null;
 		}	
-		return projectMemberDAOImpl.GetListOfProjectsAndMembers(userName, ro);
+		return projectMemberDAO.GetListOfProjectsAndMembers(userName, ro);
 	}
 
 	public HashMap<String, List<String>> GetHashMapOfProjectAndMember(String userName, ReturnedObject ro) {
@@ -30,7 +32,7 @@ public class ProjectMemberDAOValidation implements ProjectMemberDAO{
 		if(!ro.isSuccess()){
 			return null;
 		}	
-		return projectMemberDAOImpl.GetHashMapOfProjectAndMember(userName, ro);
+		return projectMemberDAO.GetHashMapOfProjectAndMember(userName, ro);
 	}
 
 	public List<String> GetProjectsMemberIsAPartOf(String userName, String member, ReturnedObject ro) {
@@ -43,7 +45,7 @@ public class ProjectMemberDAOValidation implements ProjectMemberDAO{
 		if(!ro.isSuccess()){
 			return null;
 		}
-		return projectMemberDAOImpl.GetProjectsMemberIsAPartOf(userName, member, ro);
+		return projectMemberDAO.GetProjectsMemberIsAPartOf(userName, member, ro);
 	}
 
 	public ProjectMemberModel GetProjectMemberModel(String userName, String projectName, String member, ReturnedObject ro) {
@@ -62,7 +64,7 @@ public class ProjectMemberDAOValidation implements ProjectMemberDAO{
 			return null;
 		}
 		
-		return projectMemberDAOImpl.GetProjectMemberModel(userName, projectName, member, ro);
+		return projectMemberDAO.GetProjectMemberModel(userName, projectName, member, ro);
 	}
 
 	public void CreateANewProject(String userName, String projectName, ReturnedObject ro) {
@@ -75,7 +77,7 @@ public class ProjectMemberDAOValidation implements ProjectMemberDAO{
 		if(!ro.isSuccess()){
 			return;
 		}		
-		projectMemberDAOImpl.CreateANewProject(userName, projectName, ro); 		
+		projectMemberDAO.CreateANewProject(userName, projectName, ro); 		
 	}
 
 	public void CreateAMember(String userName, String projectName, String member, ReturnedObject ro) {
@@ -93,7 +95,7 @@ public class ProjectMemberDAOValidation implements ProjectMemberDAO{
 		if(!ro.isSuccess()){
 			return;
 		}
-		projectMemberDAOImpl.CreateAMember(userName, projectName, member, ro);
+		projectMemberDAO.CreateAMember(userName, projectName, member, ro);
 	}
 
 	public void DeleteAProject(String userName, String projectName, ReturnedObject ro) {
@@ -106,7 +108,7 @@ public class ProjectMemberDAOValidation implements ProjectMemberDAO{
 		if(!ro.isSuccess()){
 			return;
 		}
-		projectMemberDAOImpl.DeleteAProject(userName, projectName, ro);
+		projectMemberDAO.DeleteAProject(userName, projectName, ro);
 	}
 
 	public void DeleteAMemberFromAllProject(String userName, String member, ReturnedObject ro) {
@@ -119,7 +121,7 @@ public class ProjectMemberDAOValidation implements ProjectMemberDAO{
 		if(!ro.isSuccess()){
 			return;
 		}	
-		projectMemberDAOImpl.DeleteAMemberFromAllProject(userName, member, ro);
+		projectMemberDAO.DeleteAMemberFromAllProject(userName, member, ro);
 	}
 
 	public void DeleteAMemberFromAProject(String userName, String projectName, String member, ReturnedObject ro) {
@@ -137,7 +139,7 @@ public class ProjectMemberDAOValidation implements ProjectMemberDAO{
 		if(!ro.isSuccess()){
 			return;
 		}
-		projectMemberDAOImpl.DeleteAMemberFromAProject(userName, projectName, member, ro);
+		projectMemberDAO.DeleteAMemberFromAProject(userName, projectName, member, ro);
 	}
 
 }

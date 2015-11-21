@@ -3,26 +3,20 @@
  
     angular
         .module('app')
-        .constant("CONSTANTS", {
-        	"Member_LoginController" : {
-        	"MEMBER_LOGIN_FORM" : {
-        		"PROJECT_NAME" : {
-        			"MAXIMUM_LENGTH": 30 },
-        		"MEMBER" : {
-        			"MAXIMUM_LENGTH": 30 },
-        		"PASSWORD": {
-        			"MAXIMUM_LENGTH": 20 },      		
-        		}  
+        .constant("CONSTANTS_Company_ProjectMemberController", {
+        	"Company_ProjectMemberController" : {
+        	"PROJECTS" : {
+        		"NEW_PROJECT_INPUT" : {
+        			"MAXIMUM_LENGTH": 30,
+        			"MINIMUM_LENGTH": 3,
+        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}
+        		}
         	}
          })
         .controller('Company_ProjectMemberController', Company_ProjectMemberController)
         .directive('ngFileUploadDirective', ngFileUploadDirective)
-        .run(function ($rootScope, CONSTANTS) {
-        	if("CONSTANTS" in $rootScope){
-        		$rootScope.CONSTANTS.Company_MemberController = CONSTANTS.Company_MemberController;
-        	}else {
-        		$rootScope.CONSTANTS = CONSTANTS;
-        	}
+        .run(function ($rootScope, CONSTANTS_Company_ProjectMemberController) {
+        	$rootScope.CONSTANTS_Company_ProjectMemberController = CONSTANTS_Company_ProjectMemberController;
         });
  
     Company_ProjectMemberController.$inject = ['AuthService','$scope','ProjectMemberService','MemberService','FileService'];
@@ -81,12 +75,10 @@
         		vm.pd.progress = Math.round(vm.pd.progress);
         	});
         });
-//        $scope.$on('FileService.error', function(data) {
-//        	@TODO
-//        });
-//        $scope.$on('FileService.abort', function(data) {
-//        	@TODO
-//        });
+
+        function onError(message){
+        	$rootScope.$broadcast("errorGlobal", message); 
+        }
         
         
         //edit/add project information dialog area/////////////////////////       
@@ -114,6 +106,7 @@
 	                	vm.projectEditMemberDialog_project = null;
 	                } else {			                	
 	                	vm.error = response.message;
+	                	onError(response.message);
 	                	vm.projectEditMemberDialog_members = null;
 	                }
 				});	        	
@@ -135,6 +128,7 @@
 		                	vm.projectEditMemberDialog = true;
 		                } else {			                	
 		                	vm.error = response.message;
+		                	onError(response.message);
 		                	vm.projectEditMemberDialog_members = null;
 		                	vm.projectEditMemberDialog = false;
 		                }
@@ -153,6 +147,7 @@
 	                    vm.projectMember = response.message;
 	                } else {			                	
 	                	vm.error = response.message;
+	                	onError(response.message);
 	                	vm.projectMember = null;
 	                }
 		        });	
@@ -168,6 +163,7 @@
 	                    RefreshElements();
 	                } else {
 	                	 //alert(response);
+	                	onError(response.message);
 	                	vm.error = response.message;
 	                }
 	                
@@ -182,7 +178,8 @@
 	                if (response.success) {			                   
 	                    vm.error = null;
 	                    RefreshElements();
-	                } else {			                	
+	                } else {			
+	                	onError(response.message);
 	                	vm.error = response.message;
 	                }
 		        });      	       	 	
@@ -196,7 +193,8 @@
 	                if (response.success) {			                   
 	                    vm.error = null;
 	                    RefreshElements();
-	                } else {			                	
+	                } else {			 
+	                	onError(response.message);
 	                	vm.error = response.message;
 	                }
 		        });       	    	

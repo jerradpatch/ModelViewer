@@ -43,7 +43,7 @@
         // private functions
  
         function handleSuccess(res) {
-            return { success: true, message: res.data };
+            return res.data;
         }
  
         function handleError(error) {

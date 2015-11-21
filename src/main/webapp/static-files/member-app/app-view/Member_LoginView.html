@@ -12,20 +12,38 @@
 	    <h2>Member Login</h2>
 	    <div ng-show="vm.error" class="alert alert-danger">{{vm.error}}</div>
 	    <form name="memberForm" ng-submit="vm.login()" role="form">
-	    	<div class="form-group" ng-class="{ 'has-error': memberForm.companyName.$dirty && memberForm.companyName.$error.required }">
+	    	<div class="form-group" ng-class="{ 'has-error': memberForm.companyName.$dirty && (memberForm.companyName.$error.required || memberForm.companyName.$error.pattern || memberForm.companyName.$error.minlength || memberForm.companyName.$error.maxlength) }">
 	            <label >Company Name</label>
-	            <input type="text" name="companyName" class="form-control" ng-model="vm.companyName" required />
+	            <input type="text" name="companyName" class="form-control" ng-model="vm.companyName" 
+					ng-maxlength="{{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.COMPANY_NAME.MAXIMUM_LENGTH}}"
+	           		ng-minlength="{{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.COMPANY_NAME.MINIMUM_LENGTH}}"
+	            	ng-pattern="{{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.COMPANY_NAME.VALID_PATTERN}}" required />
 	            <span ng-show="memberForm.companyName.$dirty && memberForm.companyName.$error.required" class="help-block">Company Name is required</span>
+	            <span ng-show="memberForm.companyName.$error.maxlength" class="help-block">Company name exceeds the maximum length of {{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.COMPANY_NAME.MAXIMUM_LENGTH}} characters</span>
+	            <span ng-show="memberForm.companyName.$dirty && memberForm.companyName.$error.minlength" class="help-block">Company name is below the minimum length of {{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.COMPANY_NAME.MINIMUM_LENGTH}} characters</span>
+	            <span ng-show="memberForm.companyName.$error.pattern" class="help-block">Company name contains invalid characters</span>
 	        </div>
-	        <div class="form-group" ng-class="{ 'has-error': memberForm.memberName.$dirty && memberForm.memberName.$error.required }">
+	        <div class="form-group" ng-class="{ 'has-error': memberForm.memberName.$dirty && (memberForm.memberName.$error.required || memberForm.memberName.$error.pattern || memberForm.memberName.$error.minlength || memberForm.memberName.$error.maxlength) }">
 	            <label >Member Name</label>
-	            <input type="text" name="memberName" class="form-control" ng-model="vm.memberName" required />
-	            <span ng-show="memberForm.memberName.$dirty && memberForm.memberName.$error.required" class="help-block">Member Name is required</span>
+	            <input type="text" name="memberName" class="form-control" ng-model="vm.memberName" 
+					ng-maxlength="{{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.MEMBER_NAME.MAXIMUM_LENGTH}}"
+	           		ng-minlength="{{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.MEMBER_NAME.MINIMUM_LENGTH}}"
+	            	ng-pattern="{{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.MEMBER_NAME.VALID_PATTERN}}" required />
+	            <span ng-show="memberForm.memberName.$dirty && memberForm.memberName.$error.required" class="help-block">Company Name is required</span>
+	            <span ng-show="memberForm.memberName.$error.maxlength" class="help-block">Company name exceeds the maximum length of {{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.MEMBER_NAME.MAXIMUM_LENGTH}} characters</span>
+	            <span ng-show="memberForm.memberName.$dirty && memberForm.memberName.$error.minlength" class="help-block">Company name is below the minimum length of {{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.MEMBER_NAME.MINIMUM_LENGTH}} characters</span>
+	            <span ng-show="memberForm.memberName.$error.pattern" class="help-block">Company name contains invalid characters</span>
 	        </div>
-	        <div class="form-group" ng-class="{ 'has-error': memberForm.password.$dirty && memberForm.password.$error.required }">
+	        <div class="form-group" ng-class="{ 'has-error': memberForm.password.$dirty && (memberForm.password.$error.required || memberForm.password.$error.pattern || memberForm.password.$error.minlength || memberForm.password.$error.maxlength) }">
 	            <label >Password</label>
-	            <input type="password" name="password" class="form-control" ng-model="vm.memberPassword" required />
+	            <input type="password" name="password" class="form-control" ng-model="vm.memberPassword" 
+					ng-maxlength="{{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.PASSWORD.MAXIMUM_LENGTH}}"
+	            	ng-minlength="{{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.PASSWORD.MINIMUM_LENGTH}}"
+	            	ng-pattern="{{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.PASSWORD.VALID_PATTERN}}" required />
 	            <span ng-show="memberForm.password.$dirty && memberForm.password.$error.required" class="help-block">Password is required</span>
+	            <span ng-show="memberForm.password.$error.maxlength" class="help-block">Password exceeds the maximum length of {{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.PASSWORD.MAXIMUM_LENGTH}} characters</span>
+	            <span ng-show="memberForm.password.$dirty && memberForm.password.$error.minlength" class="help-block">Password is below the minimum length of {{CONSTANTS_Member_LoginController.Member_LoginController.MEMBER_LOGIN_FORM.PASSWORD.MINIMUM_LENGTH}} characters</span>
+	            <span ng-show="memberForm.password.$error.pattern" class="help-block">Password contains invalid characters</span>
 	        </div>
 	        <div class="form-actions">
 	            <button type="submit" ng-disabled="memberForm.$invalid || vm.dataLoading" class="btn btn-primary">Login</button>

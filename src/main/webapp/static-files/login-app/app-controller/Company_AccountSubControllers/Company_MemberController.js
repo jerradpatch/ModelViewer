@@ -3,23 +3,23 @@
  
     angular
         .module('app')
-        .constant("CONSTANTS", {
+        .constant("CONSTANTS_Company_MemberController", {
         	"Company_MemberController" : {
 	        	"CREATE_MEMBER_FORM" : {
 	        		"MEMBER" : {
-	        			"MAXIMUM_LENGTH": 30 },
+	        			"MAXIMUM_LENGTH": 30,
+	        			"MINIMUM_LENGTH": 3,
+	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"},
 	        		"PASSWORD": {
-	        			"MAXIMUM_LENGTH": 20 }      		
+	        			"MAXIMUM_LENGTH": 20,
+	        			"MINIMUM_LENGTH": 6,
+	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}     		
 	        	}
         	}
          })
         .controller('Company_MemberController', Company_MemberController)
-        .run(function ($rootScope, CONSTANTS) {
-        	if("CONSTANTS" in $rootScope){
-        		$rootScope.CONSTANTS.Company_MemberController = CONSTANTS.Company_MemberController;
-        	}else {
-        		$rootScope.CONSTANTS = CONSTANTS;
-        	}
+        .run(function ($rootScope, CONSTANTS_Company_MemberController) {
+        	$rootScope.CONSTANTS_Company_MemberController = CONSTANTS_Company_MemberController;
         });
  
     Company_MemberController.$inject = ['AuthService','$scope','MemberService'];
@@ -46,6 +46,10 @@
         	//alert("reieved on child");
         	RefreshElements();        
         });
+        
+        function onError(message){
+        	$rootScope.$broadcast("errorGlobal", message); 
+        }
 
         
         //sending message
@@ -68,6 +72,7 @@
 	                    vm.memberNameToCreate = message.member;
 	                    vm.memberPasswordToCreate = message.password;
 	                } else {
+	                	onError(response.message);
 	                	vm.memberNameToCreate = "";
 	                    vm.memberPasswordToCreate = "";
 	                	vm.error = response.message;
@@ -84,6 +89,7 @@
 	                    vm.members = response.message;
 	                    vm.error = null;
 	                } else {
+	                	onError(response.message);
 	                	vm.members = null;
 	                	vm.error = response.message;
 	                }
@@ -98,7 +104,8 @@
 	                if (response.success) {			                   
 	                    vm.error = null;
 	                    RefreshPageElements();
-	                } else {			                	
+	                } else {	
+	                	onError(response.message);
 	                	vm.error = response.message;
 	                }
 		        });       	 	
@@ -112,7 +119,8 @@
 	                if (response.success) {			                   
 	                    vm.error = null;
 	                    RefreshElements();
-	                } else {			                	
+	                } else {
+	                	onError(response.message);
 	                	vm.error = response.message;
 	                }
 		        });      	 	

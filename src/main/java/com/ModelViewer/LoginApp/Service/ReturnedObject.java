@@ -28,6 +28,13 @@ public class ReturnedObject {
 	}
 
 	public String ToJSONString(){
-		return "{ \"success\":"+success+", \"message\": \""+message+"\" }";
+		StringBuilder sb = new StringBuilder("{\"success\":");
+		sb.append(success).append(",\"message\":");
+		if(message.isEmpty()){
+			sb.append("\"\"}");
+		} else {
+			sb.append(message).append("}");
+		}
+		return sb.toString();
 	}
 }

@@ -8,19 +8,22 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ModelViewer.DAO.UserDAO;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
 import com.ModelViewer.Model.UserModel;
 
 public class UserDAOImpl implements UserDAO{
-
+	private static final Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 	private SessionFactory sessionFactory;
 	public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 	
 	public UserModel GetUserByUserName(String userName, ReturnedObject ro) {
+		logger.debug("GetUserByUserName: username "+userName);
         Session session = this.sessionFactory.openSession();
         Criteria userQuery = session.createCriteria(UserModel.class);
         userQuery.add(Restrictions.eq("userName",userName));

@@ -3,23 +3,27 @@
  
     angular
         .module('app')
-        .constant("CONSTANTS", {
+        .constant("CONSTANTS_Member_LoginController", {
         	"Member_LoginController" : {
-        	"MEMBER_LOGIN_FORM" : {
-        		"MEMBER" : {
-        			"MAXIMUM_LENGTH": 30 },
-        		"PASSWORD": {
-        			"MAXIMUM_LENGTH": 20 }     		
-        		}  
-        	}
+	        	"MEMBER_LOGIN_FORM" : {
+	        		"COMPANY_NAME" : {
+	        			"MAXIMUM_LENGTH": 30,
+	        			"MINIMUM_LENGTH": 3,
+	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"},
+	        		"MEMBER_NAME" : {
+	        			"MAXIMUM_LENGTH": 30,
+	        			"MINIMUM_LENGTH": 3,
+	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"},
+	        		"PASSWORD": {
+	        			"MAXIMUM_LENGTH": 20,
+	        			"MINIMUM_LENGTH": 6,
+	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}     		
+	        		}  
+	        	}
          })
         .controller('Member_LoginController', Member_LoginController)
-        .run(function ($rootScope, CONSTANTS) {
-        	if("CONSTANTS" in $rootScope){
-        		$rootScope.CONSTANTS.Member_LoginController = CONSTANTS.Member_LoginController;
-        	}else {
-        		$rootScope.CONSTANTS = CONSTANTS;
-        	}
+        .run(function ($rootScope, CONSTANTS_Member_LoginController) {
+        	$rootScope.CONSTANTS_Member_LoginController = CONSTANTS_Member_LoginController;
         });
  
     Member_LoginController.$inject = ['$location','AuthService','MemberService'];

@@ -20,11 +20,11 @@
  
       
         function ComparePasswordsForUser(userName, password) {
-            return $http.get(baseUrl+'ComparePasswordsForUser', {params:{"userName": userName,"password": password }}).then(handleSuccess, handleError);
+            return $http.get(baseUrl+'ComparePasswordsForUser', {params:{"userName": userName,"password": password }}).then(handleSuccess, handleError("No response from pasword compare"));
         }
  
         function CreateUser(userName,password,email) { 
-            return $http.post(baseUrl+'CreateUser', {"userName": userName,"password": password, "email": email}).then(handleSuccess);
+            return $http.post(baseUrl+'CreateUser', {"userName": userName,"password": password, "email": email}).then(handleSuccess, handleError("Could not create user"));
         }
  
 //        function UpdateUserByUserName(userName, companyP) {
@@ -39,23 +39,24 @@
         	//error handeling angular way---- always a success unless internal server error/exception then its always an error
         		//angular issue, angular does not allow the error to be retrieved, so errors are always returned as successes then parsed.
         function handleSuccess(res) {
-        	if(!(typeof res === 'undefined') && !(res === null) && !(res === "null")){
-        		if(!(typeof res.data === 'undefined') && !(res.data === null) && !(res.data === "null")){
-	        		if("success" in res.data){
-		    			if("message" in res.data){   	
-		    				//message from the backend
-		    				return { success: res.data.success, message: res.data.message };
-		    			}else{   				
-		    				return { success: res.data.success, message: '' };
-		    			}      			
-		        	} 
-        		}
-        	}
-        	return { success: true, message: res.data};
+//        	if(!(typeof res === 'undefined') && !(res === null) && !(res === "null")){
+//        		if(!(typeof res.data === 'undefined') && !(res.data === null) && !(res.data === "null")){
+//	        		if("success" in res.data){
+//		    			if("message" in res.data){   	
+//		    				//message from the backend
+//		    				return { success: res.data.success, message: res.data.message };
+//		    			}else{   				
+//		    				return { success: res.data.success, message: '' };
+//		    			}      			
+//		        	} 
+//        		}
+//        	}
+//        	return { success: true, message: res.data};
+        	return res.data;
         }
  
         function handleError(error) {
-            return { success: false, message: "Unknown server error, try again later."};
+            return { success: false, message: error};
         }
         
         return service;

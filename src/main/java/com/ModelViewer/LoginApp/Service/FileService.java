@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,7 +31,9 @@ public class FileService {
 	private static final Logger logger = LoggerFactory.getLogger(FileService.class);
 	
 	@Inject
+	@Qualifier("ProjectMemberDAO")
 	ProjectMemberDAO projectMemberDAO;
+	
 	private static final String EMPTY_STRING = "";
 	private static final String FILE_BASE_LOCATION ="/userData/userProjects/";
 	private static final String MODEL_NAME = "model.unity3d";

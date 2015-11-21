@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,20 +21,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 @RequestMapping("/MemberAndProjectMemberHybridService")
 public class MemberAndProjectMemberHybridService {
 
+	private final static String EMPTY_STRING = "";
 	private final static String ACCESS_FORBIDDEN = "Access Forbbiden";
-	private final static String CANNOT_MEMEBER_PROJECT = "MemberAndProject connot delete member";
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	
 	//private ObjectMapper mapper = new ObjectMapper();
 	
 	@Inject
+	@Qualifier("MemberDAO")
 	MemberDAO memberDAO;
 	
 	@Inject
+	@Qualifier("ProjectMemberDAO")
 	ProjectMemberDAO projectMemberDAO;
 	
 	@Inject
+	@Qualifier("UserDAO")
 	UserDAO userDAO;
 	
 	@RequestMapping(value = "/DeleteMember", method = RequestMethod.GET)
@@ -65,8 +69,8 @@ public class MemberAndProjectMemberHybridService {
     		return ro.ToJSONString();
     	}
 		
-		ro.setSuccess(false);
-		ro.setMessage(CANNOT_MEMEBER_PROJECT);
+		ro.setSuccess(true);
+		ro.setMessage(EMPTY_STRING);
 		return ro.ToJSONString();	
 	}
 	

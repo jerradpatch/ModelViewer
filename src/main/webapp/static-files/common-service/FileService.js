@@ -18,7 +18,7 @@
     	
         function GetFileAProjectFile(userName,projectName,file,companyP) {
             return $http.get(baseUrlMember+'GetFileAProjectFile', {params:{"userName": userName, "projectName": projectName, "member":member, "companyP": companyP}})
-            	.then(handleSuccess, handleError('Error MemberService.GetMemberData'));        	
+            	.then(handleSuccess, handleError('Error MemberService.GetMemberData '+userName+" "+projectName));        	
         }
 
         function GetFileAProjectFile_link(userName,projectName,member) {
@@ -54,29 +54,12 @@
         	$rootScope.$broadcast("FileService.abort", "file aborted"); 
         }
 
-          
-        /*
-        
-        function UploadFileAProjectFile(userName,projectName,file) {
-        	
-        	var formData=new FormData();
-            formData.append("userName",userName);
-            formData.append("projectName",projectName);
-            formData.append("file",file);
-            console.log(formData)
-            $http.post(baseUrlFileService+'UploadFileAProjectFile', formData, {
-                transformRequest: function(data, headersGetterFunction) {
-                    return data;
-                },
-                headers: { 'Content-Type': undefined }
-                }).then(handleSuccess, handleError('Error MemberService.CreateAMember'));
-        } */
-       
+
         
      // private functions
         
         function handleSuccess(res) {
-            return { success: true, message: res.data };
+            return res.data;
         }
  
         function handleError(error) {

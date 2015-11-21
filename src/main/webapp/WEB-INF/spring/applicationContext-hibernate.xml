@@ -44,14 +44,9 @@
 	</bean>
 	
 	<!-- DAO Validation -->
-	 <bean id="UserDAO" class="com.ModelViewer.DAOImpl.UserDAOValidation">
-        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-	</bean>
-    <bean id="ProjectMemberDAO" class="com.ModelViewer.DAOImpl.ProjectMemberDAOValidation">
-        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-	</bean>	
-	<bean id="MemberDAO" class="com.ModelViewer.DAOImpl.MemberDAOValidation">
-        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-	</bean>
+	<context:component-scan base-package="com.ModelViewer.DAO.Validation"/>
+	<bean id="UserDAO" class="com.ModelViewer.DAO.Validation.UserDAOValidation"></bean>
+    <bean id="ProjectMemberDAO" class="com.ModelViewer.DAO.Validation.ProjectMemberDAOValidation"></bean>	
+	<bean id="MemberDAO" class="com.ModelViewer.DAO.Validation.MemberDAOValidation"></bean>
 	
 </beans:beans>

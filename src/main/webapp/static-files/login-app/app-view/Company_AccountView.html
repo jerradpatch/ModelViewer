@@ -1,3 +1,17 @@
+<style>
+	@keyframes Company_AccountView_kf {
+	    0%   {height:0%;}
+	    25%  {height:10%;}
+	    100% {height:0%;}
+	}
+	.Company_AccountView_fadeError {
+		width: 100%;
+	    height: 0px;
+	    animation-name: Company_AccountView_kf;
+	    animation-duration: 2s;
+	}
+</style>
+<div id="idError" class="alert alert-danger">{{vm.error}}</div>
 <div style="height:25%"></div>
 <div class="col-md-12" > 
     

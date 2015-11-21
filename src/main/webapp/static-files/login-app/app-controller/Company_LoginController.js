@@ -3,31 +3,37 @@
  
     angular
         .module('app')
-        .constant("CONSTANTS", {
+        .constant("CONSTANTS_Company_LoginController", {
         	"Company_LoginController" : {
 	        	"COMPANY_LOGIN_FORM" : {
 	        		"COMPANY_NAME" : {
-	        			"MAXIMUM_LENGTH": 50 },
+	        			"MAXIMUM_LENGTH": 30,
+	        			"MINIMUM_LENGTH": 3,
+	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"},
 	        		"PASSWORD": {
-	        			"MAXIMUM_LENGTH": 20 }      		
+	        			"MAXIMUM_LENGTH": 20,
+	        			"MINIMUM_LENGTH": 6,
+	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}       			
 	        	},
 		    	"COMPANY_REGISTRATION_FORM" : {
 		    		"COMPANY_NAME" : {
-		    			"MAXIMUM_LENGTH": 50 },
+		    			"MAXIMUM_LENGTH": 30,
+	        			"MINIMUM_LENGTH": 3,
+	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"},			    			
 		    		"PASSWORD": {
-		    			"MAXIMUM_LENGTH": 20 },
+		    			"MAXIMUM_LENGTH": 20,
+	        			"MINIMUM_LENGTH": 6,
+	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"},			    		
 	    			"EMAIL": {
-		    			"MAXIMUM_LENGTH": 30 }
+		    			"MAXIMUM_LENGTH": 50,
+	        			"MINIMUM_LENGTH": 8,
+	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}			    			
 		    	}
         	}
          })
         .controller('Company_LoginController', Company_LoginController)
-        .run(function ($rootScope, CONSTANTS) {
-        	if("CONSTANTS" in $rootScope){
-        		$rootScope.CONSTANTS.Company_LoginController = CONSTANTS.Company_LoginController;
-        	}else {
-        		$rootScope.CONSTANTS = CONSTANTS;
-        	}
+        .run(function ($rootScope, CONSTANTS_Company_LoginController) {
+        	$rootScope.CONSTANTS_Company_LoginController = CONSTANTS_Company_LoginController;
         });
  
     Company_LoginController.$inject = ['$location','AuthService','UserService'];
