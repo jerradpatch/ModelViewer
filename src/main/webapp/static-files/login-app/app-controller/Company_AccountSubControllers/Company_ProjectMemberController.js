@@ -9,7 +9,7 @@
         		"NEW_PROJECT_INPUT" : {
         			"MAXIMUM_LENGTH": 30,
         			"MINIMUM_LENGTH": 3,
-        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}
+        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}	
         		}
         	}
          })

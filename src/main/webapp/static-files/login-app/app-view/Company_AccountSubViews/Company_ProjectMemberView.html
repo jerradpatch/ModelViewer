@@ -56,11 +56,12 @@
 			<span><H4 style="display:inline-block">Projects</H4></span>
 			<span style="float:right;width: 50%;margin-right: 20px;">
 				<form name="projectForm" ng-submit="vm.CreateANewProject(vm.projectNameToAdd)" role="form">
-					<div class="form-group" ng-class="{ 'has-error': projectForm.projectName.$dirty && (projectForm.projectName.$error.required || projectForm.projectName.$error.maxlength || projectForm.projectName.$error.minlength)}">
+					<div class="form-group" ng-class="{ 'has-error': projectForm.projectName.$dirty && (projectForm.projectName.$error.required || projectForm.projectName.$error.pattern || projectForm.projectName.$error.maxlength || projectForm.projectName.$error.minlength)}">
 						<div class="input-group">			
 							<input type="text" name="projectName" class="form-control" placeholder="Project Name" ng-model="vm.projectNameToAdd"
 							ng-maxlength="{{CONSTANTS_Company_ProjectMemberController.Company_ProjectMemberController.PROJECTS.NEW_PROJECT_INPUT.MAXIMUM_LENGTH}}"
-							ng-minlength="{{CONSTANTS_Company_ProjectMemberController.Company_ProjectMemberController.PROJECTS.NEW_PROJECT_INPUT.MINIMUM_LENGTH}}" required />
+							ng-minlength="{{CONSTANTS_Company_ProjectMemberController.Company_ProjectMemberController.PROJECTS.NEW_PROJECT_INPUT.MINIMUM_LENGTH}}"
+							ng-pattern="{{CONSTANTS_Company_ProjectMemberController.Company_ProjectMemberController.PROJECTS.NEW_PROJECT_INPUT.VALID_PATTERN}}" required />
 							<span class="input-group-btn">
 								<button type="submit" ng-disabled="projectForm.$invalid || vm.dataLoading" class="btn btn-default projectMemberView_AddMember">Project</button>
 							</span>
