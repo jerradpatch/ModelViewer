@@ -19,8 +19,8 @@
         	$rootScope.CONSTANTS_Company_ProjectMemberController = CONSTANTS_Company_ProjectMemberController;
         });
  
-    Company_ProjectMemberController.$inject = ['AuthService','$scope','ProjectMemberService','MemberService','FileService'];
-    function Company_ProjectMemberController(AuthService,$scope,ProjectMemberService,MemberService,FileService) {
+    Company_ProjectMemberController.$inject = ['AuthService','$scope','ProjectMemberService','MemberService','FileService','Upload'];
+    function Company_ProjectMemberController(AuthService,$scope,ProjectMemberService,MemberService,FileService, Upload) {
 
     	//local area//////////////
     	var vm = this;
@@ -80,6 +80,22 @@
         	$rootScope.$broadcast("errorGlobal", message); 
         }
         
+        ///test/////////////////
+        $scope.$watch('files', function () {
+            $scope.upload($scope.files);
+        });
+        $scope.$watch('file', function () {
+            if ($scope.file != null) {
+                $scope.files = [$scope.file]; 
+            }
+        });        
+        $scope.upload = function (files) {
+            if (files && files.length) {
+              for (var i = 0; i < files.length; i++) {
+                UploadFileAProjectFile("this", files[i]);
+              }
+            }
+          }
         
         //edit/add project information dialog area/////////////////////////       
         function ProjectEditProjectDialog_Toggle(project){

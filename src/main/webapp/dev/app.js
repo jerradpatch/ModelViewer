@@ -1,0 +1,1 @@
+require('ng-file-upload')
