@@ -50,7 +50,7 @@
 	}
 	.drop-box {
 	    background: #F8F8F8;
-	    border: 5px dashed #DDD;
+	    border: 5px dotted #DDD;
 	    text-align: center;
 	    padding-top: 25px;
 	    margin: 10px;
@@ -130,7 +130,7 @@
 			<span style="float:right;">
 				<button class="btn btn-default projectMemberView_deleteProject" type="button" 
 						style="float:right;margin-right:10px" 
-						ng-click="vm.pd.projectEditProjectDialog_dialogShow = false;"> Cancel
+						ng-click="vm.pd.projectEditProjectDialog_dialogShow = false;"> 
 				</button>
 			</span>
 		</div>
@@ -175,11 +175,11 @@
 						type="button">Upload</button>
 					<button class="btn btn-default projectMemberView_deleteProject" type="button">Delete</button>
 				</div> -->
-				<div style="height: 120px;"
+				<div style="height: 120px;color:#ADADAD;"
 					ngf-drop ngf-select ng-model="files" class="drop-box" 
 			        ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true"
 			        accept="image/*,application/pdf" 
-			        ngf-pattern="'image/*,application/pdf'">Drop pdfs or images here or click to upload</div>
+			        ngf-pattern="'image/*,application/pdf'">Drop images files and a project file here.</div>
 			    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
 			</div>			
 		</div>
