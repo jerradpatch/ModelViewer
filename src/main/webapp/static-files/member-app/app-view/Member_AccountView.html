@@ -8,15 +8,47 @@
 		top:50%;
 		margin:-100px 0 0 -150px;
 	}
+	
+
+	.member_accountView_mediaSpecific{
+		margin-bottom: 20px;
+		position:relative;
+		width:325px;
+		margin:auto;
+	}
+
+	@media only screen and (min-width: 900px){
+		.member_accountView_mediaSpecific{
+			margin-left: 12%;
+			margin-bottom: 20px;
+			position:relative;
+			float:left;
+			width:325px;
+		}
+	}
+		
+	@media only screen and (min-width: 1101px){
+		.member_accountView_mediaSpecific{
+			margin-left:2%;
+			margin-right:2%; 
+			margin-bottom: 20px;
+			position:relative;
+			float:left;
+			width:325px;
+		}
+	}
 </style>
 <div style="height:25%"></div>
-<div ng-repeat="memberProject in vm.projectsMemberIsAPartOf">	
-	<div class="panel panel-default col-md-2 col-md-offset-1" style="padding: 0px;">
-	<div class="panel-heading">{{memberProject}}</div>
-		<div class="panel-body">
-			<button type="button" class="btn btn-default center-block"
-				ng-click="vm.md.ToggleAndSetModel(memberProject)">Explore
-			</button>				
+<div style="margin: 0 auto;padding:auto;align-items: center;">
+	<div class="member_accountView_mediaSpecific" ng-repeat="memberProject in vm.projectsMemberIsAPartOf">	
+		<div class="panel panel-default" style="padding:0px;">
+		<div class="panel-heading">{{memberProject}}</div>
+			<div class="panel-body" style="padding:0px;">
+				<img style="height: 500px;width: 100%;padding-bottom: 10px;" src="">
+				<button style="margin-bottom: 10px;" type="button" class="btn btn-default center-block"
+					ng-click="vm.md.ToggleAndSetModel(memberProject)">Explore
+				</button>				
+			</div>
 		</div>
 	</div>
 </div>

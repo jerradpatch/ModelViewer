@@ -56,8 +56,8 @@
 	    margin: 10px;
 	}
 	.dragover {
-    border: 5px dashed blue;
-}
+    	border: 5px dashed blue;
+	}
 </style>
 
 				
@@ -120,72 +120,8 @@
 			</div>
 		</div>
 	</div>
-	
-	<!-- file upload dialog -->
-	<div style="z-index: 10;height:300px;width:500px;margin:-100px 0 0 -250px;" 
-		class="panel panel-default projectMemberView_HVCenter_project"
-		ng-show="vm.pd.projectEditProjectDialog_dialogShow">
-		<div class="panel-heading">
-			<span><H4 style="display:inline-block">{{vm.pd.projectEditProjectDialog_projectName}}: File Upload</H4></span>
-			<span style="float:right;">
-				<button class="btn btn-default projectMemberView_deleteProject" type="button" 
-						style="float:right;margin-right:10px" 
-						ng-click="vm.pd.projectEditProjectDialog_dialogShow = false;"> 
-				</button>
-			</span>
-		</div>
-		<div class="panel-heading" style="height: 75px; background-color: #fff;">
-			<div style="margin: 2px;float:left;height: 50px;width: 50px;border-width: 4px;/* border-color: #ddd; */border-radius: 4px;border: solid #ddd;background-color: #f5f5f5;">
-				<p style="text-align: center;padding-top: 10px;text-decoration: initial;color: #ddd">Proj</p>
-			</div>
-			<div style="margin: 2px;float:left;height: 50px;width: 50px;border-width: 4px;/* border-color: #ddd; */border-radius: 4px;border: solid #ddd;background-color: #f5f5f5;">
-				<p style="text-align: center;padding-top: 10px;text-decoration: initial;color: #ddd">Img 1</p>
-			</div>
-			<div style="margin: 2px;float:left;height: 50px;width: 50px;border-width: 4px;/* border-color: #ddd; */border-radius: 4px;border: solid #ddd;background-color: #f5f5f5;">
-				<p style="text-align: center;padding-top: 10px;text-decoration: initial;color: #ddd">Img 2</p>
-			</div>
-			<div style="margin: 2px;float:left;height: 50px;width: 50px;border-width: 4px;/* border-color: #ddd; */border-radius: 4px;border: solid #ddd;background-color: #f5f5f5;">
-				<p style="text-align: center;padding-top: 10px;text-decoration: initial;color: #ddd">Img 3</p>
-			</div>
-			<div style="margin: 2px;float:left;height: 50px;width: 50px;border-width: 4px;/* border-color: #ddd; */border-radius: 4px;border: solid #ddd;background-color: #f5f5f5;">
-				<p style="text-align: center;padding-top: 10px;text-decoration: initial;color: #ddd">Img 4</p>
-			</div>
-			<div style="margin: 2px;float:left;height: 50px;width: 50px;border-width: 4px;/* border-color: #ddd; */border-radius: 4px;border: solid #ddd;background-color: #f5f5f5;">
-				<p style="text-align: center;padding-top: 10px;text-decoration: initial;color: #ddd">Img 5</p>
-			</div>
-		</div>
-		<div class="panel-body">
-		<!-- 
-			<div class="input-group" style="width:100%;">
-				<div class="progress" style="height: 100%;float:left;">
-					<div class="progress-bar" role="progressbar" style="height:34px;width: {{268*(vm.pd.progress/100)}}px">
-						<!-- <span ng-if="vm.pd.progress"
-							style="font-size: 18px;text-align: center;vertical-align: middle;line-height: 34px;">	
-							{{vm.pd.progress}}
-						</span> 
-					</div>
-				</div>
-				<div class="input-group-btn" style="float:right;width:auto;">
-				  	<span class="btn btn-default projectMemberView_btn-file">
-					    Select 
-					    <input ng-file-upload-directive	type="file">						
-					</span>
-					<button class="btn btn-default projectMemberView_AddMember" 
-						ng-click="vm.pd.UploadFileAProjectFile(vm.pd.projectEditProjectDialog_projectName,fileUploadDirective.file)"
-						type="button">Upload</button>
-					<button class="btn btn-default projectMemberView_deleteProject" type="button">Delete</button>
-				</div> -->
-				<div style="height: 120px;color:#ADADAD;"
-					ngf-drop ngf-select ng-model="files" class="drop-box" 
-			        ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true"
-			        accept="image/*,application/pdf" 
-			        ngf-pattern="'image/*,application/pdf'">Drop images files and a project file here.</div>
-			    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
-			</div>			
-		</div>
-	</div>
 
-	<!--  add/remove members dialog -->
+	<!--  add members dialog -->
 	<div style="z-index: 10;" class="panel panel-default projectMemberView_HVCenter_project" 
 		ng-show="vm.projectEditMemberDialog">
 		<div class="panel-heading">
@@ -208,6 +144,43 @@
 			</div>
 		</div>
 	</div>
+	
+	
+	<!-- file upload dialog -->
+	<div style="z-index: 10;height:300px;width:500px;margin:-100px 0 0 -250px;" 
+		class="panel panel-default projectMemberView_HVCenter_project"
+		ng-show="vm.pd.projectEditProjectDialog_dialogShow">
+		<div class="panel-heading" >
+			<span><H4 style="display:inline-block">{{vm.pd.projectEditProjectDialog_projectName}}: File Upload</H4></span>
+			<span style="float:right;">
+				<button class="btn btn-default projectMemberView_deleteProject" type="button" 
+						style="float:right;margin-right:10px" 
+						ng-click="vm.pd.projectEditProjectDialog_dialogShow = false;"> Cancel
+				</button>
+			</span>
+		</div>
+		<div class="panel-body">
+			<div style="height: 120px;color:#ADADAD;"
+				ngf-drop ngf-select ng-model="files" class="drop-box" 
+		        ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true"
+		        accept="image/*,application/pdf" 
+		        ngf-pattern="'image/*,application/pdf'"><p>Click for a single file upload or<br>drop multiple image files and project files here.<br>JPG/JPED/PNG/3DUNITY file types are supported</p></div>
+			<div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+			
+			
+			<div ng-repeat="(group, groupValues) in vm.pd.projectMetaData">
+				<div class="panel-heading">
+					<span><H5>{{group}}</H5></span>
+				</div>
+				<div class="panel-body">
+					<div ng-repeat="value in groupValues">
+						<button type="button" class="btn btn-default projectMemberView_deleteProject" ng-click="vm.pd.DeleteFileFromProject(value)">{{value}}</button>
+					</div>
+				</div>
+			</div>
+		</div>			
+	</div>
+	
 </div>
 
 

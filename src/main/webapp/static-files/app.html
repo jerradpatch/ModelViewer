@@ -32,10 +32,25 @@
    		<script src="/ModelViewer/static-files/modules/compiled.js"></script>
 
    		
+   		<meta name="viewport" content="width=width=device-width, initial-scale=1.0, user-scalable=yes">
    		
    	<style>
-		html, body{
-		    height: 100%;
+   				html, body{
+				width: 100%;
+			    height: 100%;
+			}
+   		@media only screen and (max-device-width: 500px){
+			html, body{
+				width: 100%;
+			    height: 100%;
+			}
+		}
+		
+		@media only screen and (max-device-width: 500px){	
+		    html, body{
+				width: 500px;
+			    height: 100%;
+			}	
 		}   
 	</style>			
 	</head>

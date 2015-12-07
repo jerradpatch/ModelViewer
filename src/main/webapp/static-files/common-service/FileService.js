@@ -15,22 +15,28 @@
     	service.UploadFileAProjectFile = UploadFileAProjectFile;
     	service.GetFileAProjectFile = GetFileAProjectFile;
     	service.GetFileAProjectFile_link = GetFileAProjectFile_link;
+    	service.GetAllFileMetaData = GetAllFileMetaData;
     	
         function GetFileAProjectFile(userName,projectName,file,companyP) {
             return $http.get(baseUrlMember+'GetFileAProjectFile', {params:{"userName": userName, "projectName": projectName, "member":member, "companyP": companyP}})
-            	.then(handleSuccess, handleError('Error MemberService.GetMemberData '+userName+" "+projectName));        	
+            	.then(handleSuccess, handleError('Error FileService.GetFileAProjectFile '+userName+" "+projectName));        	
         }
 
         function GetFileAProjectFile_link(userName,projectName,member) {
             return baseUrlFileService+'GetFileAProjectFile?userName='+userName+'&projectName='+projectName+'&member='+member;   	
         } 
         
+        function GetAllFileMetaData(userName,projectName,uPass)	
+            return $http.get(baseUrlMember+'GetAllFileMetaData', {params:{"userName": userName, "projectName": projectName, "uPass":uPass}})
+        	.then(handleSuccess, handleError('Error FileService.GetAllFileMetaData '+userName+" "+projectName));        
+        }       
         
-        function UploadFileAProjectFile(userName,projectName,file) {
+        function UploadFileAProjectFile(userName,projectName,userP,file) {
         
         	var formData=new FormData();
             formData.append("userName",userName);
             formData.append("projectName",projectName);
+            formData.append("userP",userP);
             formData.append("file",file);
             
             var ajax = new XMLHttpRequest();

@@ -21,8 +21,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 @RequestMapping("/MemberAndProjectMemberHybridService")
 public class MemberAndProjectMemberHybridService {
 
-	private final static String EMPTY_STRING = "";
-	private final static String ACCESS_FORBIDDEN = "Access Forbbiden";
+	private final static String EMPTY_STRING = "\"\"";
+	private final static String ACCESS_FORBIDDEN = "\"Access Forbbiden\"";
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	

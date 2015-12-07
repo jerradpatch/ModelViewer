@@ -7,6 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -22,8 +25,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ModelViewer.DAO.FileDAO;
+import com.ModelViewer.DAO.MemberDAO;
 import com.ModelViewer.DAO.ProjectMemberDAO;
 import com.ModelViewer.DAO.UserDAO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @ResponseBody
@@ -31,11 +36,16 @@ import com.ModelViewer.DAO.UserDAO;
 public class FileService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(FileService.class);
+	private static final ObjectMapper mapper = new ObjectMapper();
 	
 	@Inject
 	@Qualifier("ProjectMemberDAO")
 	ProjectMemberDAO projectMemberDAO;
-
+	
+	@Inject
+	@Qualifier("MemberDAO")
+	MemberDAO memberDAO;
+	
 	@Inject
 	@Qualifier("UserDAO")
 	UserDAO userDAO;
@@ -44,15 +54,15 @@ public class FileService {
 	@Qualifier("FileDAO")
 	FileDAO fileDAO;
 	
-	private static final String EMPTY_STRING = "";
+	private static final String EMPTY_STRING = "\"\"";
+	private static final String IMAGE_LIMIT_EXCEEDED = "\"Image files exceed allowed amount (5). Please delete some image files before adding more.\"";
+	private static final String PROJECT_LIMIT_EXCEEDED = "\"Project files exceed allowed amount (1). Please delete some project files before adding more.\"";
+	private static final String File_TYPE_NOT_ALLOWED = "\"This file type is not allowed. Only \".unity3d\", \".jpg\\.jpeg\", and \".png\" file types are allowed.\"";
+	private static final String COULD_NOT_SAVE_FILE = "\"Could not save file, file empty.\"";
+	private final static String ACCESS_FORBIDDEN = "\"Access Forbbiden\"";
+	
 	private static final String FILE_BASE_LOCATION ="/userData/userProjects/";
 	private static final String MODEL_NAME = "model.unity3d";
-	private static final String IMAGE_LIMIT_EXCEEDED = "Image files exceed allowed amount (5). Please delete some image files before adding more.";
-	private static final String PROJECT_LIMIT_EXCEEDED = "Project files exceed allowed amount (1). Please delete some project files before adding more.";
-	private static final String File_TYPE_NOT_ALLOWED = "This file type is not allowed. Only \".unity3d\", \".jpg\\.jpeg\", and \".png\" file types are allowed.";
-	private static final String COULD_NOT_SAVE_FILE = "Could not save file, file empty.";
-	private final static String ACCESS_FORBIDDEN = "Access Forbbiden";
-	
 	private static final String UNITY_MIME_TYPE = "application/vnd.unity";
 	private static final String JPEG_MIME_TYPE = "image/png";
 	private static final String PNG_MIME_TYPE = "image/jpeg";
@@ -72,7 +82,7 @@ public class FileService {
 		
 		ReturnedObject ro = new ReturnedObject();
 		
-		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro); need to test this
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro); 
     	if(ro.isSuccess() == false){
     		return ro.ToJSONString();
     	} else if(passwordFound == null || !passwordFound.equals(password)){
@@ -164,8 +174,20 @@ public class FileService {
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "projectName", required = true) String projectName,
 			@RequestParam(value = "member", required = true) String member,
+			@RequestParam(value = "memberP", required = true) String memberPassword,
 			HttpServletResponse response
 			) throws IOException{
+		
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = memberDAO.GetMemberPassword(userName, member, ro);
+    	if(ro.isSuccess() == false){
+    		response.setStatus(404);
+    		return;
+    	}else if(passwordFound == null || !passwordFound.equals(memberPassword)){
+			response.setStatus(404);
+			return;
+		}
+		
 		
 		StringBuilder path = new StringBuilder(FILE_BASE_LOCATION);
     	path.append(userName).append("/").append(projectName).append("/").append(MODEL_NAME);
@@ -191,5 +213,75 @@ public class FileService {
 	      }
 	    		  
 	}
+	
+	@RequestMapping(value = "/GetAllFileMetaData", method = RequestMethod.GET)
+	public String GetAllFileMetaData(	
+			@RequestParam(value = "userName", required = true) String userName,
+			@RequestParam(value = "projectName", required = true) String projectName,
+			@RequestParam(value = "userP", required = true) String userP
+			) throws IOException{
+		
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro); 
+		if(ro.isSuccess() == false){
+			return ro.ToJSONString();
+		} else if(passwordFound == null || !passwordFound.equals(userP)){
+			ro.setSuccess(false);
+			ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
+		}
+	
+		List<HashMap<String, String>> fileMeta = fileDAO.GetFileListForAProjectAndMetaData(userName, projectName, ro);
+    	if(ro.isSuccess() == false){
+    		return ro.ToJSONString();
+    	}
+    	
+    	//make json object {images:<all images>,projects:<all projects>}
+    	
+    	HashMap<String,List<HashMap<String,String>>> retJson = new HashMap<String,List<HashMap<String,String>>>();
+    	//images
+    	List<HashMap<String,String>> imageList = new ArrayList<HashMap<String,String>>();
+    	for(HashMap<String, String> file : fileMeta){
+    		if(file.get("type").equals("jpg") || file.get("type").equals("jpeg") || file.get("type").equals("png")){
+    			imageList.add(file);
+    		}
+    	}
+    	retJson.put("images", imageList);
+    	//models
+    	List<HashMap<String,String>> modelList = new ArrayList<HashMap<String,String>>();
+    	for(HashMap<String, String> file : fileMeta){
+    		if(file.get("type").equals("jpg")){
+    			modelList.add(file);
+    		}
+    	}
+    	retJson.put("models", modelList);
+    	
+    	ro.setSuccess(true);
+    	ro.setMessage(mapper.writeValueAsString(retJson));
+    	return ro.ToJSONString();
+	}
 
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 }

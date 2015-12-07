@@ -25,9 +25,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ResponseBody
 @RequestMapping("/UserService")
 public class UserService {
-	private static final String EMPTY_STRING = "";
-	private final static String USER_EXISTS = "This company name already exists, please choose another";
-	private final static String ACCESS_FORBIDDEN = "Access Forbbiden";
+	private static final String EMPTY_STRING = "\"\"";
+	private final static String USER_EXISTS = "\"This company name already exists, please choose another\"";
+	private final static String ACCESS_FORBIDDEN = "\"Access Forbbiden\"";
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	
 	private ObjectMapper mapper = new ObjectMapper();
@@ -54,6 +54,8 @@ public class UserService {
 		logger.info("GetUserByUserName request recieved: "+userName);
 		
 		ReturnedObject ro = new ReturnedObject();
+		
+		
 		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
     	if(ro.isSuccess() == false){
     		return ro.ToJSONString();
@@ -84,6 +86,7 @@ public class UserService {
 		logger.info(log.toString());
 
 		ReturnedObject ro = new ReturnedObject();
+		
 		UserModel um = userDAO.GetUserByUserName(userModel.getUserName(),ro);
     	if(ro.isSuccess() == false){
     		return ro.ToJSONString();

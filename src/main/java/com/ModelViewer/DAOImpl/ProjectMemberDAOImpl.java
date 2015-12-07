@@ -9,6 +9,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ModelViewer.DAO.ProjectMemberDAO;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
@@ -17,6 +19,8 @@ import com.ModelViewer.Model.ProjectMemberModel;
 
 
 public class ProjectMemberDAOImpl implements ProjectMemberDAO{
+	
+	private static final Logger logger = LoggerFactory.getLogger(ProjectMemberDAOImpl.class);
 	
 	private SessionFactory sessionFactory;
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -77,12 +81,33 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
         session.close();
         return projectMembersModelList;
 	}
+	private ProjectMemberModel GetProject(String userName, String projectName, ReturnedObject ro) {
+        Session session = this.sessionFactory.openSession();
+        Criteria userQuery = session.createCriteria(ProjectMemberModel.class);
+        userQuery.add(Restrictions.eq("userName",userName));
+        userQuery.add(Restrictions.eq("projectName",projectName));
+
+        ProjectMemberModel projectMembersModelList =  (ProjectMemberModel) userQuery.uniqueResult();
+        session.close();
+        return projectMembersModelList;
+	}
 	
 	public void CreateANewProject(String userName, String projectName, ReturnedObject ro){
+		
+		ProjectMemberModel PMM = GetProject(userName,projectName,ro);
+		if(PMM != null){
+			ro.setSuccess(false);
+			ro.setMessage("\"Project already exists\"");
+			return;
+		}
+		if(!ro.isSuccess()){
+			return;
+		}
+	
 		Session session = this.sessionFactory.openSession();
 		session.beginTransaction();
 				
-		ProjectMemberModel PMM = new ProjectMemberModel();
+		PMM = new ProjectMemberModel();
 		PMM.setMember("");
 		PMM.setProjectName(projectName);
 		PMM.setUserName(userName);
@@ -92,10 +117,21 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
 		session.close();		
 	}
 	public void CreateAMember(String userName, String projectName, String member, ReturnedObject ro){
+		
+		ProjectMemberModel PMM = GetProjectMemberModel(userName,projectName,member,ro);
+		if(PMM != null){
+			ro.setSuccess(false);
+			ro.setMessage("\"Given member already exists in this project\"");
+			return;
+		}
+		if(!ro.isSuccess()){
+			return;
+		}
+		
 		Session session = this.sessionFactory.openSession();
 		session.beginTransaction();
 				
-		ProjectMemberModel PMM = new ProjectMemberModel();
+		PMM = new ProjectMemberModel();
 		PMM.setMember(member);
 		PMM.setProjectName(projectName);
 		PMM.setUserName(userName);

@@ -19,8 +19,8 @@
         	$rootScope.CONSTANTS_Company_ProjectMemberController = CONSTANTS_Company_ProjectMemberController;
         });
  
-    Company_ProjectMemberController.$inject = ['AuthService','$scope','ProjectMemberService','MemberService','FileService','Upload'];
-    function Company_ProjectMemberController(AuthService,$scope,ProjectMemberService,MemberService,FileService, Upload) {
+    Company_ProjectMemberController.$inject = ['AuthService','$rootScope','$scope','ProjectMemberService','MemberService','FileService','Upload'];
+    function Company_ProjectMemberController(AuthService,$rootScope,$scope,ProjectMemberService,MemberService,FileService, Upload) {
 
     	//local area//////////////
     	var vm = this;
@@ -49,13 +49,16 @@
 
     	vm.pd.projectEditProjectDialog_projectName = null;
     	vm.pd.projectEditProjectDialog_dialogShow = false;
-    	vm.pd.progress =0;
+    	vm.pd.projectMetaData = null;
+    	vm.pd.DeleteFileFromProject = DeleteFileFromProject;
+    	// {[{Name:"groupName",[{Name:"ItemName",URL:"ItemURL"},...]},....]}
+    	 
+    	vm.pd.progress = 0;
 
     	vm.pd.ProjectEditProjectDialog_Toggle = ProjectEditProjectDialog_Toggle;
     	vm.pd.UploadFileAProjectFile = UploadFileAProjectFile;
     	
-    	
-    	
+   
         //recieving message, page needed to be refreshed//////////////////////
         $scope.$on('refreshElementsEvent_child', function() { 
         	//alert("reieved on child");
@@ -70,47 +73,67 @@
         	});
         });
         $scope.$on('FileService.complete', function(event,data) {
-        	$scope.$apply(function(){
-        		vm.pd.progress = data;
-        		vm.pd.progress = Math.round(vm.pd.progress);
-        	});
+        	
         });
+        
+        $scope.$watch('files', function () {
+        	if($scope.files != null){
+	        	var files = $scope.files;
+	        	files.forEach(function(file) {
+	        		UploadFileAProjectFile(vm.pd.projectEditProjectDialog_projectName,file);
+	        	});
+        	}
+        });
+        $scope.$watch('file', function () {
+            if ($scope.file != null) {
+            	$scope.files = [$scope.file]; 
+            }
+        });
+        
 
         function onError(message){
         	$rootScope.$broadcast("errorGlobal", message); 
         }
         
-        ///test/////////////////
-        $scope.$watch('files', function () {
-            $scope.upload($scope.files);
-        });
-        $scope.$watch('file', function () {
-            if ($scope.file != null) {
-                $scope.files = [$scope.file]; 
-            }
-        });        
-        $scope.upload = function (files) {
-            if (files && files.length) {
-              for (var i = 0; i < files.length; i++) {
-                UploadFileAProjectFile("this", files[i]);
-              }
-            }
-          }
+
         
-        //edit/add project information dialog area/////////////////////////       
+        //edit/add project information dialog area////////////////////////////////////////////////////////////////////////////////////////////  /    
         function ProjectEditProjectDialog_Toggle(project){
         	//functionality, file upload, delete file uploaded, display current model uploaded- with timestamp
         	vm.pd.projectEditProjectDialog_projectName = project;
-        	vm.pd.projectEditProjectDialog_dialogShow = !vm.pd.projectEditProjectDialog_dialogShow;       	
+        	vm.pd.projectEditProjectDialog_dialogShow = !vm.pd.projectEditProjectDialog_dialogShow;
+        	if(vm.pd.projectEditProjectDialog_dialogShow){
+        		vm.pd.projectMetaData = GetAllFileMetaData();
+        	}
         }
 
         function UploadFileAProjectFile(projectName,file){
         	var pass = AuthService.GetPassword();
         	var userName = AuthService.GetUser();
-        	FileService.UploadFileAProjectFile(userName, projectName, file,pass);
+        	FileService.UploadFileAProjectFile(userName, projectName, pass, file);
+        }
+        function DeleteFileFromProject(fileName){
+        	//TODO delete a single file, needs password permission
+        }
+        function GetAllFileMetaData(){
+        	if(vm.pd.projectEditProjectDialog_projectName != null){
+        		var projectName = vm.pd.projectEditProjectDialog_projectName;
+        		var uPass = AuthService.GetPassword();
+            	var userName = AuthService.GetUser();
+        		FileService.GetAllFileMetaData(userName,projectName,uPass)
+        		.then(function (response) {
+	                if (response.success) {			
+	                	vm.pd.projectMetaData = response.message;			                	
+	                } else {			                	
+	                	vm.error = response.message;
+	                	onError(response.message);
+	                	vm.pd.projectMetaData = null;
+	                }
+				});	 
+        	}
         }
         
-        ///add members to a project dialog ////////////////////////////
+        ///add members to a project dialog //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         function ProjectEditMemberDialog_AddMember (project, member){
         	var pass = AuthService.GetPassword();
         	var userName = AuthService.GetUser();
@@ -164,7 +187,7 @@
 	                } else {			                	
 	                	vm.error = response.message;
 	                	onError(response.message);
-	                	vm.projectMember = null;
+	                	vm.projectMember = {};
 	                }
 		        });	
         }
@@ -238,25 +261,25 @@
     }
     
     //sets the FileUploadDirective_file with the file
-    ngFileUploadDirective.$inject = ['$document'];
-    function ngFileUploadDirective($document){
-    	  return {
-    		    link: function(scope, element, attr) {
-    		    	
-    		    	element.on('change', function(event) {
-    		    		event.preventDefault();  
-    		    		
-    		    		$document.on('change', function(){
-    		    			var fileUploadDirective = {};
-    		    			var file = element[0].files[0];  
-    		    			fileUploadDirective.file = file;    		    			
-    		    			scope.fileUploadDirective = fileUploadDirective;
-    		    			
-    		    		});
-    		    	});
-    		    }
-    	  }
-    }
+//    ngFileUploadDirective.$inject = ['$document'];
+//    function ngFileUploadDirective($document){
+//    	  return {
+//    		    link: function(scope, element, attr) {
+//    		    	
+//    		    	element.on('change', function(event) {
+//    		    		event.preventDefault();  
+//    		    		
+//    		    		$document.on('change', function(){
+//    		    			var fileUploadDirective = {};
+//    		    			var file = element[0].files[0];  
+//    		    			fileUploadDirective.file = file;    		    			
+//    		    			scope.fileUploadDirective = fileUploadDirective;
+//    		    			
+//    		    		});
+//    		    	});
+//    		    }
+//    	  }
+//    }
     
     	  
 })();

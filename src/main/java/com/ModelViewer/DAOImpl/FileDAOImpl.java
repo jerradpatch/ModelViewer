@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -17,7 +18,7 @@ import com.ModelViewer.LoginApp.Service.ReturnedObject;
 
 public class FileDAOImpl implements FileDAO{
 	
-	private static final String EMPTY_STRING = "";
+	private static final String EMPTY_STRING = "\"\"";
 	private static final String FILE_BASE_LOCATION ="/userData/userProjects/";
 	private static final String MODEL_NAME = "model.unity3d";
 	private static final String MODEL_NAME_PROJECT_TYPE = ".unity3d";
@@ -45,7 +46,31 @@ public class FileDAOImpl implements FileDAO{
     	return filesNames;
 	}
 	
-	public int GetProjectFileCount(String userName, String projectName, ReturnedObject ro){
+	public List<HashMap<String,String>> GetFileListForAProjectAndMetaData(String userName, String projectName, ReturnedObject ro){
+		
+    	StringBuilder path = new StringBuilder(FILE_BASE_LOCATION);
+    	path.append(userName).append("/").append(projectName).append("/");
+    	
+    	List<HashMap<String,String>> metaData = new ArrayList<HashMap<String,String>>();
+    	File[] files = new File(path.toString()).listFiles();
+    	for(File F : files){
+    		HashMap<String,String> hm = new HashMap<String,String>();
+    		String fileName = F.getName();
+    		hm.put("name", fileName);
+    		if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") < fileName.length()){
+    			int typeIndex = fileName.lastIndexOf(".") + 1;
+    			String type = fileName.substring(typeIndex, fileName.length());
+    			hm.put("type", type);
+    		} else {
+    			hm.put("type", null);
+    		}
+
+    		metaData.add(hm);
+    	}
+    	return metaData;
+	}
+	
+	public Integer GetProjectFileCount(String userName, String projectName, ReturnedObject ro){
 		
 		List<String> files = GetFileListForAProject(userName, projectName, ro);
 		int finalCount = 0;
@@ -59,7 +84,7 @@ public class FileDAOImpl implements FileDAO{
     	return finalCount;
 	}
 	
-	public int GetProjectImageCount(String userName, String projectName, ReturnedObject ro){
+	public Integer GetProjectImageCount(String userName, String projectName, ReturnedObject ro){
 		
 		List<String> files = GetFileListForAProject(userName, projectName, ro);
 		int finalCount = 0;
@@ -102,6 +127,9 @@ public class FileDAOImpl implements FileDAO{
 	
 	public void UploadAProjectFile_whole(String userName, String projectName, byte[] fileBytes, ReturnedObject ro) throws IOException{
 		
+		//@TODO if file exists delete it, or overwrite it by code below
+		
+		
     	BufferedOutputStream stream = null;
     	//upload the file
         try {
@@ -111,6 +139,10 @@ public class FileDAOImpl implements FileDAO{
         	
             byte[] bytes = fileBytes;
             File file = new File(path.toString());
+            if(file.exists()){
+            	file.delete();
+            }
+            
             file.getParentFile().mkdirs();
             stream = new BufferedOutputStream(new FileOutputStream(file));
             stream.write(bytes);

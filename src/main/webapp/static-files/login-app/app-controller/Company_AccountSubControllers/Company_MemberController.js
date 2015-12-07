@@ -22,8 +22,8 @@
         	$rootScope.CONSTANTS_Company_MemberController = CONSTANTS_Company_MemberController;
         });
  
-    Company_MemberController.$inject = ['AuthService','$scope','MemberService'];
-    function Company_MemberController(AuthService, $scope, MemberService) {
+    Company_MemberController.$inject = ['AuthService','$rootScope','$scope','MemberService'];
+    function Company_MemberController(AuthService, $rootScope, $scope, MemberService) {
         var vm = this;       
 
         vm.createMemberDialog= false;

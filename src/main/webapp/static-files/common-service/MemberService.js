@@ -17,6 +17,7 @@
     	service.baseUrlHybrid = baseUrlHybrid;
     	
         service.GetAListOfMembers = GetAListOfMembers;
+        service.GetMemberData = GetMemberData;
         service.ComparePasswordsForMember = ComparePasswordsForMember;
         service.DeleteMember = DeleteMember;
     	service.CreateUpdateAMember = CreateUpdateAMember;
@@ -26,6 +27,9 @@
         
         function GetAListOfMembers(userName, companyP) {
             return $http.get(baseUrlMember+'GetAListOfMembers', {params:{"userName": userName, "companyP": companyP}}).then(handleSuccess, handleError('Error MemberService.getAListOfMembers'));
+        }
+        function GetMemberData(userName, member, companyP) {
+            return $http.get(baseUrlMember+'GetMemberData', {params:{"userName": userName, "member":member, "companyP":companyP}}).then(handleSuccess, handleError('Error comparing passwords'));        	
         }
         function ComparePasswordsForMember(userName,member,memberPassword) {
             return $http.get(baseUrlMember+'ComparePasswordsForMember', {params:{"userName": userName, "member":member, "memberPassword":memberPassword}}).then(handleSuccess, handleError('Error comparing passwords'));        	

@@ -20,6 +20,8 @@ public class UserDAOValidation implements UserDAO{
 	@Qualifier("UserDAOImpl")
 	UserDAO userDAO;
 	
+	private final static String USER_NAME_NULL = "\"User was null\"";
+	
 	public UserModel GetUserByUserName(String userName, ReturnedObject ro) {
 		
 		vu.validateUserName(userName, ro);
@@ -42,7 +44,7 @@ public class UserDAOValidation implements UserDAO{
 	public void CreateUserByModel(UserModel um, ReturnedObject ro) {
 		if(um == null){
 			ro.setSuccess(false);
-			ro.setMessage("User was null");
+			ro.setMessage(USER_NAME_NULL);
 			return;
 		}
 		String userName = um.getUserName();
@@ -87,7 +89,7 @@ public class UserDAOValidation implements UserDAO{
 	public void DeleteByModel(UserModel um, ReturnedObject ro) {
 		if(um == null){
 			ro.setSuccess(false);
-			ro.setMessage("User was null");
+			ro.setMessage(USER_NAME_NULL);
 			return;
 		}
 		String userName = um.getUserName();

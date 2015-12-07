@@ -28,9 +28,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/ProjectMemberService")
 public class ProjectMemberService {
 	
-	private static final String EMPTY_STRING = "";
-	private final static String NO_PROJECT_AND_MEMBER = "No project and members found";
-	private final static String ACCESS_FORBIDDEN = "Access Forbbiden";
+	private static final String EMPTY_STRING = "\"\"";
+	private final static String NO_PROJECT_AND_MEMBER = "\"No project and members found\"";
+	private final static String ACCESS_FORBIDDEN = "\"Access Forbbiden\"";
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	
 	private ObjectMapper mapper = new ObjectMapper();
@@ -100,6 +100,7 @@ public class ProjectMemberService {
 		logger.info("GetHashMapOfProjectAndMember request recieved: "+userName);
 		
 		ReturnedObject ro = new ReturnedObject();
+		
 		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
     	if(ro.isSuccess() == false){
     		return ro.ToJSONString();
@@ -134,6 +135,7 @@ public class ProjectMemberService {
 		
 		//look up if member is in this company and password given matches password in DB
 		ReturnedObject ro = new ReturnedObject();
+
 		String passwordFound = memberDAO.GetMemberPassword(userName,member,ro);
     	if(ro.isSuccess() == false){
     		return ro.ToJSONString();
@@ -272,6 +274,7 @@ public class ProjectMemberService {
     	}
 	}
 	
+	//TODO To be used by the front end for displaying files in the directory
 	@RequestMapping(value = "/DeleteAMemberFromAProject", method = RequestMethod.GET)
 	public String DeleteAMemberFromAProject(
 			@RequestParam(value = "userName", required = true) String userName,

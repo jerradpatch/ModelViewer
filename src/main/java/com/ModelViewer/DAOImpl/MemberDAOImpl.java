@@ -61,10 +61,21 @@ public class MemberDAOImpl implements MemberDAO{
 	}
 	
 	public void CreateAMember(String userName, String member, String password, ReturnedObject ro) {
-
+		
+		//check if the member exists or not
+		MemberModel memberModel = GetMemberData(userName, member, ro);
+		if(memberModel != null){
+			ro.setSuccess(false);
+			ro.setMessage("\"Member already exists\"");
+			return;
+		}
+		if(!ro.isSuccess()){
+			return;
+		}
+		
 		Session session = this.sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
-        MemberModel memberModel = new MemberModel();
+        memberModel = new MemberModel();
         memberModel.setUserName(userName);
         memberModel.setMember(member);
         memberModel.setPassword(password);

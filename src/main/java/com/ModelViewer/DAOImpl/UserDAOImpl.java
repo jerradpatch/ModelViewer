@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ModelViewer.DAO.UserDAO;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
+import com.ModelViewer.Model.MemberModel;
 import com.ModelViewer.Model.UserModel;
 
 public class UserDAOImpl implements UserDAO{
@@ -45,6 +46,17 @@ public class UserDAOImpl implements UserDAO{
 	}
 
 	public void CreateUserByModel(UserModel user, ReturnedObject ro) {
+		
+		UserModel user2 = GetUserByUserName(user.getUserName(), ro);
+		if(user2 != null){
+			ro.setSuccess(false);
+			ro.setMessage("\"User already exists\"");
+			return;
+		}
+		if(!ro.isSuccess()){
+			return;
+		}
+
 		Session session = this.sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         session.persist(user);
@@ -53,7 +65,17 @@ public class UserDAOImpl implements UserDAO{
 	}
 	public void CreateUserByValues(String userName, String password, String email, ReturnedObject ro) {
 		
-		UserModel um = new UserModel();
+		UserModel um = GetUserByUserName(userName, ro);
+		if(um != null){
+			ro.setSuccess(false);
+			ro.setMessage("\"User already exists\"");
+			return;
+		}
+		if(!ro.isSuccess()){
+			return;
+		}
+		
+		um = new UserModel();
 		um.setUserName(userName);
 		um.setPassword(password);
 		um.setEmail(email);
