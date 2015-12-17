@@ -1,8 +1,14 @@
 package com.ModelViewer.DAO.Validation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ModelViewer.LoginApp.Service.FileService;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
 
 public class ValidateUtil {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ValidateUtil.class);
 	
 	final static String EMPTY_STRING = "";
 
@@ -33,6 +39,12 @@ public class ValidateUtil {
 	final static int EMAIL_RIGHT_LENGTH_MIN = 5;
 	final static String[] EMAIL_RESTRICTED_CHARACTERS = {"/","\\"};
 	
+	final static String FILENAMENULL = "\"File name was null\"";
+	final static int FILENAME_LEFT_LENGTH_MAX = 50;
+	final static int FILENAME_LEFT_LENGTH_MIN = 1;
+	final static int FILENAME_RIGHT_LENGTH_MAX = 6;
+	final static int FILENAME_RIGHT_LENGTH_MIN = 2;
+	final static String[] FILENAME_RESTRICTED_CHARACTERS = {"/","\\"};	
 	
 	final static String USERNAME_FAIL1 = "\"User name is too long, required maximum length of "+USERNAME_LENGTH_MAX+"\"";
 	final static String USERNAME_FAIL2 = "\"User name is too short, required minimum length of "+USERNAME_LENGTH_MIN+"\"";
@@ -139,24 +151,41 @@ public class ValidateUtil {
 	final static String EMAIL_FAIL3 = "\"Email (right of @) is too long, required maximum length of "+EMAIL_RIGHT_LENGTH_MAX+"\"";
 	final static String EMAIL_FAIL4 = "\"Email (right of @) is too short, required minimum length of "+EMAIL_RIGHT_LENGTH_MIN+"\"";
 	final static String EMAIL_FAIL5 = "\"Email contains restricted characters, \""+PASSWORD_RESTRICTED_CHARACTERS+"\" not allowed\"";
+	final static String EMAIL_FAIL6 = "\"Email did not contain a '@' character.\"";
+	final static String EMAIL_FAIL7 = "\"Email contained too many '@' characters.\"";
 	void validateEmail(String email, ReturnedObject ro){
 		
 		if(email == null){
 			ro.setSuccess(false);
 			ro.setMessage(EMAILNULL);			
-		} else if(email.length() > EMAIL_LEFT_LENGTH_MAX){
+		} 
+		String[] temp = email.split("@");
+		if(temp.length > 2){
+			ro.setSuccess(false);
+			ro.setMessage(EMAIL_FAIL7);
+			return;
+		} else if (temp.length < 2){
+			ro.setSuccess(false);
+			ro.setMessage(EMAIL_FAIL6);	
+			return;
+		}
+		
+		String emailLeft = temp[0];
+		String emailRight = temp[1];
+		
+		if(emailLeft.length() > EMAIL_LEFT_LENGTH_MAX){
 			ro.setSuccess(false);
 			ro.setMessage(EMAIL_FAIL1);
-		} else if (email.length() < EMAIL_LEFT_LENGTH_MIN) {
+		} else if (emailLeft.length() < EMAIL_LEFT_LENGTH_MIN) {
 			ro.setSuccess(false);
 			ro.setMessage(EMAIL_FAIL2);
-		} else if(email.length() > EMAIL_RIGHT_LENGTH_MAX){
+		} else if(emailRight.length() > EMAIL_RIGHT_LENGTH_MAX){
 			ro.setSuccess(false);
 			ro.setMessage(EMAIL_FAIL3);
-		} else if (email.length() < EMAIL_RIGHT_LENGTH_MIN) {
+		} else if (emailRight.length() < EMAIL_RIGHT_LENGTH_MIN) {
 			ro.setSuccess(false);
 			ro.setMessage(EMAIL_FAIL4);
-		} else if (containsAny(email,PASSWORD_RESTRICTED_CHARACTERS)){
+		} else if (containsAny(email,EMAIL_RESTRICTED_CHARACTERS)){
 			ro.setSuccess(false);
 			ro.setMessage(EMAIL_FAIL5);
 			return;	
@@ -167,7 +196,56 @@ public class ValidateUtil {
 		return;		
 	}
 	
-	
+	final static String FILENAME_FAIL1 = "\"File Name (left of .) is too long, required maximum length of "+FILENAME_LEFT_LENGTH_MAX+"\"";
+	final static String FILENAME_FAIL2 = "\"File Name (left of .) is too short, required minimum length of "+FILENAME_LEFT_LENGTH_MIN+"\"";
+	final static String FILENAME_FAIL3 = "\"File Name (right of .) is too long, required maximum length of "+FILENAME_RIGHT_LENGTH_MAX+"\"";
+	final static String FILENAME_FAIL4 = "\"File Name (right of .) is too short, required minimum length of "+FILENAME_RIGHT_LENGTH_MIN+"\"";
+	final static String FILENAME_FAIL5 = "\"File Name contains restricted characters, \""+PASSWORD_RESTRICTED_CHARACTERS+"\" not allowed\"";
+	final static String FILENAME_FAIL6 = "\"File Name did not contain a '.' character.\"";
+	final static String FILENAME_FAIL7 = "\"File Name contained too many '.' characters.\"";
+	void validateFileName(String fileName, ReturnedObject ro){
+		
+		if(fileName == null){
+			ro.setSuccess(false);
+			ro.setMessage(FILENAMENULL);			
+		} 
+		String[] temp = fileName.split("[.]");
+		logger.debug("validateFileName: temp0: "+temp[0]+" temp1: "+temp[1]);
+		if(temp.length > 2){
+			ro.setSuccess(false);
+			ro.setMessage(FILENAME_FAIL7);
+			return;
+		} else if (temp.length < 2){
+			ro.setSuccess(false);
+			ro.setMessage(FILENAME_FAIL6);	
+			return;
+		}
+		
+		String fileNameLeft = temp[0];
+		String fileNameRight = temp[1];
+		
+		if(fileNameLeft.length() > FILENAME_LEFT_LENGTH_MAX){
+			ro.setSuccess(false);
+			ro.setMessage(FILENAME_FAIL1);
+		} else if (fileNameLeft.length() < FILENAME_LEFT_LENGTH_MIN) {
+			ro.setSuccess(false);
+			ro.setMessage(FILENAME_FAIL2);
+		} else if(fileNameRight.length() > FILENAME_RIGHT_LENGTH_MAX){
+			ro.setSuccess(false);
+			ro.setMessage(FILENAME_FAIL3);
+		} else if (fileNameRight.length() < FILENAME_RIGHT_LENGTH_MIN) {
+			ro.setSuccess(false);
+			ro.setMessage(FILENAME_FAIL4);
+		} else if (containsAny(fileName,FILENAME_RESTRICTED_CHARACTERS)){
+			ro.setSuccess(false);
+			ro.setMessage(FILENAME_FAIL5);
+			return;	
+		} else {
+			ro.setSuccess(true);
+			ro.setMessage(EMPTY_STRING);
+		}
+		return;	
+	}
 	
 	
 	public static boolean containsAny(String str, String[] searchString) {

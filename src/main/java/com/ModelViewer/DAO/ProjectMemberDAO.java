@@ -11,6 +11,7 @@ public interface ProjectMemberDAO {
 	public List<ProjectMemberModel> GetListOfProjectsAndMembers(String userName, ReturnedObject ro);
 	public HashMap<String, List<String>> GetHashMapOfProjectAndMember(String userName, ReturnedObject ro);
 	public List<String> GetProjectsMemberIsAPartOf(String userName, String member, ReturnedObject ro);
+	public ProjectMemberModel GetProject(String userName, String projectName, ReturnedObject ro);
 	public ProjectMemberModel GetProjectMemberModel(String userName, String projectName, String member, ReturnedObject ro);
 	public void CreateANewProject(String userName, String projectName, ReturnedObject ro);
 	public void CreateAMember(String userName, String projectName, String member, ReturnedObject ro);

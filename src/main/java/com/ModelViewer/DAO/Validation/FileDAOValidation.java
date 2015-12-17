@@ -1,6 +1,8 @@
 package com.ModelViewer.DAO.Validation;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,7 +25,7 @@ public class FileDAOValidation implements FileDAO{
 	private static final String NULL_INPUT = "\"null values were input\"";
 	private static final String EMPTY_INPUT = "\"empty values were input\"";
 	
-	public void UploadAProjectFile_whole(String userName, String projectName, byte[] fileBytes, ReturnedObject ro)
+	public void UploadAProjectFile_whole(String userName, String projectName, String fileName, InputStream fileBytes, ReturnedObject ro)
 			throws IOException {
 		
 		if(userName == null || projectName ==null || fileBytes ==null){
@@ -31,7 +33,7 @@ public class FileDAOValidation implements FileDAO{
 			ro.setMessage(NULL_INPUT);
 			return;
 		}
-		if(userName.isEmpty() || projectName.isEmpty() || fileBytes.length == 0){
+		if(userName.isEmpty() || projectName.isEmpty()){
 			ro.setMessage(EMPTY_INPUT);
 			ro.setSuccess(false);
 			return;
@@ -45,7 +47,7 @@ public class FileDAOValidation implements FileDAO{
 		if(!ro.isSuccess()){
 			return;
 		}
-		fileDAO.UploadAProjectFile_whole(userName, projectName, fileBytes, ro);
+		fileDAO.UploadAProjectFile_whole(userName, projectName, fileName, fileBytes, ro);
 	}
 
 	public Integer GetProjectFileCount(String userName, String projectName, ReturnedObject ro) {
@@ -106,6 +108,27 @@ public class FileDAOValidation implements FileDAO{
 			return null;
 		}
 		return fileDAO.GetFileListForAProject(userName, projectName, ro);
+	}
+
+	public List<HashMap<String, String>> GetFileListForAProjectAndMetaData(String userName, String projectName,
+			ReturnedObject ro) {
+		return fileDAO.GetFileListForAProjectAndMetaData(userName,projectName,ro);
+	}
+
+	public void DeleteFile(String userName, String projectName, String fileName, ReturnedObject ro) {
+		vu.validateUserName(userName, ro);
+		if(!ro.isSuccess()){
+			return;
+		}
+		vu.validateProjectName(projectName, ro);
+		if(!ro.isSuccess()){
+			return;
+		}
+		vu.validateFileName(fileName, ro);
+		if(!ro.isSuccess()){
+			return;
+		}		
+		fileDAO.DeleteFile(userName, projectName, fileName, ro);
 	}
 
 }

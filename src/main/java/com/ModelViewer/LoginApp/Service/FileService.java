@@ -64,11 +64,16 @@ public class FileService {
 	private static final String FILE_BASE_LOCATION ="/userData/userProjects/";
 	private static final String MODEL_NAME = "model.unity3d";
 	private static final String UNITY_MIME_TYPE = "application/vnd.unity";
-	private static final String JPEG_MIME_TYPE = "image/png";
-	private static final String PNG_MIME_TYPE = "image/jpeg";
+	private static final String JPEG_MIME_TYPE = "image/jpeg";
+	private static final String PNG_MIME_TYPE = "image/png";
+	
+	private static final String MODEL_NAME_PROJECT_TYPE = "unity3d";
+	private static final String MODEL_NAME_JPG_TYPE = "jpg";
+	private static final String MODEL_NAME_JPEG_TYPE = "jpeg";
+	private static final String MODEL_NAME_PNG_TYPE = "png";
 	
 	private static final int MAXIMUM_IMAGE_COUNT = 5;
-	private static final int MAXIMUM_PROJECT_COUNT = 1;
+	private static final int MAXIMUM_PROJECT_COUNT = 5;
 	
 	@RequestMapping(value = "/UploadFileAProjectFile", method = RequestMethod.POST)
 	public @ResponseBody String UploadFileAProject(
@@ -78,7 +83,7 @@ public class FileService {
 			@RequestParam(value = "file", required = true) MultipartFile fileMultiPart
 			) throws IOException{
 	
-		logger.info("uploading: "+userName+" "+projectName);
+		logger.debug("uploading: "+userName+" "+projectName);
 		
 		ReturnedObject ro = new ReturnedObject();
 		
@@ -97,12 +102,13 @@ public class FileService {
         	return ro.ToJSONString();
         }
         
+        logger.debug("here1");
     	//validate that this user, check if this project exists for this user
-    	projectMemberDAO.GetProjectMemberModel(userName, projectName, "", ro);
+    	projectMemberDAO.GetProject(userName, projectName, ro);
     	if(ro.isSuccess() == false){
     		return ro.ToJSONString();
     	}
-    	
+    	logger.debug("here3");
     	//test for the correct file type
     	 String inFileType = fileMultiPart.getContentType();
     	 if(!inFileType.equals(PNG_MIME_TYPE) && !inFileType.equals(JPEG_MIME_TYPE) && !inFileType.equals(UNITY_MIME_TYPE)){
@@ -111,19 +117,20 @@ public class FileService {
              ro.setSuccess(false);
              return ro.ToJSONString();
      	}
+    	 logger.debug("here2");
+    	 logger.debug("filetype "+inFileType);
         	
-       
-        	
+    	 String fileName = fileMultiPart.getOriginalFilename();
     	if(inFileType.equals(PNG_MIME_TYPE) || inFileType.equals(JPEG_MIME_TYPE)){ //if its a image being uploaded
     		//check that they havent already saved 5 files
-    		int fileCount = fileDAO.GetProjectImageCount(userName, projectName, ro);
+    		Integer fileCount = fileDAO.GetProjectImageCount(userName, projectName, ro);
         	if(ro.isSuccess() == false){
         		return ro.ToJSONString();
         	}
     		
     		if(fileCount <= MAXIMUM_IMAGE_COUNT){  //test if their image size not exceeded
     			
-    			fileDAO.UploadAProjectFile_whole(userName,projectName,fileMultiPart.getBytes(), ro);
+    			fileDAO.UploadAProjectFile_whole(userName,projectName,fileName,fileMultiPart.getInputStream(), ro);
             	if(ro.isSuccess() == false){
             		return ro.ToJSONString();
             	}
@@ -139,7 +146,7 @@ public class FileService {
     		
     		return ro.ToJSONString();
     	} 
-    	
+    	logger.debug("here4");
     	//if(inFileType.equals(UNITY_MIME_TYPE)){ //if project being uploaded
     		
     		int fileCount = fileDAO.GetProjectFileCount(userName, projectName, ro);
@@ -149,7 +156,7 @@ public class FileService {
     		
     		if(fileCount <= MAXIMUM_PROJECT_COUNT){  //if amount of project limit not exceeded
     			
-    			fileDAO.UploadAProjectFile_whole(userName,projectName,fileMultiPart.getBytes(), ro);
+    			fileDAO.UploadAProjectFile_whole(userName,projectName,fileName,fileMultiPart.getInputStream(), ro);
             	if(ro.isSuccess() == false){
             		return ro.ToJSONString();
             	}
@@ -218,21 +225,21 @@ public class FileService {
 	public String GetAllFileMetaData(	
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "projectName", required = true) String projectName,
-			@RequestParam(value = "userP", required = true) String userP
+			@RequestParam(value = "uPass", required = true) String uPass
 			) throws IOException{
 		
 		ReturnedObject ro = new ReturnedObject();
 		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro); 
 		if(ro.isSuccess() == false){
 			return ro.ToJSONString();
-		} else if(passwordFound == null || !passwordFound.equals(userP)){
+		} else if(passwordFound == null || !passwordFound.equals(uPass)){
 			ro.setSuccess(false);
 			ro.setMessage(ACCESS_FORBIDDEN);
 			return ro.ToJSONString();	
 		}
 	
 		List<HashMap<String, String>> fileMeta = fileDAO.GetFileListForAProjectAndMetaData(userName, projectName, ro);
-    	if(ro.isSuccess() == false){
+    	if(ro.isSuccess() == false || fileMeta == null){
     		return ro.ToJSONString();
     	}
     	
@@ -242,25 +249,47 @@ public class FileService {
     	//images
     	List<HashMap<String,String>> imageList = new ArrayList<HashMap<String,String>>();
     	for(HashMap<String, String> file : fileMeta){
-    		if(file.get("type").equals("jpg") || file.get("type").equals("jpeg") || file.get("type").equals("png")){
+    		logger.debug("GetAllFileMetaData file: "+file);
+    		if(file.get("type").equals(MODEL_NAME_JPG_TYPE) || file.get("type").equals(MODEL_NAME_JPEG_TYPE) || file.get("type").equals(MODEL_NAME_PNG_TYPE)){
     			imageList.add(file);
     		}
     	}
-    	retJson.put("images", imageList);
+    	retJson.put("Images", imageList);
     	//models
     	List<HashMap<String,String>> modelList = new ArrayList<HashMap<String,String>>();
     	for(HashMap<String, String> file : fileMeta){
-    		if(file.get("type").equals("jpg")){
+    		if(file.get("type").equals(MODEL_NAME_PROJECT_TYPE)){
     			modelList.add(file);
     		}
     	}
-    	retJson.put("models", modelList);
+    	retJson.put("Models", modelList);
     	
     	ro.setSuccess(true);
     	ro.setMessage(mapper.writeValueAsString(retJson));
     	return ro.ToJSONString();
 	}
-
+	
+	@RequestMapping(value = "/DeleteFile", method = RequestMethod.GET)
+	public String DeleteFile(	
+			@RequestParam(value = "userName", required = true) String userName,
+			@RequestParam(value = "projectName", required = true) String projectName,
+			@RequestParam(value = "fileName", required = true) String fileName,
+			@RequestParam(value = "uPass", required = true) String uPass
+			) throws IOException{
+		
+		ReturnedObject ro = new ReturnedObject();
+		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro); 
+		if(ro.isSuccess() == false){
+			return ro.ToJSONString();
+		} else if(passwordFound == null || !passwordFound.equals(uPass)){
+			ro.setSuccess(false);
+			ro.setMessage(ACCESS_FORBIDDEN);
+			return ro.ToJSONString();	
+		}		
+		
+		fileDAO.DeleteFile(userName,projectName,fileName,ro);
+		return ro.ToJSONString();
+	}
 			
 			
 			

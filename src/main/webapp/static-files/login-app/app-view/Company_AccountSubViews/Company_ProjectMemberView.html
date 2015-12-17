@@ -147,10 +147,10 @@
 	
 	
 	<!-- file upload dialog -->
-	<div style="z-index: 10;height:300px;width:500px;margin:-100px 0 0 -250px;" 
+	<div style="z-index: 10;height:350px;width:500px;margin:-170px 0 0 -250px;" 
 		class="panel panel-default projectMemberView_HVCenter_project"
 		ng-show="vm.pd.projectEditProjectDialog_dialogShow">
-		<div class="panel-heading" >
+		<div class="panel-heading" style="height:55px;">
 			<span><H4 style="display:inline-block">{{vm.pd.projectEditProjectDialog_projectName}}: File Upload</H4></span>
 			<span style="float:right;">
 				<button class="btn btn-default projectMemberView_deleteProject" type="button" 
@@ -159,26 +159,41 @@
 				</button>
 			</span>
 		</div>
-		<div class="panel-body">
-			<div style="height: 120px;color:#ADADAD;"
-				ngf-drop ngf-select ng-model="files" class="drop-box" 
-		        ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true"
-		        accept="image/*,application/pdf" 
-		        ngf-pattern="'image/*,application/pdf'"><p>Click for a single file upload or<br>drop multiple image files and project files here.<br>JPG/JPED/PNG/3DUNITY file types are supported</p></div>
-			<div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+		
+		<div class="panel-body">		
+			<div style="height: 268px;overflow: hidden; margin-right: -8px;">
+				<div style="overflow-y: auto;height: 267px; overflow-x: hidden; padding-right: 10px;">
+					<div style="height: 120px;color:#ADADAD;"
+						ngf-drop ngf-select ng-model="files" class="drop-box" 
+				        ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true"
+				        accept="image/*,application/pdf" 
+				        ngf-pattern="'image/*,application/pdf'"><p>Click for file upload or<br>drop multiple image files and project files here.<br>JPG/JPEG/PNG/3DUNITY file types are supported.<br>100Mb maximum files size</p></div>
+					<div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
 			
-			
-			<div ng-repeat="(group, groupValues) in vm.pd.projectMetaData">
-				<div class="panel-heading">
-					<span><H5>{{group}}</H5></span>
-				</div>
-				<div class="panel-body">
-					<div ng-repeat="value in groupValues">
-						<button type="button" class="btn btn-default projectMemberView_deleteProject" ng-click="vm.pd.DeleteFileFromProject(value)">{{value}}</button>
+
+					<div class="panel panel-default" ng-repeat="(group, groupValues) in vm.pd.projectMetaData[vm.pd.projectEditProjectDialog_projectName]">
+						<div class="panel-heading" style="padding: 1px 15px;">
+							<span><H4>{{group}}</H4></span>
+						</div>
+						<div class="panel-body">
+							<div style="padding: 2px;" ng-repeat="value in groupValues" >
+								<div style="position:relative;">
+									<button style="width: 100%; padding:0px;"type="button" class="btn btn-default projectMemberView_deleteProject" ng-click="vm.pd.DeleteFileFromProject(value.name)">
+										<div ng-show="value.status == 'uploading' || value.status == 'queued'"
+										     style="height: 100%;width: 100%;position: absolute; padding: 0px; margin: 0px;" class="progress" >
+										 	<div style="width:{{value.progress}}%;" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<div style="overflow:hidden;text-align: center; margin: 5px;position: relative;">										
+											{{value.name}}
+										</div>									
+									</button>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-		</div>			
+			</div>	
+		</div>		
 	</div>
 	
 </div>

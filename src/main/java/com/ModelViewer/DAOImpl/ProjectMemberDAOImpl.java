@@ -81,12 +81,13 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
         session.close();
         return projectMembersModelList;
 	}
-	private ProjectMemberModel GetProject(String userName, String projectName, ReturnedObject ro) {
+	public ProjectMemberModel GetProject(String userName, String projectName, ReturnedObject ro) {
         Session session = this.sessionFactory.openSession();
         Criteria userQuery = session.createCriteria(ProjectMemberModel.class);
         userQuery.add(Restrictions.eq("userName",userName));
         userQuery.add(Restrictions.eq("projectName",projectName));
-
+        userQuery.setMaxResults(1);
+        
         ProjectMemberModel projectMembersModelList =  (ProjectMemberModel) userQuery.uniqueResult();
         session.close();
         return projectMembersModelList;

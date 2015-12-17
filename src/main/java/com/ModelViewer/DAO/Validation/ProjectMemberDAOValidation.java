@@ -66,6 +66,20 @@ public class ProjectMemberDAOValidation implements ProjectMemberDAO{
 		
 		return projectMemberDAO.GetProjectMemberModel(userName, projectName, member, ro);
 	}
+	
+	public ProjectMemberModel GetProject(String userName, String projectName, ReturnedObject ro) {
+		vu.validateUserName(userName, ro);
+		if(!ro.isSuccess()){
+			return null;
+		}
+		
+		vu.validateProjectName(projectName, ro);
+		if(!ro.isSuccess()){
+			return null;
+		}
+		
+		return projectMemberDAO.GetProject(userName, projectName, ro);
+	}
 
 	public void CreateANewProject(String userName, String projectName, ReturnedObject ro) {
 		vu.validateUserName(userName, ro);
