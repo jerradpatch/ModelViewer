@@ -92,6 +92,13 @@
 					//updateValueIn_projectMetaData(fileName,"status",fileObj);
 	    		}
         	});
+        });        
+        $scope.$on('FileService.abort', function(event,data) {
+        	$scope.$apply(function(){
+        		if(data.projectName != null && data.fileName != null){
+        			deleteAFileFrom_projectMetaData_list(data.projectName,data.fileName);
+        		}
+        	});
         });
         
         $scope.$watch('files', function () {
@@ -143,11 +150,7 @@
         		GetAllFileMetaData();
         	}
         }
-        function abortFileAProjectFile(fileName){
-        	var projectName = vm.pd.projectEditProjectDialog_projectName;
-        	if(projectName = null || fileName == null){
-        		return;
-        	}
+        function abortFileAProjectFile(projectName,fileName){
         	$rootScope.$broadcast("FileService.recieve.abort", {"projectName":projectName,"fileName":fileName}); 
         }
         //add a new box
@@ -341,7 +344,7 @@
         	} else if (fileObj.status == "queued"){
         		deleteAFileFrom_projectMetaData_list(projectName,fileName);
         	} else if (fileObj.status == "uploading"){
-        		abortFileAProjectFile(fileName);
+        		abortFileAProjectFile(projectName, fileName);
         	}
         }
         function GetAllFileMetaData(){

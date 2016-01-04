@@ -75,6 +75,8 @@ public class FileService {
 	private static final int MAXIMUM_IMAGE_COUNT = 5;
 	private static final int MAXIMUM_PROJECT_COUNT = 5;
 	
+	private static final String BASE_URL = "/ModelViewer/FileService";
+	
 	@RequestMapping(value = "/UploadFileAProjectFile", method = RequestMethod.POST)
 	public @ResponseBody String UploadFileAProject(
 			@RequestParam(value = "userName", required = true) String userName,
@@ -178,26 +180,44 @@ public class FileService {
 	
 	@RequestMapping(value = "/GetFileAProjectFile", method = RequestMethod.GET)
 	public void GetFileAProjectFile(
-			@RequestParam(value = "userName", required = true) String userName,
+			@RequestParam(value = "userName", required = false) String userName,
+			@RequestParam(value = "userP", required = false) String userP,
 			@RequestParam(value = "projectName", required = true) String projectName,
-			@RequestParam(value = "member", required = true) String member,
-			@RequestParam(value = "memberP", required = true) String memberPassword,
+			@RequestParam(value = "member", required = false) String member,
+			@RequestParam(value = "memberP", required = false) String memberP,
+			@RequestParam(value = "fileName", required = true) String fileName,
 			HttpServletResponse response
 			) throws IOException{
 		
-		ReturnedObject ro = new ReturnedObject();
-		String passwordFound = memberDAO.GetMemberPassword(userName, member, ro);
-    	if(ro.isSuccess() == false){
-    		response.setStatus(404);
-    		return;
-    	}else if(passwordFound == null || !passwordFound.equals(memberPassword)){
+		
+		if(userName != null && userP != null){
+			ReturnedObject ro = new ReturnedObject();
+			String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+	    	if(ro.isSuccess() == false){
+	    		response.setStatus(404);
+	    		return;
+	    	}else if(passwordFound == null || !passwordFound.equals(userP)){
+				response.setStatus(404);
+				return;
+			}
+		} else if (member != null && memberP != null) {
+			ReturnedObject ro = new ReturnedObject();
+			String passwordFound = memberDAO.GetMemberPassword(userName, member, ro);
+	    	if(ro.isSuccess() == false){
+	    		response.setStatus(404);
+	    		return;
+	    	}else if(passwordFound == null || !passwordFound.equals(memberP)){
+				response.setStatus(404);
+				return;
+			}
+		} else {
 			response.setStatus(404);
-			return;
+			return;			
 		}
 		
 		
 		StringBuilder path = new StringBuilder(FILE_BASE_LOCATION);
-    	path.append(userName).append("/").append(projectName).append("/").append(MODEL_NAME);
+    	path.append(userName).append("/").append(projectName).append("/").append(fileName);
     	
     	InputStream is = null;
 	    try {
@@ -220,22 +240,41 @@ public class FileService {
 	      }
 	    		  
 	}
+
 	
 	@RequestMapping(value = "/GetAllFileMetaData", method = RequestMethod.GET)
 	public String GetAllFileMetaData(	
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "projectName", required = true) String projectName,
-			@RequestParam(value = "uPass", required = true) String uPass
+			@RequestParam(value = "member", required = false) String member,
+			@RequestParam(value = "uPass", required = false) String uPass,
+			@RequestParam(value = "memberP", required = false) String memberP
 			) throws IOException{
 		
 		ReturnedObject ro = new ReturnedObject();
-		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro); 
-		if(ro.isSuccess() == false){
-			return ro.ToJSONString();
-		} else if(passwordFound == null || !passwordFound.equals(uPass)){
+		
+		if(userName != null && uPass != null){
+			String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro); 
+			if(ro.isSuccess() == false){
+				return ro.ToJSONString();
+			} else if(passwordFound == null || !passwordFound.equals(uPass)){
+				ro.setSuccess(false);
+				ro.setMessage(ACCESS_FORBIDDEN);
+				return ro.ToJSONString();	
+			}
+		} else if (member != null && memberP != null){
+			String passwordFound = memberDAO.GetMemberPassword(userName, memberP, ro); 
+			if(ro.isSuccess() == false){
+				return ro.ToJSONString();
+			} else if(passwordFound == null || !passwordFound.equals(memberP)){
+				ro.setSuccess(false);
+				ro.setMessage(ACCESS_FORBIDDEN);
+				return ro.ToJSONString();	
+			}			
+		} else {
 			ro.setSuccess(false);
 			ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();	
+			return ro.ToJSONString();				
 		}
 	
 		List<HashMap<String, String>> fileMeta = fileDAO.GetFileListForAProjectAndMetaData(userName, projectName, ro);
@@ -251,6 +290,13 @@ public class FileService {
     	for(HashMap<String, String> file : fileMeta){
     		logger.debug("GetAllFileMetaData file: "+file);
     		if(file.get("type").equals(MODEL_NAME_JPG_TYPE) || file.get("type").equals(MODEL_NAME_JPEG_TYPE) || file.get("type").equals(MODEL_NAME_PNG_TYPE)){
+    			StringBuilder SB = new StringBuilder(BASE_URL);
+    			file.put("url", SB
+    					.append("/GetFileAProjectFile?userName=").append(userName)
+    					.append("&projectName=").append(projectName)
+    					.append("&member=").append(member)
+    					.append("&memberP=").append(memberP)
+    					.append("&fileName=").append(file.get("name")).toString());
     			imageList.add(file);
     		}
     	}
@@ -259,6 +305,13 @@ public class FileService {
     	List<HashMap<String,String>> modelList = new ArrayList<HashMap<String,String>>();
     	for(HashMap<String, String> file : fileMeta){
     		if(file.get("type").equals(MODEL_NAME_PROJECT_TYPE)){
+    			StringBuilder SB = new StringBuilder(BASE_URL);
+    			file.put("url", SB
+    					.append("/GetFileAProjectFile?userName=").append(userName)
+    					.append("&projectName=").append(projectName)
+    					.append("&member=").append(member)
+    					.append("&memberP=").append(memberP)
+    					.append("&fileName=").append(file.get("name")).toString());
     			modelList.add(file);
     		}
     	}

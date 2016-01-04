@@ -1,4 +1,5 @@
 
+<link href='https://fonts.googleapis.com/css?family=Alegreya+Sans' rel='stylesheet' type='text/css'>
 <style>
 	.member_accountView_HVCenter_model{
 		width:300px;
@@ -29,7 +30,7 @@
 		
 	@media only screen and (min-width: 1101px){
 		.member_accountView_mediaSpecific{
-			margin-left:2%;
+			margin-left:4%;mvn 
 			margin-right:2%; 
 			margin-bottom: 20px;
 			position:relative;
@@ -39,15 +40,28 @@
 	}
 </style>
 <div style="height:25%"></div>
-<div style="margin: 0 auto;padding:auto;align-items: center;">
-	<div class="member_accountView_mediaSpecific" ng-repeat="memberProject in vm.projectsMemberIsAPartOf">	
+<div style="font-size: 20px;font-family: 'Alegreya Sans', sans-serif;margin: 0 auto;padding:auto;align-items: center;">
+	<div class="member_accountView_mediaSpecific" ng-repeat="(key, value) in vm.projectsMemberIsAPartOf">	
 		<div class="panel panel-default" style="padding:0px;">
-		<div class="panel-heading">{{memberProject}}</div>
-			<div class="panel-body" style="padding:0px;">
-				<img style="height: 500px;width: 100%;padding-bottom: 10px;" src="">
+		<div class="panel-heading">{{key}}</div>
+			<div class="panel-body" style="padding:0px;height: 500px;width: 100%;padding-bottom: 10px;">
+				<ul rn-carousel="" rn-carousel-index="carouselIndex1" rn-carousel-buffered="" rn-carousel-on-infinite-scroll-right="loadNextImages()" 
+				    rn-carousel-on-infinite-scroll-left="loadPreviousImages()" class="carousel5 ng-scope"
+				    style="height:450px;width:323px;">
+					<li ng-repeat="(key, value) in value.Images|carouselSlice:carouselBufferIndex:carouselBufferSize track by key" 
+					    style="height:100%;width:100%;display: inline-block; transform: translate3d(0%, 0px, 0px);z-index:1;" 
+					    class="ng-scope">
+					    <div style="height:100%;width:100%;background-image: url('{{value.url}}')" 
+					         ng-style="{'background-image': 'url({{value.url}})'}" 
+					         class="bgimage ng-binding">
+					         <p style="background: white;padding-left: 70px;margin: 0px;white-space: nowrap;" >{{value.name}}</p>				    								 
+						</div>
+					<li>
+				</ul> 
 				<button style="margin-bottom: 10px;" type="button" class="btn btn-default center-block"
-					ng-click="vm.md.ToggleAndSetModel(memberProject)">Explore
-				</button>				
+					ng-click="vm.gotoProjectPage(key)">Explore
+				</button>	
+				<p style="background: white;position: absolute; top: 51px; padding-left: 16px;">Name:</p>			
 			</div>
 		</div>
 	</div>
@@ -62,3 +76,12 @@
 		type="application/vnd.unity" pluginspage="http://www.unity3d.com/unity-web-player-2.x" title="memberProject">				
 	</div>
 </div>
+
+
+
+
+
+
+
+
+

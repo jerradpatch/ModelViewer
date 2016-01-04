@@ -11,6 +11,7 @@
     	var baseUrlFileService = '/ModelViewer/FileService/';
     	var service = {};
     	
+    	var filesBeingUploaded = {};
     	var fileName = null;
     	var projectName = null;
     	
@@ -19,23 +20,28 @@
     	service.GetFileAProjectFile_link = GetFileAProjectFile_link;
     	service.GetAllFileMetaData = GetAllFileMetaData;
     	service.DeleteFile = DeleteFile;
-    	service.ajax = null;
+    	service.filesBeingUploaded = filesBeingUploaded;
     	
     	$rootScope.$on('FileService.recieve.abort', function(event,data) {
         	//alert("reieved on child");
+    		var projectName = data.projectName;
+    		var fileName = data.fileName;
         	 if(data.hasOwnProperty("projectName") && data.hasOwnProperty("fileName")){
-        		 if(data.name == fileName && data.name == fileName){      			 
-        			 if(service.ajax != null){
-        				 service.ajax.abort(); 
-         				 service.fileName = null;
-        				 service.projectName = null;       
+        		 if(projectName != null && fileName != null){      			 
+        			 if(service.filesBeingUploaded != null){
+         				 if(service.filesBeingUploaded[projectName] != null){
+         					 if(service.filesBeingUploaded[projectName][fileName] != null){
+         						var uploadingAjax = service.filesBeingUploaded[projectName][fileName];
+         						uploadingAjax.abort();
+         					 }
+         				 }      
         			 }      				 
         		 }
         	 }  
         });
-    	test the file abort!!!!!
-        function GetFileAProjectFile(userName,projectName,file,companyP) {
-            return $http.get(baseUrlFileService+'GetFileAProjectFile', {params:{"userName": userName, "projectName": projectName, "member":member, "companyP": companyP}})
+    	
+        function GetFileAProjectFile(userName,userP, member, memberP, projectName,fileName) {
+            return $http.get(baseUrlFileService+'GetFileAProjectFile', {params:{"userName": userName, "userP": userP, "projectName":projectName, "member": member, "memberP": memberP, "fileName":fileName}})
             	.then(handleSuccess, handleError('Error FileService.GetFileAProjectFile '+userName+" "+projectName));        	
         }
 
@@ -43,42 +49,55 @@
             return baseUrlFileService+'GetFileAProjectFile?userName='+userName+'&projectName='+projectName+'&member='+member;   	
         } 
         
-        function GetAllFileMetaData(userName,projectName,uPass)	{
-            return $http.get(baseUrlFileService+'GetAllFileMetaData', {params:{"userName": userName, "projectName": projectName, "uPass":uPass}})
+        function GetAllFileMetaData(userName,projectName,uPass,member,memberP)	{
+            return $http.get(baseUrlFileService+'GetAllFileMetaData', {params:{"userName": userName, "projectName": projectName, "uPass":uPass, "member":member, "memberP":memberP}})
         	.then(handleSuccess, handleError('Error FileService.GetAllFileMetaData '+userName+" "+projectName));        
         }       
         
         function UploadFileAProjectFile(userName,projectName,userP,file) {
-        	var formData=new FormData();
+        	var formData = new FormData();
             formData.append("userName",userName);
             formData.append("projectName",projectName);
             formData.append("userP",userP);
             formData.append("file",file);
             
-            service.ajax = new XMLHttpRequest();
+            var ajax = new XMLHttpRequest();
             
-            service.ajax.upload.addEventListener("progress", 
+            var pn = service.filesBeingUploaded[projectName];
+            if( pn == null){
+            	var qn = {};
+            	qn[file.name] = ajax;
+            	service.filesBeingUploaded[projectName] = qn;
+            } 
+            
+            var fn = service.filesBeingUploaded[projectName][file.name];
+            if(fn == null){
+            	
+            	service.filesBeingUploaded[projectName][file.name] = ajax;
+            }
+
+            ajax.upload.addEventListener("progress", 
         			(function (event) { 
         				service.fileName = file.name;
         				service.projectName = projectName;
         				$rootScope.$broadcast("FileService.progress", {"projectName":projectName,"fileName":file.name, "progress":((event.loaded / event.total) * 100)});  
         			}),
         			false);
-            service.ajax.addEventListener("load", 
+            ajax.addEventListener("load", 
         			(function (event) { 
         				service.fileName = null;
         				service.projectName = null;       
         				$rootScope.$broadcast("FileService.complete", {"projectName":projectName,"fileName":file.name, "progress":100}); 
         			}), 
         			false);
-            service.ajax.addEventListener("error", 
+            ajax.addEventListener("error", 
         			(function (event) { 
         				$rootScope.$broadcast("FileService.error", {"projectName":projectName,"fileName":file.name, "progress":0}); 
         				service.fileName = null;
         				service.projectName = null;   
         			}), 
         			false);
-            service.ajax.addEventListener("abort", 
+            ajax.addEventListener("abort", 
         			(function (event) { 
         				$rootScope.$broadcast("FileService.abort", {"projectName":projectName,"fileName":file.name, "progress":0});
         				service.fileName = null;
@@ -86,8 +105,10 @@
         			}), 
         			false);
         	
-            service.ajax.open("POST",baseUrlFileService+'UploadFileAProjectFile');
-            service.ajax.send(formData);
+            ajax.open("POST",baseUrlFileService+'UploadFileAProjectFile');
+            ajax.send(formData);
+            
+            service.filesBeingUploaded[projectName][file.name] = ajax;
         }
         
         function DeleteFile(userName,projectName,fileName,uPass) {

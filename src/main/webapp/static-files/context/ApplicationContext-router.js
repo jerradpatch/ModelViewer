@@ -2,7 +2,7 @@
     'use strict';
  
     angular
-        .module('app', ['ngRoute', 'ngCookies', 'ngFileUpload'])
+        .module('app', ['ngRoute', 'ngCookies', 'ngFileUpload', 'angular-carousel'])
         .config(config)
         .run(run);
  
@@ -18,17 +18,20 @@
                 controller: 'Company_LoginController',
                 templateUrl: '/ModelViewer/static-files/login-app/app-view/Company_LoginView.html',
                 controllerAs: 'vm'
-            })
-            
+            })           
             .when('/Company_AccountView', {
                 controller: 'Company_AccountController',
                 templateUrl: '/ModelViewer/static-files/login-app/app-view/Company_AccountView.html',
                 controllerAs: 'vm'
-            })
- 
+            }) 
             .when('/Company_RegisterView', {
                 controller: 'Company_RegisterController',
                 templateUrl: '/ModelViewer/static-files/login-app/app-view/Company_RegisterView.html',
+                controllerAs: 'vm'
+            })
+            .when('/Member_ProjectView', {
+                controller: 'Member_ProjectController',
+                templateUrl: '/ModelViewer/static-files/member-app/app-view/Member_ProjectView.html',
                 controllerAs: 'vm'
             })
             .when('/Member_AccountView', {

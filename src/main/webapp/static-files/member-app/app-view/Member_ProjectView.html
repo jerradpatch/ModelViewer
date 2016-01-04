@@ -1,0 +1,89 @@
+<style>
+	.innerWidth {
+		width: 80%;
+	} 
+	.modelSpacer {
+		width: 20%;
+	} 
+	.modelSpacerTop {
+		height: 25%;
+		width: 100%;
+	} 
+	.thumbNailResize{
+		height:224px;
+		width:160px;
+	}
+@media only screen and (max-width: 900px){
+	.modelSpacer {
+		width: 0%;
+	}
+	.innerWidth {
+		width: 100%;
+	} 
+}
+		
+</style>
+<script>
+    lightbox.option({
+    	'disableScrolling': true,
+    	'fitImagesInViewport':true,    
+     	'resizeDuration': 200,
+      	'wrapAround': true
+    })
+</script>
+
+<div class="modelSpacerTop"></div>
+<div style="display: flex;width:100%;height:100%">
+	<div class="modelSpacer"></div>
+	<div class="bs-example jumbotron innerWidth" style="background-color: #FFF;border-radius: 3px;border-style: solid;border-color: #eee;">
+		<div class="panel panel-default" id="projectStory">
+			<div class="panel-heading">
+				<h3 class="panel-title">Project Story</h3>
+			</div>
+			<div class="panel-body">
+			    Panel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel content
+  			</div>
+		</div>
+		<div class="panel panel-default"> <!-- images -->
+			<div class="panel-heading">
+				<h3 class="panel-title">Images</h3>
+			</div>
+			<div class="panel-body">
+				<div class="row" style="overflow: hidden;">
+					<ul class="ng-scope col-xs-6 col-md-3 thumbNailResize" style="height:234px;width:160px; ng-scope;display: inline-flex;overflow:visible" rn-carousel>				    	
+						<li class="thumbnail" ng-repeat="(key, value) in vm.projectMeta.Images">
+							<a href="{{value.url}}" data-lightbox="images" data-title="{{value.name}}">
+							    <img class="thumbNailResize" draggable="false" src="{{value.url}}" alt="Could not locate image.">
+							</a>
+					    </li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Models</h3>
+			</div>
+			<div class="panel-body">
+				<div class="row" style="overflow: hidden;">
+					<ul class="ng-scope ol-xs-6 col-md-3 carousel5 thumbNailResize" style="height:125px;width:90px; ng-scope;display: inline-flex;overflow:visible" rn-carousel>
+				   		<li class=" thumbnail" ng-repeat="(key, value) in vm.projectMeta.Models">
+							<a href="{{value.url}}" data-lightbox="images" data-title="{{value.name}}">
+							    <img class="thumbNailResize" draggable="false" src="{{value.url}}" alt="Could not locate image.">
+							</a>
+					    </li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modelSpacer"></div>
+</div>
+
+
+
+
+
+
+
+

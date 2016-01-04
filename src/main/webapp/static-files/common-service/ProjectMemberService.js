@@ -24,7 +24,7 @@
         return service;
        
         function GetProjectsMemberIsAPartOf(userName,member, companyMemberP){
-            return $http.get(baseUrl+'GetProjectsMemberIsAPartOf', {params:{"userName": userName,"member": member, "companyP": companyMemberP }}).then(handleSuccess, handleError('Error UserService.GetHashMapOfProjectAndMember'));       	
+            return $http.get(baseUrl+'GetProjectsMemberIsAPartOf', {params:{"userName": userName,"member": member, "companyP": companyMemberP }}).then(handleSuccess, handleError('Error UserService.GetProjectsMemberIsAPartOf'));       	
         }
         
         function GetHashMapOfProjectAndMember(userName, companyP) {
