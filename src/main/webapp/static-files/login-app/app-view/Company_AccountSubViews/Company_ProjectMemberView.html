@@ -155,7 +155,7 @@
 			<span style="float:right;">
 				<button class="btn btn-default projectMemberView_deleteProject" type="button" 
 						style="float:right;margin-right:10px" 
-						ng-click="vm.pd.projectEditProjectDialog_dialogShow = false;"> Cancel
+						ng-click="vm.pd.projectEditProjectDialog_dialogShow = false;"> Close
 				</button>
 			</span>
 		</div>
@@ -163,14 +163,31 @@
 		<div class="panel-body">		
 			<div style="height: 268px;overflow: hidden; margin-right: -8px;">
 				<div style="overflow-y: auto;height: 267px; overflow-x: hidden; padding-right: 10px;">
+				
+				
 					<div style="height: 120px;color:#ADADAD;"
 						ngf-drop ngf-select ng-model="files" class="drop-box" 
-				        ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true"
-				        accept="image/*,application/pdf" 
-				        ngf-pattern="'image/*,application/pdf'"><p>Click for file upload or<br>drop multiple image files and project files here.<br>JPG/JPEG/PNG/3DUNITY file types are supported.<br>100Mb maximum files size</p></div>
+				        ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="false"
+				        ngf-accept="'.jpg,.jpeg,.png,.zip'"
+				        ngf-pattern="'.jpg,.jpeg,.png,.zip'"><p>Click for file upload or<br>Drop multiple image files and project files here.<br>JPG/JPEG/PNG/ZIP file types are supported.<br>100Mb maximum file size.</p></div>
 					<div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
-			
-
+					
+					
+					<div class="panel panel-default">
+						<div class="panel-heading" style="padding: 1px 15px;">
+							<span style="display: inline-block;">
+								<H4>Project Summary</H4>
+							</span>
+							<span style="float: right; padding-top: 2px;">
+								<button class="btn btn-default projectMemberView_AddMember" type="button" ng-click="vm.pd.saveStory()">Save</button> 
+							</span>
+						</div>
+						<div style="height: 150px;" class="panel-body">
+							<textarea name="projectStory" style="width: 100%; height: 100%;" ng-model="vm.pd.projectStory"></textarea>
+						</div>
+					</div>		
+					
+						
 					<div class="panel panel-default" ng-repeat="(group, groupValues) in vm.pd.projectMetaData[vm.pd.projectEditProjectDialog_projectName]">
 						<div class="panel-heading" style="padding: 1px 15px;">
 							<span><H4>{{group}}</H4></span>

@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ModelViewer.DAO.MemberDAO;
+import com.ModelViewer.DAO.ProjectInfoDAO;
 import com.ModelViewer.DAO.ProjectMemberDAO;
 import com.ModelViewer.DAO.UserDAO;
+import com.ModelViewer.Model.ProjectInfoModel;
 import com.ModelViewer.Model.ProjectMemberModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +33,7 @@ public class ProjectMemberService {
 	private static final String EMPTY_STRING = "\"\"";
 	private final static String NO_PROJECT_AND_MEMBER = "\"No project and members found\"";
 	private final static String ACCESS_FORBIDDEN = "\"Access Forbbiden\"";
-	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProjectMemberService.class);
 	
 	private ObjectMapper mapper = new ObjectMapper();
 	
@@ -46,7 +48,6 @@ public class ProjectMemberService {
 	@Inject
 	@Qualifier("MemberDAO")
 	MemberDAO memberDAO;
-	
 	
 	/**
 	 * Simply selects the home view to render by returning its name.

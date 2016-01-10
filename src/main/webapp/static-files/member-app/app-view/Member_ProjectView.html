@@ -41,8 +41,8 @@
 				<h3 class="panel-title">Project Story</h3>
 			</div>
 			<div class="panel-body">
-			    Panel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel contentPanel content
-  			</div>
+				{{vm.projectStory}}
+ 			</div>
 		</div>
 		<div class="panel panel-default"> <!-- images -->
 			<div class="panel-heading">
@@ -52,7 +52,7 @@
 				<div class="row" style="overflow: hidden;">
 					<ul class="ng-scope col-xs-6 col-md-3 thumbNailResize" style="height:234px;width:160px; ng-scope;display: inline-flex;overflow:visible" rn-carousel>				    	
 						<li class="thumbnail" ng-repeat="(key, value) in vm.projectMeta.Images">
-							<a href="{{value.url}}" data-lightbox="images" data-title="{{value.name}}">
+							<a href="{{value.url}}" draggable="false" data-lightbox="images" data-title="{{value.name}}">
 							    <img class="thumbNailResize" draggable="false" src="{{value.url}}" alt="Could not locate image.">
 							</a>
 					    </li>
@@ -68,7 +68,7 @@
 				<div class="row" style="overflow: hidden;">
 					<ul class="ng-scope ol-xs-6 col-md-3 carousel5 thumbNailResize" style="height:125px;width:90px; ng-scope;display: inline-flex;overflow:visible" rn-carousel>
 				   		<li class=" thumbnail" ng-repeat="(key, value) in vm.projectMeta.Models">
-							<a href="{{value.url}}" data-lightbox="images" data-title="{{value.name}}">
+							<a href="{{value.url}}" draggable="false" data-lightbox="images" data-title="{{value.name}}">
 							    <img class="thumbNailResize" draggable="false" src="{{value.url}}" alt="Could not locate image.">
 							</a>
 					    </li>

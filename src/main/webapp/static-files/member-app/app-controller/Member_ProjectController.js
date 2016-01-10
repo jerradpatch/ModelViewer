@@ -26,15 +26,33 @@
         	$rootScope.CONSTANTS_Member_ProjectController = CONSTANTS_Member_ProjectController;
         });
  
-    Member_ProjectController.$inject = ['$location','$cookieStore','AuthService','MemberService','FileService'];
-    function Member_ProjectController($location,$cookieStore,AuthService, MemberService, FileService) {
+    Member_ProjectController.$inject = ['$location','$cookieStore','AuthService','ProjectInfoService','MemberService','FileService'];
+    function Member_ProjectController($location,$cookieStore,AuthService, ProjectInfoService, MemberService, FileService) {
         var vm = this;
 
         vm.GetAllFileMetaDataForAProject = GetAllFileMetaDataForAProject();	
         vm.projectMeta = {};
         
+        vm.projectStory = GetStory();
+        
         function GetProject(){
         	return $cookieStore.get("Member_ProjectController.currentProject");
+        }
+        
+        function GetStory(){
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+        	var projectName = GetProject();
+        	var member = AuthService.GetMember();
+        	
+        	ProjectInfoService.ReadProjectInfo(userName,null,projectName,member,pass)
+			.then(function (response) {
+                if (response.success) {
+                	vm.projectStory = response.message;
+                } else {			                	
+                	vm.error = response.message;
+                }
+			});	        	
         }
         
     	function GetAllFileMetaDataForAProject(){

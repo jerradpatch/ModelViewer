@@ -19,8 +19,8 @@
         	$rootScope.CONSTANTS_Company_ProjectMemberController = CONSTANTS_Company_ProjectMemberController;
         });
  
-    Company_ProjectMemberController.$inject = ['AuthService','$rootScope','$scope','ProjectMemberService','MemberService','FileService','Upload'];
-    function Company_ProjectMemberController(AuthService,$rootScope,$scope,ProjectMemberService,MemberService,FileService, Upload) {
+    Company_ProjectMemberController.$inject = ['AuthService','$rootScope','$scope','ProjectInfoService','ProjectMemberService','MemberService','FileService','Upload'];
+    function Company_ProjectMemberController(AuthService,$rootScope,$scope,ProjectInfoService,ProjectMemberService,MemberService,FileService, Upload) {
 
     	//local area//////////////
     	var vm = this;
@@ -49,6 +49,7 @@
 
     	vm.pd.projectEditProjectDialog_projectName = null;
     	vm.pd.projectEditProjectDialog_dialogShow = false;
+    	vm.pd.projectStory = null;
     	vm.pd.projectMetaData = {}; 
     	// {[{Name:"groupName",[{Name:"ItemName","type":jpeg,jpg..,"status":"complete,uploading,queued","progress":0-100},...]},....]}
     	//if(vm.pd.projectEditProjectDialog_dialogShow){
@@ -56,12 +57,12 @@
     	//}
     	vm.pd.DeleteFileFromProject = DeleteFileFromProject;
     	
-    	
     	//vm.pd.progress = 0;
 
     	vm.pd.ProjectEditProjectDialog_Toggle = ProjectEditProjectDialog_Toggle;
     	vm.pd.UploadFileAProjectFile = UploadFileAProjectFile;
-    	
+    	vm.pd.saveStory = SaveStory;
+    	vm.pd.GetStory = GetStory;
    
         //recieving message, page needed to be refreshed//////////////////////
         $scope.$on('refreshElementsEvent_child', function() { 
@@ -141,13 +142,48 @@
         
 
         
-        //edit/add project information dialog area////////////////////////////////////////////////////////////////////////////////////////////  /    
+        //edit/add project information dialog area////////////////////////////////////////////////////////////////////////////////////////////  /   
+        function SaveStory(){
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+        	var projectName = vm.pd.projectEditProjectDialog_projectName;
+        	var member = AuthService.GetMember();
+        	var story = vm.pd.projectStory;
+        	if(story == null || story == ""){
+        		return;
+        	}
+        	ProjectInfoService.CreateUpdateProjectInfo(userName,pass,projectName,member,null,story)
+			.then(function (response) {
+                if (response.success) {			
+                	vm.error = response.message;
+                } else {			                	
+                	vm.error = response.message;
+                }
+			});	        	
+        }
+        function GetStory(){
+        	var pass = AuthService.GetPassword();
+        	var userName = AuthService.GetUser();
+        	var projectName = vm.pd.projectEditProjectDialog_projectName;
+        	var member = AuthService.GetMember();
+        	
+        	ProjectInfoService.ReadProjectInfo(userName,pass,projectName,member,null)
+			.then(function (response) {
+                if (response.success) {
+                	vm.pd.projectStory = response.message;
+                } else {			                	
+                	vm.error = response.message;
+                }
+			});	        	
+        }
+        
         function ProjectEditProjectDialog_Toggle(project){
         	//functionality, file upload, delete file uploaded, display current model uploaded- with timestamp
         	vm.pd.projectEditProjectDialog_projectName = project;
         	vm.pd.projectEditProjectDialog_dialogShow = !vm.pd.projectEditProjectDialog_dialogShow;
         	if(vm.pd.projectEditProjectDialog_dialogShow){
         		GetAllFileMetaData();
+        		GetStory();
         	}
         }
         function abortFileAProjectFile(projectName,fileName){
@@ -274,12 +310,7 @@
         }
         //get item cate
         function fileCategory(fileName){
-        	var partsArray = fileName.split('.');
-        	var sizeArray = partsArray.length;
-        	if(sizeArray != 2){
-        		return null;
-        	} 
-        	var type = partsArray[1];
+        	var type = fileType(fileName);
         	if(type == "jpg" || type == "jpeg" || type == "png" ){
         		return "image";
         	} else {
@@ -294,18 +325,8 @@
         	if(sizeArray != 2){
         		return null;
         	} 
-        	var type = sizeArray[1];
-        	if(type == "jpg" ){
-        		return "jpg";
-        	} else if ( type == "jpeg"){
-        		return "jpeg";
-        	} else if (type == "png") {
-        		return "png";
-        	} else if (type == "unity3d"){
-        	   return "unity3d";
-        	} else {
-        		 return null;
-        	}
+        	var type = partsArray[1];
+        	return type;
         	
         }
         function setFileUploading(fileName){
@@ -353,7 +374,10 @@
         		var uPass = AuthService.GetPassword();
             	var userName = AuthService.GetUser();
             	
-            	if(projectName in vm.pd.projectMetaData && vm.pd.projectMetaData[projectName] != null){
+            	if(vm.pd.projectMetaData.hasOwnProperty(projectName)){
+            		return;
+            	}
+            	if(vm.pd.projectMetaData[projectName] != null){
             		return;
             	}
             	
@@ -373,7 +397,7 @@
         function ProjectEditMemberDialog_AddMember (project, member){
         	var pass = AuthService.GetPassword();
         	var userName = AuthService.GetUser();
-			ProjectMemberService.CreateAMember(userName,project,member,pass) 
+        	ProjectMemberService.CreateAMember(userName,project,member,pass) 
 				.then(function (response) {
 	                if (response.success) {			
 	                	var databaseMembers = response.message;			                	

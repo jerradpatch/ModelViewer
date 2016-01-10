@@ -39,6 +39,37 @@ public class ValidateUtil {
 	final static int EMAIL_RIGHT_LENGTH_MIN = 5;
 	final static String[] EMAIL_RESTRICTED_CHARACTERS = {"/","\\"};
 	
+	
+	final static String TEXTFIELDNULL = "\"Text field was null\"";
+	final static int TEXTFIELD_LENGTH_MAX = 350;
+	final static int TEXTFIELD_LENGTH_MIN = 0;
+	final static String[] TEXTFIELD_RESTRICTED_CHARACTERS = {"/","\\"};	
+	
+	final static String TEXTFIELD_FAIL1 = "\"Text field is too long, required maximum length of "+USERNAME_LENGTH_MAX+"\"";
+	final static String TEXTFIELD_FAIL2 = "\"Text field is too short, required minimum length of "+USERNAME_LENGTH_MIN+"\"";
+	final static String TEXTFIELD_FAIL3 = "\"Text field contains restricted characters, \""+USERNAME_RESTRICTED_CHARACTERS+"\" not allowed\"";	
+	void validateTextField(String textFeild, ReturnedObject ro){
+		if(textFeild == null){
+			ro.setSuccess(false);
+			ro.setMessage(USERNULL);			
+		} else if(textFeild.length() > TEXTFIELD_LENGTH_MAX){
+			ro.setSuccess(false);
+			ro.setMessage(TEXTFIELD_FAIL1);
+		} else if (textFeild.length() < TEXTFIELD_LENGTH_MIN) {
+			ro.setSuccess(false);
+			ro.setMessage(TEXTFIELD_FAIL2);
+		} else if (containsAny(textFeild,TEXTFIELD_RESTRICTED_CHARACTERS)){
+			ro.setSuccess(false);
+			ro.setMessage(TEXTFIELD_FAIL3);
+			return;	
+		} else {
+			ro.setSuccess(true);
+			ro.setMessage(EMPTY_STRING);
+		}
+		return;		
+	}
+	
+	
 	final static String FILENAMENULL = "\"File name was null\"";
 	final static int FILENAME_LEFT_LENGTH_MAX = 50;
 	final static int FILENAME_LEFT_LENGTH_MIN = 1;

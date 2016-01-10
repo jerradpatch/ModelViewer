@@ -39,6 +39,9 @@
     <bean id="ProjectMemberDAOImpl" class="com.ModelViewer.DAOImpl.ProjectMemberDAOImpl">
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
 	</bean>	
+	<bean id="ProjectInfoDAOImpl" class="com.ModelViewer.DAOImpl.ProjectInfoDAOImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+	</bean>	
 	<bean id="MemberDAOImpl" class="com.ModelViewer.DAOImpl.MemberDAOImpl">
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
 	</bean>
@@ -48,7 +51,8 @@
 	<!-- DAO Validation -->
 	<context:component-scan base-package="com.ModelViewer.DAO.Validation"/>
 	<bean id="UserDAO" class="com.ModelViewer.DAO.Validation.UserDAOValidation"></bean>
-    <bean id="ProjectMemberDAO" class="com.ModelViewer.DAO.Validation.ProjectMemberDAOValidation"></bean>	
+    <bean id="ProjectMemberDAO" class="com.ModelViewer.DAO.Validation.ProjectMemberDAOValidation"></bean>
+    <bean id="ProjectInfoDAO" class="com.ModelViewer.DAO.Validation.ProjectInfoDAOValidation"></bean>	
 	<bean id="MemberDAO" class="com.ModelViewer.DAO.Validation.MemberDAOValidation"></bean>
 	<bean id="FileDAO" class="com.ModelViewer.DAO.Validation.FileDAOValidation"></bean>
 	

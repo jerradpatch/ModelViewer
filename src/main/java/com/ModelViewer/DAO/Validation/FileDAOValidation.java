@@ -25,7 +25,7 @@ public class FileDAOValidation implements FileDAO{
 	private static final String NULL_INPUT = "\"null values were input\"";
 	private static final String EMPTY_INPUT = "\"empty values were input\"";
 	
-	public void UploadAProjectFile_whole(String userName, String projectName, String fileName, InputStream fileBytes, ReturnedObject ro)
+	public void UploadAProjectFile_streaming(String userName, String projectName, String fileName, InputStream fileBytes, ReturnedObject ro)
 			throws IOException {
 		
 		if(userName == null || projectName ==null || fileBytes ==null){
@@ -47,7 +47,7 @@ public class FileDAOValidation implements FileDAO{
 		if(!ro.isSuccess()){
 			return;
 		}
-		fileDAO.UploadAProjectFile_whole(userName, projectName, fileName, fileBytes, ro);
+		fileDAO.UploadAProjectFile_streaming(userName, projectName, fileName, fileBytes, ro);
 	}
 
 	public Integer GetProjectFileCount(String userName, String projectName, ReturnedObject ro) {
@@ -110,8 +110,17 @@ public class FileDAOValidation implements FileDAO{
 		return fileDAO.GetFileListForAProject(userName, projectName, ro);
 	}
 
-	public List<HashMap<String, String>> GetFileListForAProjectAndMetaData(String userName, String projectName,
-			ReturnedObject ro) {
+	public HashMap<Object, Object> GetFileListForAProjectAndMetaData(String userName, String projectName, ReturnedObject ro) {
+		
+		vu.validateUserName(userName, ro);
+		if(!ro.isSuccess()){
+			return null;
+		}
+		vu.validateProjectName(projectName, ro);
+		if(!ro.isSuccess()){
+			return null;
+		}
+		
 		return fileDAO.GetFileListForAProjectAndMetaData(userName,projectName,ro);
 	}
 

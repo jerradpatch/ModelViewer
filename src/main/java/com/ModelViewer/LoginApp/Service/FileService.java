@@ -26,8 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ModelViewer.DAO.FileDAO;
 import com.ModelViewer.DAO.MemberDAO;
+import com.ModelViewer.DAO.ProjectInfoDAO;
 import com.ModelViewer.DAO.ProjectMemberDAO;
 import com.ModelViewer.DAO.UserDAO;
+import com.ModelViewer.Model.ProjectInfoModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -51,26 +53,30 @@ public class FileService {
 	UserDAO userDAO;
 	
 	@Inject
+	@Qualifier("ProjectInfoDAO")
+	ProjectInfoDAO projectInfoDAO;
+	
+	@Inject
 	@Qualifier("FileDAO")
 	FileDAO fileDAO;
 	
 	private static final String EMPTY_STRING = "\"\"";
 	private static final String IMAGE_LIMIT_EXCEEDED = "\"Image files exceed allowed amount (5). Please delete some image files before adding more.\"";
 	private static final String PROJECT_LIMIT_EXCEEDED = "\"Project files exceed allowed amount (1). Please delete some project files before adding more.\"";
-	private static final String File_TYPE_NOT_ALLOWED = "\"This file type is not allowed. Only \".unity3d\", \".jpg\\.jpeg\", and \".png\" file types are allowed.\"";
+	private static final String File_TYPE_NOT_ALLOWED = "\"This file type is not allowed. Only \".zip\", \".jpg\\.jpeg\", and \".png\" file types are allowed.\"";
 	private static final String COULD_NOT_SAVE_FILE = "\"Could not save file, file empty.\"";
 	private final static String ACCESS_FORBIDDEN = "\"Access Forbbiden\"";
 	
 	private static final String FILE_BASE_LOCATION ="/userData/userProjects/";
 	private static final String MODEL_NAME = "model.unity3d";
-	private static final String UNITY_MIME_TYPE = "application/vnd.unity";
+	private static final String MODEL_MIME_TYPE = "application/zip";
 	private static final String JPEG_MIME_TYPE = "image/jpeg";
 	private static final String PNG_MIME_TYPE = "image/png";
 	
-	private static final String MODEL_NAME_PROJECT_TYPE = "unity3d";
-	private static final String MODEL_NAME_JPG_TYPE = "jpg";
-	private static final String MODEL_NAME_JPEG_TYPE = "jpeg";
-	private static final String MODEL_NAME_PNG_TYPE = "png";
+	private static final String MODEL_NAME_PROJECT_TYPE = "folder";
+	private static final String MODEL_NAME_JPG_TYPE = ".jpg";
+	private static final String MODEL_NAME_JPEG_TYPE = ".jpeg";
+	private static final String MODEL_NAME_PNG_TYPE = ".png";
 	
 	private static final int MAXIMUM_IMAGE_COUNT = 5;
 	private static final int MAXIMUM_PROJECT_COUNT = 5;
@@ -85,7 +91,7 @@ public class FileService {
 			@RequestParam(value = "file", required = true) MultipartFile fileMultiPart
 			) throws IOException{
 	
-		logger.debug("uploading: "+userName+" "+projectName);
+		logger.debug("UploadFileAProjectFile: userName:"+userName+" projectName:"+projectName +" fileName:"+fileMultiPart.getName());
 		
 		ReturnedObject ro = new ReturnedObject();
 		
@@ -104,25 +110,21 @@ public class FileService {
         	return ro.ToJSONString();
         }
         
-        logger.debug("here1");
     	//validate that this user, check if this project exists for this user
     	projectMemberDAO.GetProject(userName, projectName, ro);
     	if(ro.isSuccess() == false){
     		return ro.ToJSONString();
     	}
-    	logger.debug("here3");
     	//test for the correct file type
     	 String inFileType = fileMultiPart.getContentType();
-    	 if(!inFileType.equals(PNG_MIME_TYPE) && !inFileType.equals(JPEG_MIME_TYPE) && !inFileType.equals(UNITY_MIME_TYPE)){
+    	 if(!inFileType.equals(PNG_MIME_TYPE) && !inFileType.equals(JPEG_MIME_TYPE) && !inFileType.equals(MODEL_MIME_TYPE)){
      		
              ro.setMessage(File_TYPE_NOT_ALLOWED);
              ro.setSuccess(false);
              return ro.ToJSONString();
      	}
-    	 logger.debug("here2");
-    	 logger.debug("filetype "+inFileType);
         	
-    	 String fileName = fileMultiPart.getOriginalFilename();
+    	String fileName = fileMultiPart.getOriginalFilename();
     	if(inFileType.equals(PNG_MIME_TYPE) || inFileType.equals(JPEG_MIME_TYPE)){ //if its a image being uploaded
     		//check that they havent already saved 5 files
     		Integer fileCount = fileDAO.GetProjectImageCount(userName, projectName, ro);
@@ -132,7 +134,7 @@ public class FileService {
     		
     		if(fileCount <= MAXIMUM_IMAGE_COUNT){  //test if their image size not exceeded
     			
-    			fileDAO.UploadAProjectFile_whole(userName,projectName,fileName,fileMultiPart.getInputStream(), ro);
+    			fileDAO.UploadAProjectFile_streaming(userName,projectName,fileName,fileMultiPart.getInputStream(), ro);
             	if(ro.isSuccess() == false){
             		return ro.ToJSONString();
             	}
@@ -148,33 +150,40 @@ public class FileService {
     		
     		return ro.ToJSONString();
     	} 
-    	logger.debug("here4");
-    	//if(inFileType.equals(UNITY_MIME_TYPE)){ //if project being uploaded
-    		
-    		int fileCount = fileDAO.GetProjectFileCount(userName, projectName, ro);
-        	if(ro.isSuccess() == false){
-        		return ro.ToJSONString();
-        	}
-    		
-    		if(fileCount <= MAXIMUM_PROJECT_COUNT){  //if amount of project limit not exceeded
-    			
-    			fileDAO.UploadAProjectFile_whole(userName,projectName,fileName,fileMultiPart.getInputStream(), ro);
-            	if(ro.isSuccess() == false){
-            		return ro.ToJSONString();
-            	}
-            	
-    			ro.setMessage(EMPTY_STRING);
-                ro.setSuccess(true);     		
-                
-                
-    		}  else {
-    			
-                ro.setMessage(PROJECT_LIMIT_EXCEEDED);
-                ro.setSuccess(false);        			
-    		}
-    		
+    	
+		fileDAO.UploadAProjectFile_streaming(userName,projectName,fileName,fileMultiPart.getInputStream(), ro);
+    	if(ro.isSuccess() == false){
     		return ro.ToJSONString();
-    	//}
+    	}
+    	
+		ro.setMessage(EMPTY_STRING);
+        ro.setSuccess(true);   
+    	
+    	
+//		int fileCount = fileDAO.GetProjectFileCount(userName, projectName, ro);
+//    	if(ro.isSuccess() == false){
+//    		return ro.ToJSONString();
+//    	}
+		
+//		file will be unzipped and contain many different types
+//		if(fileCount <= MAXIMUM_PROJECT_COUNT){  //if amount of project limit not exceeded
+//			
+//			fileDAO.UploadAProjectFile_whole(userName,projectName,fileName,fileMultiPart.getInputStream(), ro);
+//        	if(ro.isSuccess() == false){
+//        		return ro.ToJSONString();
+//        	}
+//        	
+//			ro.setMessage(EMPTY_STRING);
+//            ro.setSuccess(true);     		
+//            
+//            
+//		}  else {
+//			
+//            ro.setMessage(PROJECT_LIMIT_EXCEEDED);
+//            ro.setSuccess(false);        			
+//		}
+		
+		return ro.ToJSONString();	
 
 	}
 	
@@ -241,7 +250,8 @@ public class FileService {
 	    		  
 	}
 
-	
+	//return lists/hashmaps/strings
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/GetAllFileMetaData", method = RequestMethod.GET)
 	public String GetAllFileMetaData(	
 			@RequestParam(value = "userName", required = true) String userName,
@@ -277,45 +287,69 @@ public class FileService {
 			return ro.ToJSONString();				
 		}
 	
-		List<HashMap<String, String>> fileMeta = fileDAO.GetFileListForAProjectAndMetaData(userName, projectName, ro);
+		HashMap<Object, Object> fileMeta = fileDAO.GetFileListForAProjectAndMetaData(userName, projectName, ro);
     	if(ro.isSuccess() == false || fileMeta == null){
     		return ro.ToJSONString();
     	}
     	
     	//make json object {images:<all images>,projects:<all projects>}
+    	List<HashMap<String,String>> rootFileList = null;
+    	try{
+    		rootFileList = (List<HashMap<String,String>>) fileMeta.get("list");
+    	} catch (Exception e){
+			ro.setSuccess(false);
+			ro.setMessage("error getting files");
+			return ro.ToJSONString();    		
+    	}
+    	HashMap<Object, Object> retJson = new HashMap<Object, Object>();
     	
-    	HashMap<String,List<HashMap<String,String>>> retJson = new HashMap<String,List<HashMap<String,String>>>();
-    	//images
-    	List<HashMap<String,String>> imageList = new ArrayList<HashMap<String,String>>();
-    	for(HashMap<String, String> file : fileMeta){
-    		logger.debug("GetAllFileMetaData file: "+file);
+		//images
+    	List<HashMap<String, String>> imageList = new ArrayList<HashMap<String, String>>();
+    	for(HashMap<String,String> file : rootFileList){
     		if(file.get("type").equals(MODEL_NAME_JPG_TYPE) || file.get("type").equals(MODEL_NAME_JPEG_TYPE) || file.get("type").equals(MODEL_NAME_PNG_TYPE)){
     			StringBuilder SB = new StringBuilder(BASE_URL);
-    			file.put("url", SB
+    			HashMap<String,String> fileInner = new HashMap<String,String>();
+    			fileInner.put("name", file.get("name"));
+    			fileInner.put("type", file.get("type"));
+    			fileInner.put("url", SB
     					.append("/GetFileAProjectFile?userName=").append(userName)
     					.append("&projectName=").append(projectName)
     					.append("&member=").append(member)
     					.append("&memberP=").append(memberP)
     					.append("&fileName=").append(file.get("name")).toString());
-    			imageList.add(file);
+    			imageList.add(fileInner);
     		}
     	}
-    	retJson.put("Images", imageList);
+		retJson.put("Images", imageList);
+		
     	//models
     	List<HashMap<String,String>> modelList = new ArrayList<HashMap<String,String>>();
-    	for(HashMap<String, String> file : fileMeta){
+    	for(HashMap<String,String> file : rootFileList){
     		if(file.get("type").equals(MODEL_NAME_PROJECT_TYPE)){
     			StringBuilder SB = new StringBuilder(BASE_URL);
-    			file.put("url", SB
+    			HashMap<String,String> fileInner = new HashMap<String,String>();
+    			fileInner.put("name", file.get("name"));
+    			fileInner.put("type", file.get("type"));
+    			fileInner.put("url", SB
     					.append("/GetFileAProjectFile?userName=").append(userName)
     					.append("&projectName=").append(projectName)
     					.append("&member=").append(member)
     					.append("&memberP=").append(memberP)
     					.append("&fileName=").append(file.get("name")).toString());
-    			modelList.add(file);
+    			modelList.add(fileInner);
     		}
     	}
     	retJson.put("Models", modelList);
+    	
+//    	ProjectInfoModel story = projectInfoDAO.GetProjectInfo(userName, projectName, ro);   	
+//    	if(!ro.isSuccess()){
+//    		return ro.ToJSONString();
+//    	}
+//    	if(story == null || story.getStory() == null){
+//    		retJson.put("Story", "");	    		
+//    	} else {
+//    	   	retJson.put("Story", story.getStory());	
+//    	}
     	
     	ro.setSuccess(true);
     	ro.setMessage(mapper.writeValueAsString(retJson));
