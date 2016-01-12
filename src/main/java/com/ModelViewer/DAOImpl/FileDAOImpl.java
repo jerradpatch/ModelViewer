@@ -217,8 +217,8 @@ public class FileDAOImpl implements FileDAO{
                 deleteFolderOrFile(file, ro); //delete existing unziped directory
 
                 ro.setSuccess(true);
-                unZipIt(fileTempFile.getAbsolutePath(), file.getAbsolutePath().replace(".", ""), ro); //unzip files
-                deleteFolderOrFile(fileTempFile, ro); //delete existing tempFile to free up space
+                unZipIt(fileTempFile.getAbsolutePath(), file.getParent(), ro); //unzip files
+                deleteFolderOrFile(fileTempFile, ro); //delete existing temp.zip to free up space
                 if(!ro.isSuccess()){
                 	return;
                 }
@@ -393,6 +393,7 @@ public class FileDAOImpl implements FileDAO{
     		//get the zipped file list entry
     		ZipEntry ze = zis.getNextEntry();
     		
+   		
     		while(ze != null){
 
     			String fileName = ze.getName();

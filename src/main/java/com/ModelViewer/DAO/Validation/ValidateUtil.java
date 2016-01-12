@@ -241,7 +241,7 @@ public class ValidateUtil {
 			ro.setMessage(FILENAMENULL);			
 		} 
 		String[] temp = fileName.split("[.]");
-		logger.debug("validateFileName: temp0: "+temp[0]+" temp1: "+temp[1]);
+		logger.debug("validateFileName: fileName"+fileName);
 		if(temp.length > 2){
 			ro.setSuccess(false);
 			ro.setMessage(FILENAME_FAIL7);

@@ -5,7 +5,7 @@
         .module('app')
         .constant("CONSTANTS_Member_ProjectController", {
         	"Member_ProjectController" : {
-	        	"MEMBER_LOGIN_FORM" : {
+	        		"MEMBER_LOGIN_FORM" : {
 	        		"COMPANY_NAME" : {
 	        			"MAXIMUM_LENGTH": 30,
 	        			"MINIMUM_LENGTH": 3,
@@ -18,9 +18,31 @@
 	        			"MAXIMUM_LENGTH": 20,
 	        			"MINIMUM_LENGTH": 6,
 	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}     		
-	        		}  
-	        	}
+	        		}		
+        	}
+        
          })
+        .filter('getImagesFromListOfList', function() {
+        	return function(inputList) {
+        		var supportedImageTypes = [".jpg",".jpeg",".png"];
+        		var returnedList = null;
+        		if(inputList){
+        			if("list" in inputList){
+        				var listOfList = inputList["list"];
+        				listOfList.forEach(function(input){
+	        				if("type" in input){
+	        					supportedImageTypes.forEach(function(supportedType){
+	        						if(input["type"] == supportedType){
+	        							returnedList.push(input);
+	        						}
+	        					});
+	        				}
+	       
+        				});
+        			}
+        		}
+        	}
+        })      	
         .controller('Member_ProjectController', Member_ProjectController)
         .run(function ($rootScope, CONSTANTS_Member_ProjectController) {
         	$rootScope.CONSTANTS_Member_ProjectController = CONSTANTS_Member_ProjectController;
@@ -66,6 +88,7 @@
     		FileService.GetAllFileMetaData(userName,projectName,null,member,memberPass)
     		.then(function (response) {
                 if (response.success) {
+                	
                 	console.log(response.message);
                 	vm.projectMeta = response.message;
                 } else {			                	

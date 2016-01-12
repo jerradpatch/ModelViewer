@@ -308,16 +308,13 @@ public class FileService {
     	for(HashMap<String,String> file : rootFileList){
     		if(file.get("type").equals(MODEL_NAME_JPG_TYPE) || file.get("type").equals(MODEL_NAME_JPEG_TYPE) || file.get("type").equals(MODEL_NAME_PNG_TYPE)){
     			StringBuilder SB = new StringBuilder(BASE_URL);
-    			HashMap<String,String> fileInner = new HashMap<String,String>();
-    			fileInner.put("name", file.get("name"));
-    			fileInner.put("type", file.get("type"));
-    			fileInner.put("url", SB
+    			file.put("url", SB
     					.append("/GetFileAProjectFile?userName=").append(userName)
     					.append("&projectName=").append(projectName)
     					.append("&member=").append(member)
     					.append("&memberP=").append(memberP)
     					.append("&fileName=").append(file.get("name")).toString());
-    			imageList.add(fileInner);
+    			imageList.add(file);
     		}
     	}
 		retJson.put("Images", imageList);
@@ -327,16 +324,13 @@ public class FileService {
     	for(HashMap<String,String> file : rootFileList){
     		if(file.get("type").equals(MODEL_NAME_PROJECT_TYPE)){
     			StringBuilder SB = new StringBuilder(BASE_URL);
-    			HashMap<String,String> fileInner = new HashMap<String,String>();
-    			fileInner.put("name", file.get("name"));
-    			fileInner.put("type", file.get("type"));
-    			fileInner.put("url", SB
+    			file.put("url", SB
     					.append("/GetFileAProjectFile?userName=").append(userName)
     					.append("&projectName=").append(projectName)
     					.append("&member=").append(member)
     					.append("&memberP=").append(memberP)
     					.append("&fileName=").append(file.get("name")).toString());
-    			modelList.add(fileInner);
+    			modelList.add(file);
     		}
     	}
     	retJson.put("Models", modelList);

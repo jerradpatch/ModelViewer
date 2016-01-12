@@ -133,7 +133,7 @@ public class FileDAOValidation implements FileDAO{
 		if(!ro.isSuccess()){
 			return;
 		}
-		vu.validateFileName(fileName, ro);
+		vu.validateUserName(fileName, ro);
 		if(!ro.isSuccess()){
 			return;
 		}		

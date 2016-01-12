@@ -67,7 +67,7 @@
 			<div class="panel-body">
 				<div class="row" style="overflow: hidden;">
 					<ul class="ng-scope ol-xs-6 col-md-3 carousel5 thumbNailResize" style="height:125px;width:90px; ng-scope;display: inline-flex;overflow:visible" rn-carousel>
-				   		<li class=" thumbnail" ng-repeat="(key, value) in vm.projectMeta.Models">
+				   		<li class="thumbnail" ng-repeat="(key, value) in vm.projectMeta.Models | getImagesFromListOfList">
 							<a href="{{value.url}}" draggable="false" data-lightbox="images" data-title="{{value.name}}">
 							    <img class="thumbNailResize" draggable="false" src="{{value.url}}" alt="Could not locate image.">
 							</a>
