@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -198,55 +199,56 @@ public class FileService {
 			HttpServletResponse response
 			) throws IOException{
 		
-		
+		logger.debug("file request recieved: userName"+userName+" userP:"+userP+" projectName:"+projectName+" memeber:"+member+" memberP:"+memberP+" fileName:"+fileName);
 		if(userName != null && userP != null){
 			ReturnedObject ro = new ReturnedObject();
 			String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
 	    	if(ro.isSuccess() == false){
 	    		response.setStatus(404);
+	    		logger.debug("ro not successful: userName and password rejected");
 	    		return;
 	    	}else if(passwordFound == null || !passwordFound.equals(userP)){
 				response.setStatus(404);
+				logger.debug(" userName and password rejected");
 				return;
 			}
 		} else if (member != null && memberP != null) {
 			ReturnedObject ro = new ReturnedObject();
 			String passwordFound = memberDAO.GetMemberPassword(userName, member, ro);
 	    	if(ro.isSuccess() == false){
+	    		logger.debug("ro rejected member");
 	    		response.setStatus(404);
 	    		return;
 	    	}else if(passwordFound == null || !passwordFound.equals(memberP)){
+	    		logger.debug("member password rejected");
 				response.setStatus(404);
 				return;
 			}
 		} else {
 			response.setStatus(404);
+			logger.debug("emember and user were both null");
 			return;			
 		}
 		
+		logger.debug("retriving file");
+		ReturnedObject ro = new ReturnedObject();
 		
-		StringBuilder path = new StringBuilder(FILE_BASE_LOCATION);
-    	path.append(userName).append("/").append(projectName).append("/").append(fileName);
-    	
-    	InputStream is = null;
-	    try {
-	    	File file = new File(path.toString());
-	    	logger.info("get a file path: "+path);
-	        // get your file as InputStream
-	        is = new BufferedInputStream(new FileInputStream(file));
-	        // copy it to response's OutputStream
-	        org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
-	        response.flushBuffer();
-	        is.close();
-	      } catch (IOException ex) {
-	        logger.error("Error writing file to output stream. Filename was '{}'");
+		ServletOutputStream os = response.getOutputStream();
+		InputStream is = fileDAO.GetFileAProjectFile(userName, projectName, fileName, ro);
+		if(!ro.isSuccess()){
+			if(is!= null){
+				is.close();
+			}
+			response.setStatus(404);
+			return;
+		}
 
-	      } finally{
-	    	  if(is != null){
-	    		  is.close();
-	    	  }
-	    	  
-	      }
+		org.apache.commons.io.IOUtils.copy(is, os);
+		if(is!= null){
+			is.close();
+		}
+    	return;
+		
 	    		  
 	}
 

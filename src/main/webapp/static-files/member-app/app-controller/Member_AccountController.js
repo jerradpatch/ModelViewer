@@ -102,7 +102,6 @@
     		FileService.GetAllFileMetaData(userName,projectName,null,member,memberPass)
     		.then(function (response) {
                 if (response.success) {
-                	console.log(response.message);
                 	vm.projectsMemberIsAPartOf[projectName] = response.message;
                 } else {			                	
                 	vm.error = response.message;

@@ -45,6 +45,13 @@ public class ValidateUtil {
 	final static int TEXTFIELD_LENGTH_MIN = 0;
 	final static String[] TEXTFIELD_RESTRICTED_CHARACTERS = {"/","\\"};	
 	
+	final static String FILENAMENULL = "\"File name was null\"";
+	final static int FILENAME_LEFT_LENGTH_MAX = 50;
+	final static int FILENAME_LEFT_LENGTH_MIN = 1;
+	final static int FILENAME_RIGHT_LENGTH_MAX = 6;
+	final static int FILENAME_RIGHT_LENGTH_MIN = 2;
+	final static String[] FILENAME_RESTRICTED_CHARACTERS = {"\\"};	
+	
 	final static String TEXTFIELD_FAIL1 = "\"Text field is too long, required maximum length of "+USERNAME_LENGTH_MAX+"\"";
 	final static String TEXTFIELD_FAIL2 = "\"Text field is too short, required minimum length of "+USERNAME_LENGTH_MIN+"\"";
 	final static String TEXTFIELD_FAIL3 = "\"Text field contains restricted characters, \""+USERNAME_RESTRICTED_CHARACTERS+"\" not allowed\"";	
@@ -69,13 +76,7 @@ public class ValidateUtil {
 		return;		
 	}
 	
-	
-	final static String FILENAMENULL = "\"File name was null\"";
-	final static int FILENAME_LEFT_LENGTH_MAX = 50;
-	final static int FILENAME_LEFT_LENGTH_MIN = 1;
-	final static int FILENAME_RIGHT_LENGTH_MAX = 6;
-	final static int FILENAME_RIGHT_LENGTH_MIN = 2;
-	final static String[] FILENAME_RESTRICTED_CHARACTERS = {"/","\\"};	
+
 	
 	final static String USERNAME_FAIL1 = "\"User name is too long, required maximum length of "+USERNAME_LENGTH_MAX+"\"";
 	final static String USERNAME_FAIL2 = "\"User name is too short, required minimum length of "+USERNAME_LENGTH_MIN+"\"";
@@ -240,34 +241,35 @@ public class ValidateUtil {
 			ro.setSuccess(false);
 			ro.setMessage(FILENAMENULL);			
 		} 
-		String[] temp = fileName.split("[.]");
-		logger.debug("validateFileName: fileName"+fileName);
-		if(temp.length > 2){
-			ro.setSuccess(false);
-			ro.setMessage(FILENAME_FAIL7);
-			return;
-		} else if (temp.length < 2){
-			ro.setSuccess(false);
-			ro.setMessage(FILENAME_FAIL6);	
-			return;
-		}
+//		String[] temp = fileName.split("[.]");
+//		logger.debug("validateFileName: fileName"+fileName);
+//		if(temp.length > 2){
+//			ro.setSuccess(false);
+//			ro.setMessage(FILENAME_FAIL7);
+//			return;
+//		} else if (temp.length < 2){
+//			ro.setSuccess(false);
+//			ro.setMessage(FILENAME_FAIL6);	
+//			return;
+//		}
 		
-		String fileNameLeft = temp[0];
-		String fileNameRight = temp[1];
+//		String fileNameLeft = temp[0];
+//		String fileNameRight = temp[1];
 		
-		if(fileNameLeft.length() > FILENAME_LEFT_LENGTH_MAX){
-			ro.setSuccess(false);
-			ro.setMessage(FILENAME_FAIL1);
-		} else if (fileNameLeft.length() < FILENAME_LEFT_LENGTH_MIN) {
-			ro.setSuccess(false);
-			ro.setMessage(FILENAME_FAIL2);
-		} else if(fileNameRight.length() > FILENAME_RIGHT_LENGTH_MAX){
-			ro.setSuccess(false);
-			ro.setMessage(FILENAME_FAIL3);
-		} else if (fileNameRight.length() < FILENAME_RIGHT_LENGTH_MIN) {
-			ro.setSuccess(false);
-			ro.setMessage(FILENAME_FAIL4);
-		} else if (containsAny(fileName,FILENAME_RESTRICTED_CHARACTERS)){
+//		if(fileNameLeft.length() > FILENAME_LEFT_LENGTH_MAX){
+//			ro.setSuccess(false);
+//			ro.setMessage(FILENAME_FAIL1);
+//		} else if (fileNameLeft.length() < FILENAME_LEFT_LENGTH_MIN) {
+//			ro.setSuccess(false);
+//			ro.setMessage(FILENAME_FAIL2);
+//		} else if(fileNameRight.length() > FILENAME_RIGHT_LENGTH_MAX){
+//			ro.setSuccess(false);
+//			ro.setMessage(FILENAME_FAIL3);
+//		} else if (fileNameRight.length() < FILENAME_RIGHT_LENGTH_MIN) {
+//			ro.setSuccess(false);
+//			ro.setMessage(FILENAME_FAIL4);
+//		} else 
+			if (containsAny(fileName,FILENAME_RESTRICTED_CHARACTERS)){
 			ro.setSuccess(false);
 			ro.setMessage(FILENAME_FAIL5);
 			return;	

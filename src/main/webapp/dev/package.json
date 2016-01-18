@@ -20,7 +20,6 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
-    "angular": "^1.4.8",
     "angular-file-upload": "^2.2.0",
     "angular-loading-bar": "^0.8.0",
     "lightbox2": "^2.8.2",

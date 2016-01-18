@@ -2,6 +2,7 @@ package com.ModelViewer.DAO.Validation;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,6 +26,32 @@ public class FileDAOValidation implements FileDAO{
 	private static final String NULL_INPUT = "\"null values were input\"";
 	private static final String EMPTY_INPUT = "\"empty values were input\"";
 	
+	public InputStream GetFileAProjectFile(String userName,String projectName,String fileName, ReturnedObject ro){
+		if(userName == null || projectName ==null || fileName == null){
+			ro.setSuccess(false);
+			ro.setMessage(NULL_INPUT);
+			return null;
+		}
+		if(userName.isEmpty() || projectName.isEmpty() || fileName.isEmpty()){
+			ro.setMessage(EMPTY_INPUT);
+			ro.setSuccess(false);
+			return null;
+		}
+		vu.validateUserName(userName, ro);
+		if(!ro.isSuccess()){
+			return null;
+		}
+		vu.validateProjectName(projectName, ro);
+		if(!ro.isSuccess()){
+			return null;
+		}
+		vu.validateFileName(fileName, ro);
+		if(!ro.isSuccess()){
+			return null;
+		}
+		
+		return fileDAO.GetFileAProjectFile(userName, projectName, fileName, ro);
+	}
 	public void UploadAProjectFile_streaming(String userName, String projectName, String fileName, InputStream fileBytes, ReturnedObject ro)
 			throws IOException {
 		
@@ -44,6 +71,10 @@ public class FileDAOValidation implements FileDAO{
 			return;
 		}
 		vu.validateProjectName(projectName, ro);
+		if(!ro.isSuccess()){
+			return;
+		}
+		vu.validateFileName(fileName, ro);
 		if(!ro.isSuccess()){
 			return;
 		}
@@ -133,7 +164,7 @@ public class FileDAOValidation implements FileDAO{
 		if(!ro.isSuccess()){
 			return;
 		}
-		vu.validateUserName(fileName, ro);
+		vu.validateFileName(fileName, ro);
 		if(!ro.isSuccess()){
 			return;
 		}		

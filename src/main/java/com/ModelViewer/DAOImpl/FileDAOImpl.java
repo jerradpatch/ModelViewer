@@ -1,11 +1,14 @@
 package com.ModelViewer.DAOImpl;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,11 +37,33 @@ public class FileDAOImpl implements FileDAO{
 	
 	private static final Logger logger = LoggerFactory.getLogger(FileDAOImpl.class);
 	
-	InputStream GetFileStream(String userName, String projectName, String memberName){
-		return null;
+	public InputStream GetFileAProjectFile(String userName,String projectName,String fileName, ReturnedObject ro){
 		
-	}
+		String path = makeFilePath(userName, projectName, fileName);
+		
+		//test if file exists
+		if(!fileExists(path)){
+    		ro.setSuccess(false);
+    		ro.setMessage("\"file does not exist\"");
+    		logger.error("userName: "+userName+" projectName: "+projectName+" fileName: "+fileName+" 'does not exist'");
+    		return null;
+		}
+		InputStream is = null;
+	    try {
+	    	File file = new File(path.toString());
+	    	logger.debug("get a file path: "+path);
+	        // get your file as InputStream
+	        is = new BufferedInputStream(new FileInputStream(file));
+	        // copy it to response's OutputStream
+	       // org.apache.commons.io.IOUtils.copy(is, os);
+	        return is;
+	        
+	      } catch (FileNotFoundException ex) {
+	        logger.error("Error writing file to output stream. Filename was '{}'");
 	
+	      } 
+	    return null;
+	}
 	/**
 	 * @return null and ro set if error, else value
 	 */
@@ -54,7 +79,7 @@ public class FileDAOImpl implements FileDAO{
     	
     	if(folder.listFiles() == null){
     		ro.setSuccess(false);
-    		ro.setMessage("not a folder");
+    		ro.setMessage("\"not a folder\"");
     		return null;
     	}
     	
@@ -273,6 +298,15 @@ public class FileDAOImpl implements FileDAO{
 	
 	
 	////--------------------util---------------------
+	
+	private boolean fileExists(String path){
+		File f = new File(path);
+		if(f.exists() && !f.isDirectory()) { 
+			return true;
+		}		
+		return false;
+	}
+
 	private String getFileExtension(String fileName){
 		int periodLocation = fileName.lastIndexOf('.');
 		if(periodLocation == -1){

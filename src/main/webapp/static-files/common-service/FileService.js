@@ -11,7 +11,7 @@
     	var baseUrlFileService = '/ModelViewer/FileService/';
     	var service = {};
     	
-    	var filesBeingUploaded = {};
+    	var filesBeingUploaded = {}; 
     	var fileName = null;
     	var projectName = null;
     	
@@ -41,8 +41,16 @@
         });
     	
         function GetFileAProjectFile(userName,userP, member, memberP, projectName,fileName) {
-            return $http.get(baseUrlFileService+'GetFileAProjectFile', {params:{"userName": userName, "userP": userP, "projectName":projectName, "member": member, "memberP": memberP, "fileName":fileName}})
-            	.then(handleSuccess, handleError('Error FileService.GetFileAProjectFile '+userName+" "+projectName));        	
+        	if(userP == null){
+	            return $http.get(baseUrlFileService+'GetFileAProjectFile', {params:{"projectName":projectName, "member": member, "memberP": memberP, "fileName":fileName}})
+	            	.then(handleSuccess, handleError('Error FileService.GetFileAProjectFile '+userName+" "+projectName));  
+        	} else if (memberP==null){
+        		return $http.get(baseUrlFileService+'GetFileAProjectFile', {params:{"userName": userName, "userP": userP, "projectName":projectName, "fileName":fileName}})
+            		.then(handleSuccess, handleError('Error FileService.GetFileAProjectFile '+userName+" "+projectName)); 
+        	} else {
+        		return {"success":false,"message":"using this method incorrectly"};
+        	}
+        	
         }
 
         function GetFileAProjectFile_link(userName,projectName,member) {
