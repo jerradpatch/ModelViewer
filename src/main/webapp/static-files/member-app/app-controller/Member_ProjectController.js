@@ -53,6 +53,8 @@
 //        }])    	
         .controller('Member_ProjectController', Member_ProjectController)
         .directive('jpNgUnity', jpNgUnity)
+        .directive('jpNgBlink', jpNgBlink)
+       // .directive('jpWebGlGlobe', jpWebGlGlobe)
         .run(function ($rootScope, CONSTANTS_Member_ProjectController) {
         	$rootScope.CONSTANTS_Member_ProjectController = CONSTANTS_Member_ProjectController;
         });
@@ -65,7 +67,10 @@
         vm.modelImages = [];
         vm.projectMeta = {};
         vm.GetProject = GetProject;
-        vm.projectStory = GetStory();
+        vm.projectStory = null;
+        vm.projectTitle = GetProject();
+        
+        GetStory();
         
         function GetProject(){
         	return $cookieStore.get("Member_ProjectController.currentProject");
@@ -231,6 +236,62 @@
 	    	}
 	    }
     };
+    
+    
+    
+//    jpWebGlGlobe.$inject = ['$document','AuthService','$window'];
+//    function jpWebGlGlobe($document,AuthService,$window){
+//    	
+//		return {
+//			link: function(scope, element, attr) {
+//				$('<div id="jpWebGlGlobe" style="z-index:-1;position:absolute;"><div id="container" style="color: rgb(255, 255, 255); font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 13px; line-height: 20px; font-family: Arial, sans-serif; cursor: move;"></div></div>').prependTo($('body'));
+//				
+//				var data = [ 10, 10, 20, 10, 20, 10, 20, 10, 20, 10, 20, 20];
+//				
+//				var container = document.getElementById( 'container' );
+//				var globe = new DAT.Globe( container );
+//				
+//				for ( var i = 0; i < data.length; i ++ ) {
+//		            globe.addData( data, {format: 'magnitude', name: 'test'} );
+//		        }
+//				
+//				globe.createPoints();
+//				
+//				globe.animate();
+//			}
+//		}
+//    }
+    
+    jpNgBlink.$inject = [];
+    function jpNgBlink(){
+    	
+		return {
+			link: function(scope, element, attr) {
+
+				//parent attributes //jp-ng-blink active='true' options='{'duration':2000,'itteration':2}'
+				var blinkTrue = attr['active'];
+				if(blinkTrue == "true"){
+					element.css( "position","relative");
+					$("<div jp-ng-blink-child class='jpSwipeLeftRightInform' style='top:0px;font-size: 13vw;display:flex;justify-content:center;align-items:center;position: absolute;width: 100%;height: 100%;'><span style='line-height: 1.25;'>&#171;</span><span>SWIPE</span><span style='line-height: 1.25;'>&#187;</span></div>").appendTo(element);
+
+					var perpendedChild = $(element).children("[jp-ng-blink-child]").first();
+					
+					var options = JSON.parse(attr['options']);
+
+					for(var i = 0; i < options.itteration; i++){
+						$(perpendedChild).fadeIn().fadeOut(options.duration);
+					};
+					
+					$( perpendedChild ).promise().done(function() {
+						$(perpendedChild).remove();
+					});
+				}
+
+			
+
+			}
+		}
+    }
 })();
 
 

@@ -3,30 +3,37 @@
 	<head>
 	    <meta charset="utf-8" />
 	    <title>Model Viewer</title>
+
 	    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
 	    <link href="/ModelViewer/static-files/modules/angular-carousel.css" rel="stylesheet" type="text/css" />
 	    <link href="/ModelViewer/static-files/modules/lightbox.min.css" rel="stylesheet" type="text/css" />
 	    <link href="/ModelViewer/static-files/modules/button3d.css" rel="stylesheet" type="text/css" />
 	    <link href="/ModelViewer/static-files/modules/unityStyle.css" rel="stylesheet" type="text/css" />
 	    
+	    <link href="/ModelViewer/static-files/modules/my.css" rel="stylesheet" type="text/css" />
+	    	    
 	    <link href="//cdn.rawgit.com/cornflourblue/angular-registration-login-example/master/app-content/app.css" rel="stylesheet" />
+	    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+	    <link href='https://fonts.googleapis.com/css?family=Josefin+Sans' rel='stylesheet' type='text/css'>
    		
    		<meta name="viewport" content="width=width=device-width, initial-scale=1.0, user-scalable=yes">
    		
    	<style>
-   				html, body{
+   			html, body{
+   				overflow: hidden;
 				width: 100%;
 			    height: 100%;
 			}
    		@media only screen and (max-device-width: 500px){
 			html, body{
+				overflow: hidden;
 				width: 100%;
 			    height: 100%;
 			}
-		}
-		
+		}	
 		@media only screen and (max-device-width: 500px){	
 		    html, body{
+		    	overflow: hidden;
 				width: 500px;
 			    height: 100%;
 			}	
@@ -34,14 +41,26 @@
 	</style>			
 	</head>
 	<body style="background-color:#eee">
-		<nav class="navbar navbar-default navbar-fixed-top" style="background-color:#FFF">
-	  		<div class="container">
-	  			<a class="btn btn-default navbar-btn" href="#/HomeView">Main Page</a>
-	  			<button type="button" class="btn btn-default navbar-btn disabled">Tutorial</button>
-	  			<button type="button" class="btn btn-default navbar-btn disabled">Report Blog</button>
-	  			<button type="button" class="btn btn-default navbar-btn disabled">Change Log</button>
-			</div>
-		</nav>		
+	
+		<div>
+			
+			<nav class="navbar navbar-default navbar-fixed-top" style="top:20px;border:none;background-color:transparent">
+				<div style="position: relative;overflow: hidden;width: 100%;height: 100%;">
+					<img style="position: absolute;z-index: -1;right: 57%;"src="static-files/images/400h800w.jpg" alt="Could not locate image." >
+			  		<div class="container" style="
+						background: rgb(255, 255, 255); 
+						background: -webkit-linear-gradient(left, rgba(255,0,0,0),rgba(255,0,0,0), rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255), rgba(255,0,0,0));
+						background: -o-linear-gradient(right, rgba(255,0,0,0),rgba(255,0,0,0), rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255), rgba(255,0,0,0));
+						background: -moz-linear-gradient(right, rgba(255,0,0,0),rgba(255,0,0,0), rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255), rgba(255,0,0,0));			
+						background: linear-gradient(to right, rgba(255,0,0,0),rgba(255,0,0,0), rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255), rgba(255,0,0,0));">
+			  			<a class="btn btn-default navbar-btn" href="#/HomeView">Main Page</a>
+			  			<button type="button" class="btn btn-default navbar-btn disabled">Tutorial</button>
+			  			<button type="button" class="btn btn-default navbar-btn disabled">Report Blog</button>
+			  			<button type="button" class="btn btn-default navbar-btn disabled">Change Log</button>
+					</div>
+				</div>
+			</nav>
+		</div>	
         <div style="height:100%">
            <div ng-view style="height:100%"></div>
         </div>	
@@ -75,6 +94,7 @@
    		<script src="/ModelViewer/static-files/member-app/app-controller/Member_ProjectController.js"></script>
    		
    		<script src="/ModelViewer/static-files/modules/UnityProgress.js"></script> 	
-   		<script src="/ModelViewer/static-files/modules/compiled.js"></script>    
+   		<script src="/ModelViewer/static-files/modules/compiled.js"></script> 
+   
 	</body>
 </html>
