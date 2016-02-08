@@ -288,7 +288,8 @@ public class FileService {
 			ro.setMessage(ACCESS_FORBIDDEN);
 			return ro.ToJSONString();				
 		}
-	
+		
+		logger.debug("GetAllFileMetaData: userName: "+userName+" projectName: "+projectName+" memberName: "+member);
 		HashMap<Object, Object> fileMeta = fileDAO.GetFileListForAProjectAndMetaData(userName, projectName, ro);
     	if(ro.isSuccess() == false || fileMeta == null){
     		return ro.ToJSONString();

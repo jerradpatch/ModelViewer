@@ -52,7 +52,7 @@ public class MemberDAOValidation implements MemberDAO{
 		return memberDAO.GetMemberData(userName, member, ro);
 	}
 
-	public void CreateUpdateAMember(String userName, String member, String password, ReturnedObject ro) {
+	public void CreateUpdateAMember(String userName, String memberNameOld,String memberPasswordOld,String member,String password, ReturnedObject ro) {
 		vu.validateUserName(userName, ro);
 		if(!ro.isSuccess()){
 			return;
@@ -67,7 +67,18 @@ public class MemberDAOValidation implements MemberDAO{
 		if(!ro.isSuccess()){
 			return;
 		}
-		memberDAO.CreateUpdateAMember(userName, member, password, ro);
+		
+		vu.validateMemberName(memberNameOld, ro);
+		if(!ro.isSuccess()){
+			return;
+		}
+		
+		vu.validatePassword(memberPasswordOld, ro);
+		if(!ro.isSuccess()){
+			return;
+		}
+		
+		memberDAO.CreateUpdateAMember(userName, memberNameOld, memberPasswordOld, member, password, ro);
 	}
 
 	public void DeleteAMember(String userName, String member, ReturnedObject ro) {

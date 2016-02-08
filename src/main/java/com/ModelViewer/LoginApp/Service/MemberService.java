@@ -148,7 +148,9 @@ public class MemberService {
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "member", required = true) String member,
 			@RequestParam(value = "password", required = true) String password,
-			@RequestParam(value = "companyP", required = true) String companyPassword)
+			@RequestParam(value = "companyP", required = true) String companyPassword,
+			@RequestParam(value = "memberNameOld", required = false) String memberNameOld,
+			@RequestParam(value = "memberPasswordOld", required = false) String memberPasswordOld)
 					throws JsonProcessingException {
 		
 		logger.info("CreateUpdateAMember request recieved: member: "+member);
@@ -162,8 +164,14 @@ public class MemberService {
     		ro.setMessage(ACCESS_FORBIDDEN);
 			return ro.ToJSONString();	
 		}
+    	
+    	//if creating a new memeber set old = new
+		if(memberNameOld == null || memberPasswordOld == null || memberNameOld.isEmpty() || memberPasswordOld.isEmpty()){
+			memberNameOld = member;
+			memberPasswordOld = password;
+		}
 		
-		memberDAO.CreateUpdateAMember(userName,member,password,ro);
+		memberDAO.CreateUpdateAMember(userName,memberNameOld,memberPasswordOld, member,password,ro);
 		if(ro.isSuccess() == false){
     		return ro.ToJSONString();
     	} else {

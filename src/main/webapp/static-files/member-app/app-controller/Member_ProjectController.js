@@ -2,7 +2,7 @@
     'use strict';
  
     angular
-        .module('app')
+        .module('app.member')
         .constant("CONSTANTS_Member_ProjectController", {
         	"Member_ProjectController" : {
 	        		"MEMBER_LOGIN_FORM" : {
@@ -54,6 +54,7 @@
         .controller('Member_ProjectController', Member_ProjectController)
         .directive('jpNgUnity', jpNgUnity)
         .directive('jpNgBlink', jpNgBlink)
+        .directive('jpNgRightFanImages', jpNgRightFanImages)
        // .directive('jpWebGlGlobe', jpWebGlGlobe)
         .run(function ($rootScope, CONSTANTS_Member_ProjectController) {
         	$rootScope.CONSTANTS_Member_ProjectController = CONSTANTS_Member_ProjectController;
@@ -63,13 +64,14 @@
     function Member_ProjectController($location,$cookieStore,AuthService, ProjectInfoService, MemberService, FileService) {
         var vm = this;
 
-        vm.GetAllFileMetaDataForAProject = GetAllFileMetaDataForAProject();	
-        vm.modelImages = [];
-        vm.projectMeta = {};
+        vm.GetAllFileMetaDataForAProject = GetAllFileMetaDataForAProject;	
+        vm.modelImages = null;
+        vm.projectMeta = null;
         vm.GetProject = GetProject;
         vm.projectStory = null;
         vm.projectTitle = GetProject();
         
+        GetAllFileMetaDataForAProject();	
         GetStory();
         
         function GetProject(){
@@ -156,10 +158,12 @@
                 	vm.projectMeta = response.message;
                 } else {			                	
                 	vm.error = response.message;
-                	onError(response.message);
+                	//onError(response.message);
                 }
 			});	  		  		
     	}
+    	
+    	
         return vm;
     }
     
@@ -177,18 +181,18 @@
 					urlUnity = element[0].attributes['url-unity'].nodeValue;
 			        event.preventDefault();
 			        element.on('mouseup', function(event){
-						$('<div id="jp-ng-unity-all" style="position: absolute;z-index: 100;"><div id="jp-ng-unity-overlay" class="jp-ng-unity-overlay" style="background:black;opacity:0.8;"></div><div class="template-wrap clear"> <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="600px" width="960px"></canvas> <br><div class="logo"></div><div class="fullscreen"><img src="static-files/images/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);"/></div><div class="title">unity</div></div><p class="footer">&laquo; created with <a href="http://unity3d.com/" title="Go to unity3d.com">Unity</a> &raquo;</p></div>').prependTo($('body'));
+			        	jQuery('<div id="jp-ng-unity-all" style="position: absolute;z-index: 100;"><div id="jp-ng-unity-overlay" class="jp-ng-unity-overlay" style="background:black;opacity:0.8;"></div><div class="template-wrap clear"> <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="600px" width="960px"></canvas> <br><div class="logo"></div><div class="fullscreen"><img src="static-files/images/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);"/></div><div class="title">unity</div></div><p class="footer">&laquo; created with <a href="http://unity3d.com/" title="Go to unity3d.com">Unity</a> &raquo;</p></div>').prependTo($('body'));
 						//add background overlay styling
 						setOverlaySize();
 						//add resize event for overlay
-						$(window).on('resize', setOverlaySize);
+						jQuery(window).on('resize', setOverlaySize);
 						//$("#jp-ng-unity-overlay").style.cssText = 'float:left;margin-top:75px;';
 
 						//add click out of box event handeler to close the window
-						$("#jp-ng-unity-overlay").on('mousedown', function(event){
-							$("#jp-ng-unity-overlay").on('mouseup', function(event){
-								$("#jp-ng-unity-all").fadeOut(400);
-								$.when($("#jp-ng-unity-all").fadeOut(400)).done(function(){
+						jQuery("#jp-ng-unity-overlay").on('mousedown', function(event){
+							jQuery("#jp-ng-unity-overlay").on('mouseup', function(event){
+								jQuery("#jp-ng-unity-all").fadeOut(400);
+								jQuery.when(jQuery("#jp-ng-unity-all").fadeOut(400)).done(function(){
 									location.reload(false); //until unity makes it javascript api more friendly to single page apps, I have to free resources by refreshing the page
 								})
 							});
@@ -230,7 +234,7 @@
 						codeUrl: urlUnity+"/Release/unity.js",
 						memUrl: urlUnity+"/Release/unity.mem"
 					};
-					$.getScript(urlUnity+"/Release/UnityLoader.js");		   
+					jQuery.getScript(urlUnity+"/Release/UnityLoader.js");		   
 				}
 				
 	    	}
@@ -241,7 +245,8 @@
     
 //    jpWebGlGlobe.$inject = ['$document','AuthService','$window'];
 //    function jpWebGlGlobe($document,AuthService,$window){
-//    	
+//    			<div style="background-color:white;width:80%;height:80%;display:flex;justify-content:center;align-items:center;border-style:solid;border-radius:25px;padding:10px;">
+
 //		return {
 //			link: function(scope, element, attr) {
 //				$('<div id="jpWebGlGlobe" style="z-index:-1;position:absolute;"><div id="container" style="color: rgb(255, 255, 255); font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 13px; line-height: 20px; font-family: Arial, sans-serif; cursor: move;"></div></div>').prependTo($('body'));
@@ -272,18 +277,18 @@
 				var blinkTrue = attr['active'];
 				if(blinkTrue == "true"){
 					element.css( "position","relative");
-					$("<div jp-ng-blink-child class='jpSwipeLeftRightInform' style='top:0px;font-size: 13vw;display:flex;justify-content:center;align-items:center;position: absolute;width: 100%;height: 100%;'><span style='line-height: 1.25;'>&#171;</span><span>SWIPE</span><span style='line-height: 1.25;'>&#187;</span></div>").appendTo(element);
+					jQuery("<div jp-ng-blink-child class='jpSwipeLeftRightInform' style='top:0px;font-size: 13vw;display:flex;justify-content:center;align-items:center;position: absolute;width: 100%;height: 100%;'><span style='line-height: 1.25;'>&#171;</span><span>SWIPE</span><span style='line-height: 1.25;'>&#187;</span></div>").appendTo(element);
 
-					var perpendedChild = $(element).children("[jp-ng-blink-child]").first();
+					var perpendedChild = jQuery(element).children("[jp-ng-blink-child]").first();
 					
 					var options = JSON.parse(attr['options']);
 
 					for(var i = 0; i < options.itteration; i++){
-						$(perpendedChild).fadeIn().fadeOut(options.duration);
+						jQuery(perpendedChild).fadeIn().fadeOut(options.duration);
 					};
 					
-					$( perpendedChild ).promise().done(function() {
-						$(perpendedChild).remove();
+					jQuery( perpendedChild ).promise().done(function() {
+						jQuery(perpendedChild).remove();
 					});
 				}
 
@@ -292,6 +297,39 @@
 			}
 		}
     }
+    
+    jpNgRightFanImages.$inject = [];
+    function jpNgRightFanImages(){
+    	
+		return {
+			link: function(scope, element, attr) {
+
+				//parent attributes //jp-ng-blink active='true' options='{'duration':2000,'itteration':2}'
+				var blinkTrue = attr['active'];
+				if(blinkTrue == "true"){
+					element.css( "position","relative");
+					jQuery("<div jp-ng-blink-child class='jpSwipeLeftRightInform' style='top:0px;font-size: 13vw;display:flex;justify-content:center;align-items:center;position: absolute;width: 100%;height: 100%;'><span style='line-height: 1.25;'>&#171;</span><span>SWIPE</span><span style='line-height: 1.25;'>&#187;</span></div>").appendTo(element);
+
+					var perpendedChild = $(element).children("[jp-ng-blink-child]").first();
+					
+					var options = JSON.parse(attr['options']);
+
+					for(var i = 0; i < options.itteration; i++){
+						jQuery(perpendedChild).fadeIn().fadeOut(options.duration);
+					};
+					
+					jQuery( perpendedChild ).promise().done(function() {
+						jQuery(perpendedChild).remove();
+					});
+				}
+
+			
+
+			}
+		}
+    }
+ 
+
 })();
 
 

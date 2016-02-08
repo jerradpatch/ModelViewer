@@ -9,11 +9,11 @@
 	        		"MEMBER" : {
 	        			"MAXIMUM_LENGTH": 30,
 	        			"MINIMUM_LENGTH": 3,
-	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"},
+	        			"VALID_PATTERN":"\\w+"},
 	        		"PASSWORD": {
 	        			"MAXIMUM_LENGTH": 20,
 	        			"MINIMUM_LENGTH": 6,
-	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}     		
+	        			"VALID_PATTERN":"\\w+"}     		
 	        	}
         	}
          })
@@ -27,8 +27,12 @@
         var vm = this;       
 
         vm.createMemberDialog= false;
+        
         vm.memberNameToCreate = "";
-        vm.memberPasswordToCreate = "";	       	
+        vm.memberPasswordToCreate = "";	 
+        vm.memberNameToCreateOld = "";
+        vm.memberPasswordToCreateOld = "";      
+        
         vm.members = GetAListOfMembers();
         vm.error = null;
        
@@ -69,12 +73,16 @@
 				.then(function (response) {
 	                if (response.success) {
 	                    var message = response.message;
+	                    vm.memberNameToCreateOld = message.member;
+	                    vm.memberPasswordToCreateOld = message.password;
 	                    vm.memberNameToCreate = message.member;
 	                    vm.memberPasswordToCreate = message.password;
 	                } else {
 	                	onError(response.message);
 	                	vm.memberNameToCreate = "";
 	                    vm.memberPasswordToCreate = "";
+	                	vm.memberNameToCreateOld = "";
+	                    vm.memberPasswordToCreateOld = "";
 	                	vm.error = response.message;
 	                }
 	            });	       	
@@ -112,9 +120,11 @@
         }
         
         function CreateUpdateAMember (member,password){
-        	var pass = AuthService.GetPassword();
+        	var userPass = AuthService.GetPassword();
         	var userName = AuthService.GetUser();
-			MemberService.CreateUpdateAMember(userName,member,password,pass) 
+      	
+			MemberService.CreateUpdateAMember(userName,member,password,userPass,vm.memberNameToCreateOld,vm.memberPasswordToCreateOld) 
+		
 				.then(function (response) {
 	                if (response.success) {			                   
 	                    vm.error = null;

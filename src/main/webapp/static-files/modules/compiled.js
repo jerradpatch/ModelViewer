@@ -12654,7 +12654,7 @@ return jQuery;
   // Attach event handlers to the new DOM elements. click click click
   Lightbox.prototype.build = function() {
     var self = this;
-    $('<div id="lightboxOverlay" class="lightboxOverlay"></div><div id="lightbox" class="lightbox"><div class="lb-outerContainer"><div class="lb-container"><div style=" position: absolute; height: 69px; width: 74px; background-color: #EEE; border-radius: 4px;z-index: 100;left: 5px;top: 5px;"> <div class="panel panel-default"> <div class="panel-heading">Views</div><div class="panel-body" style="padding: 5px;padding-top: 15px;padding-bottom: 15px;"> <button  jp-ng-unity style="height: 45px;width: 45px;margin: 0px;padding: 7px;" type="button" class="lb-jp-3d btn3d btn btn-white btn-lg"><img src="static-files/images/unity.png" style=" height: 30px;"> </button> </div></div></div><img class="lb-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" /><div class="lb-nav"><a class="lb-prev" href="" ></a><a class="lb-next" href="" ></a></div><div class="lb-loader"><a class="lb-cancel"></a></div></div></div><div class="lb-dataContainer"><div class="lb-data"><div class="lb-details"><span class="lb-caption"></span><span class="lb-number"></span></div><div class="lb-closeContainer"><a class="lb-close"></a></div></div></div></div>').appendTo($('body'));
+    $('<div id="lightboxOverlay" class="lightboxOverlay"></div><div id="lightbox" class="lightbox"><div class="lb-outerContainer"><div class="lb-container"><div id="jpViews" style="position: absolute; height: 69px;width: 80px; border-radius: 4px; z-index: 100;left: -84px; top: 5px; visibility: visible; background-color: rgb(238, 238, 238);"> <div class="panel panel-default"> <div class="panel-heading">Views</div><div class="panel-body" style="padding: 5px;padding-top: 15px;padding-bottom: 18px;"> <button jp-ng-unity="" style="height: 45px;width: 45px;margin: 0px;padding: 7px;" type="button" class="lb-jp-3d btn3d btn btn-white btn-lg" url-unity="FileService/GetFileAProjectFile?userName=123456&amp;projectName=awfawe&amp;member=123456&amp;memberP=123456&amp;fileName=projectUnity/unity"><img src="static-files/images/unity.png" style=" height: 30px;"></button><p style="padding-top: 16px;">Interactive</p><p>3d</p></div></div></div><img class="lb-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" /><div class="lb-nav"><a class="lb-prev" href="" ></a><a class="lb-next" href="" ></a></div><div class="lb-loader"><a class="lb-cancel"></a></div></div></div><div class="lb-dataContainer"><div class="lb-data"><div class="lb-details"><span class="lb-caption"></span><span class="lb-number"></span></div><div class="lb-closeContainer"><a class="lb-close"></a></div></div></div></div>').appendTo($('body'));
 
     // Cache jQuery objects
     this.$lightbox       = $('#lightbox');
@@ -12668,6 +12668,7 @@ return jQuery;
     this.containerBottomPadding = parseInt(this.$container.css('padding-bottom'), 10);
     this.containerLeftPadding = parseInt(this.$container.css('padding-left'), 10);
 
+    
     // Attach event handlers to the newly minted DOM elements
     this.$overlay.hide().on('click', function() {
       self.end();
@@ -12710,6 +12711,7 @@ return jQuery;
       self.end();
       return false;
     });
+    
     
     this.$lightbox.find('.lb-jp-3d').on('click', function() {
         self.end();
@@ -12970,24 +12972,28 @@ return jQuery;
       }
     }
     
+    var dt = this.album[this.currentImageIndex].dataType;
     //if data-type of this file in album is unity, display 3d nav as enabled, else disable it
-    if (this.album[this.currentImageIndex].dataType) {
-    	var element = this.$lightbox.find('.lb-jp-3d')[0];
-    	element.hidden = false;
+    if (dt) {
+    	var jpViews = this.$lightbox.find('#jpViews')[0];
+    	$(jpViews).css('visibility','visible');
     	
-    	if(this.album[this.currentImageIndex].dataType.indexOf('unity') > -1){
+    	if(dt.indexOf('unity') > -1){
+    		var jpElement = this.$lightbox.find('.lb-jp-3d')[0];
+    		$(jpElement).prop("disabled", false);
+    		
     		var unityUrl = this.album[this.currentImageIndex].unityUrl;
-    		element.disabled = false;
-    		element.setAttribute("url-unity",unityUrl);
+    		jpElement.setAttribute('url-unity',unityUrl);
     				//.setAttribute("href", "http://www.w3schools.com");
     		//this.$lightbox.find('.lb-jp-3d').setAttribute('ng-click', 'vm.unityStart(\'"+this.album[this.currentImageIndex].unityUrl+"\')');		
     	} else {
-    		element.disabled = true;
+    		var jpElement = this.$lightbox.find('.lb-jp-3d')[0];
+    		$(jpElement).prop("disabled", true);
     	}
     	
     } else {
-    	var element = this.$lightbox.find('.lb-jp-3d')[0];
-    	element.hidden = true;    	
+    	var jpViews = this.$lightbox.find('#jpViews')[0];
+    	$(jpViews).css('visibility','hidden'); 	
     }
   };
 

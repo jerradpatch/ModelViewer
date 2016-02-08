@@ -9,7 +9,7 @@
         		"NEW_PROJECT_INPUT" : {
         			"MAXIMUM_LENGTH": 30,
         			"MINIMUM_LENGTH": 3,
-        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}	
+        			"VALID_PATTERN":"\\w+"}	
         		}
         	}
          })
@@ -95,11 +95,11 @@
         	});
         });        
         $scope.$on('FileService.abort', function(event,data) {
-        	$scope.$apply(function(){
+        	//$scope.$apply(function(){
         		if(data.projectName != null && data.fileName != null){
         			deleteAFileFrom_projectMetaData_list(data.projectName,data.fileName);
         		}
-        	});
+        	//});
         });
         
         $scope.$watch('files', function () {
@@ -491,12 +491,13 @@
 				.then(function (response) {
 	                if (response.success) {			                   
 	                    vm.error = null;
-	                    RefreshElements();
+	                    RefreshElements();	             
 	                } else {			 
 	                	onError(response.message);
 	                	vm.error = response.message;
 	                }
-		        });       	    	
+		        });     
+			vm.projectNameToAdd = "";
         }
 
     	

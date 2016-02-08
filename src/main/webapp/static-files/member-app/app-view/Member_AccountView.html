@@ -1,83 +1,118 @@
 
 <link href='https://fonts.googleapis.com/css?family=Alegreya+Sans' rel='stylesheet' type='text/css'>
 <style>
-	.member_accountView_HVCenter_model{
-		width:300px;
-		height:300px;
-		position:fixed;
-		left:50%;
-		top:50%;
-		margin:-100px 0 0 -150px;
-	}
+
 	
-
-	.member_accountView_mediaSpecific{
-		margin-bottom: 20px;
-		position:relative;
-		width:325px;
-		margin:auto;
+	
+	.modelSpacerTop {
+		height: 10%;
+		width: 100%;
+	} 
+	
+	#innerWindow {
+		width:80%;
 	}
-
-	@media only screen and (min-width: 900px){
-		.member_accountView_mediaSpecific{
-			margin-left: 12%;
-			margin-bottom: 20px;
-			position:relative;
-			float:left;
-			width:325px;
+	@media only screen and (max-width: 600px){	
+		#innerWindow {
+			width:95%;
 		}
 	}
+	.imageNormal{
+    	width: 100%;
+    	height: 100%;
+	}
+	.responsive_headline {
+		width: 100%;
+		height: 100%;
+		justify-content: center;
+		align-items: center;
+		display: flex;
+		font-size:20px;
+		flex-flow: column;
+		font-size: 14vw;
 		
-	@media only screen and (min-width: 1101px){
-		.member_accountView_mediaSpecific{
-			margin-left:4%;mvn 
-			margin-right:2%; 
-			margin-bottom: 20px;
-			position:relative;
-			float:left;
-			width:325px;
-		}
+		text-shadow: 2px 2px 2px #ddd;
 	}
+	.current {
+		box-shadow: 0px 0px 0px grey;
+		background-color: rgb(255, 255, 255);
+	    transition-property: background-color,box-shadow;
+	    transition-duration: 2s;
+	    transition-timing-function: ease;
+	}
+	.current:hover {
+		box-shadow: 2px 2px 13px grey;
+	    background-color: rgba(246, 255, 245, 1);
+	    transition-property: background-color,box-shadow;
+	    transition-duration: 1s;
+	    transition-timing-function: ease;    
+	}	
+	.current {
+		box-shadow: 0px 0px 0px grey;
+		background-color: rgb(255, 255, 255);
+	    transition-property: background-color,box-shadow;
+	    transition-duration: 2s;
+	    transition-timing-function: ease;
+	}
+	.current:hover {
+		box-shadow: 2px 2px 13px grey;
+	    background-color: rgba(246, 255, 245, 1);
+	    transition-property: background-color,box-shadow;
+	    transition-duration: 1s;
+	    transition-timing-function: ease;    
+	}	
+	.font{
+		font-family: 'Open Sans', sans-serif;
+	}
+
 </style>
-<div style="height:25%"></div>
-<div style="font-size: 20px;font-family: 'Alegreya Sans', sans-serif;margin: 0 auto;padding:auto;align-items: center;">
-	<div class="member_accountView_mediaSpecific" ng-repeat="(key, value) in vm.projectsMemberIsAPartOf">	
-		<div class="panel panel-default" style="padding:0px;">
-		<div class="panel-heading">{{key}}</div>
-			<div class="panel-body" style="padding:0px;height: 500px;width: 100%;padding-bottom: 10px;">
-				<ul rn-carousel="" rn-carousel-index="carouselIndex1" rn-carousel-buffered="" rn-carousel-on-infinite-scroll-right="loadNextImages()" 
-				    rn-carousel-on-infinite-scroll-left="loadPreviousImages()" class="carousel5 ng-scope"
-				    style="height:450px;width:323px;">
-					<li ng-repeat="(key, value) in value.Images|carouselSlice:carouselBufferIndex:carouselBufferSize track by key" 
-					    style="height:100%;width:100%;display: inline-block; transform: translate3d(0%, 0px, 0px);z-index:1;" 
-					    class="ng-scope">
-					    <div style="height:100%;width:100%;background-image: url('{{value.url}}')" 
-					         ng-style="{'background-image': 'url({{value.url}})'}" 
-					         class="bgimage ng-binding">
-					         <p style="background: white;padding-left: 70px;margin: 0px;white-space: nowrap;" >{{value.name}}</p>				    								 
-						</div>
-					<li>
-				</ul> 
-				<button style="margin-bottom: 10px;" type="button" class="btn btn-default center-block"
-					ng-click="vm.gotoProjectPage(key)">Explore
-				</button>	
-				<p style="background: white;position: absolute; top: 51px; padding-left: 16px;">Name:</p>			
-			</div>
+<script>
+	jQuery("nav").fadeIn(600);
+</script>
+
+<div style="height:100%;width:100%;">
+	<img style="position: absolute;z-index: -1;top:-56px; " draggable="false" src="static-files/images/highres.jpg" alt="Could not locate image.">
+	<div class="modelSpacerTop"></div>
+	<div class="ng-scope" style="display:flex;justify-content:center;align-items:center;height: 85%;">
+		<div id="innerWindow" class="jumbotron panel panel-default" style="color:white;position:relative;height:90;display:flex;justify-content:center;align-items:center;">
+			<div style='top:0px;display:flex;justify-content:center;align-items:center;position: absolute;width: 100%;height: 100%;z-index:-1;'>
+		    	<div class="responsive_headline">
+			    	<span>Project</span>
+			    	<span>Selection</span>
+		    	</div>
+		    </div>
+			<div style="width: 100%; height: 100%;">
+				<H1 class="font" style="color: black;text-align: center;">{{vm.getCompanyName()}}</H1>
+				<!-- <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term" ng-model="searchInput">	 -->	
+			    <carousel3d stlye="height: 100%;"
+			            ng-model="vm.slides2"
+			            options="vm.options2"
+			            on-selected-click="vm.selectedClick(index)"
+			            on-slide-change="vm.slideChanged(index)"
+			            on-last-slide="vm.lastSlide(index)"
+			            on-before-change="vm.beforeChange(index)">
+			
+			        <carousel3d-slide ng-repeat="slide in vm.slides2 | filter: {projectName:searchInput} track by $index" ng-style="{'background-color':'white'}">
+			        	<div class="panel panel-default">
+			        		<div class="panel-heading">
+			        			<div>
+			        				<p style="padding-right:5px"><span style="padding-right:5px">Project {{$index+  1}}:</span><span>'{{slide.projectName}}'</span></p>
+			        			</div>
+			        			<div style="display: flex;">
+				        			<p style="padding-right:5px"><span style="padding-right:5px">Images: {{slide.imageCount}}</span></p>
+				        			<p style="padding-right:5px"><span style="padding-right:5px">Models: {{slide.modelCount}}</span></p>
+			        			</div>
+			        		</div>
+			        		<div class="panel-body" style="padding:0px;overflow:hidden;">
+					            <img class="imageNormal" ng-src="{{slide.imageUrl}}" alt=""/>
+					        </div>
+					   </div>
+			        </carousel3d-slide>			
+			    </carousel3d>
+		    </div>
 		</div>
 	</div>
 </div>
-
-<!-- model dialog -->
-
-<div class="panel panel-default member_accountView_HVCenter_model" ng-show="vm.md.modelVisible"
-	style="z-index: 10;height:500px;width:500px;margin:-250px 0 0 -250px;">
-	<div class="panel-body" style="height: 100%;width: auto;margin: auto;">
-		<embed src="{{vm.md.modelToLoad}}" style="height:100%;width:100%;"
-		type="application/vnd.unity" pluginspage="http://www.unity3d.com/unity-web-player-2.x" title="memberProject">				
-	</div>
-</div>
-
-
 
 
 

@@ -39,8 +39,8 @@
         	return $http.get(baseUrlHybrid+'DeleteMember', {params:{"userName": userName, "member":member, "companyP": companyP }}).then(handleSuccess, handleError('Error MemberService.DeleteAMember'));
         }
         
-        function CreateUpdateAMember(userName,member,memberPassword, companyP) {
-        	return $http.get(baseUrlMember+'CreateUpdateAMember', {params:{"userName": userName, "member":member, "password":memberPassword, "companyP": companyP}}).then(handleSuccess, handleError('Error MemberService.CreateAMember'));
+        function CreateUpdateAMember(userName,member,memberPassword, companyP, memberNameOld,memberPasswordOld) {
+        	return $http.get(baseUrlMember+'CreateUpdateAMember', {params:{"userName": userName, "member":member, "password":memberPassword, "companyP": companyP, "memberNameOld":memberNameOld, "memberPasswordOld": memberPasswordOld}}).then(handleSuccess, handleError('Error MemberService.CreateAMember'));
         }        
         
  

@@ -25,7 +25,9 @@
 						style="float:right;margin-right:10px" 
 						ng-click="vm.createMemberDialog = !vm.createMemberDialog;
 								  vm.memberNameToCreate = '';
-								  vm.memberPasswordToCreate = '';"> Member
+								  vm.memberPasswordToCreate = '';
+								  vm.memberNameToCreateOld = '';
+								  vm.memberPasswordToCreateOld = '';"> Member
 				</button>
 			</span>			
 		</div>
@@ -35,7 +37,7 @@
 		<!-- repeat for all members -->	 	
 		<div class = "btn-group-vertical" style="width:100%">						
 			
-			<div ng-repeat="member in vm.members"  >
+			<div ng-repeat="member in vm.members" class="animate-repeat" >
 				<div class="input-group" style="padding:2px">
 					<input type="text" class="form-control" style="background-color:transparent;cursor: default;" 
 						id="exampleInputAmount" placeholder="{{member}}" 
@@ -53,13 +55,13 @@
 		</div>		
 	</div>
 
-	<div id="CreateMemberDialogId" style="z-index: 10" class="panel panel-default HVCenter" 
+	<div id="CreateMemberDialogId" style="z-index: 10" class="panel panel-default HVCenter animate-show" 
 		ng-show="vm.createMemberDialog">
 		<div class="panel-heading">
 			<H4>Create/Update Member</H4>
 		</div>
 		<div class="panel-body">
-			<form name="newMemberForm" ng-submit="vm.MemberDialogAccept();vm.createMemberDialog=false;" role="form">
+			<form name="newMemberForm" ng-submit="vm.MemberDialogAccept(currentMemberName, currentMememberPassword, currentMemberNameOld, currentMememberPasswordOld);vm.createMemberDialog=false;" role="form">
 				<div class="form-group"  style="margin-bottom: 5px;" 
 					ng-class="{ 'has-error': newMemberForm.memberName.$dirty && (newMemberForm.memberName.$error.required || newMemberForm.memberName.$error.pattern || newMemberForm.memberName.$error.maxlength || newMemberForm.memberName.$error.minlength )}">
 					<input type="text" name="memberName" style="margin-bottom:5px" class="form-control" placeholder="Name" ng-model="vm.memberNameToCreate"

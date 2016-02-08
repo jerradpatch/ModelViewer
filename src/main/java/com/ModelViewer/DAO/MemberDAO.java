@@ -10,7 +10,7 @@ public interface MemberDAO {
 	public List<String> GetListOfMember(String userName, ReturnedObject ro);
 	public String GetMemberPassword(String userName, String member, ReturnedObject ro);
 	public MemberModel GetMemberData(String userName, String member, ReturnedObject ro);
-	public void CreateUpdateAMember(String userName, String member, String password, ReturnedObject ro);
+	public void CreateUpdateAMember(String userName, String memberNameOld,String memberPasswordOld,String member,String password, ReturnedObject ro);
 	public void DeleteAMember(String userName, String member, ReturnedObject ro);
 	
 }

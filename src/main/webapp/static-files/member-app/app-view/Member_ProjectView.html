@@ -35,23 +35,47 @@
 		    height: 100%;
 		}
 	}
+	
+	.jumbotron > .panel {
+		box-shadow: 0px 0px 0px grey;
+		background-color: rgb(255, 255, 255);
+	    transition-property: background-color,box-shadow;
+	    transition-duration: 2s;
+	    transition-timing-function: ease;
+	}
+	.jumbotron > .panel:hover {
+		box-shadow: 10px 10px 13px grey;
+	    background-color: rgba(246, 255, 245, 1);
+	    transition-property: background-color,box-shadow;
+	    transition-duration: 1s;
+	    transition-timing-function: ease;    
+	}
 		
 </style>
-<script>
- /*   lightbox.option({
-    	'disableScrolling': true,
-    	'fitImagesInViewport':true,    
-     	'resizeDuration': 200,
-      	'wrapAround': true
-    });*/
+<script type="text/javascript">
+
+	var iScrollPos = 0;
+	jQuery("#backgroundMemberProject").scroll(function () {
+	    var iCurScrollPos = $(this).scrollTop();
+	    if (iCurScrollPos > iScrollPos) {
+	    	jQuery("nav").fadeOut(600);
+	    } else if (iScrollPos = 0){
+	    	jQuery("nav").fadeIn(600);
+	    } else {
+	    	jQuery("nav").fadeIn(600);
+	    }
+	    iScrollPos = iCurScrollPos;
+	});
+
+	jQuery("#backgroundMemberProject").fadeIn(600);
 </script>
 
 <!-- Member Project View -->
-<div style="width: 100%;height: 100%;overflow-y: scroll;overflow-x: hidden;top: -55px;">
-	<img style="position: absolute;z-index: -1;top:-56px;" draggable="false" src="static-files/images/highres.jpg" alt="Could not locate image.">
+<div id="backgroundMemberProject" style="width: 100%;height: 100%;overflow-y: scroll;overflow-x: hidden;top: -55px;display:none">
+	<img style="position: absolute;z-index: -1;top:-56px; " draggable="false" src="static-files/images/highres.jpg" alt="Could not locate image.">
 	<div class="modelSpacerTop"></div>
-	<div style="display: flex;width:100%;height:100%">
-		<div class="modelSpacer"></div>		
+	<div style="display: flex;width:100%;height:100%;justify-content: center;">
+		
 		
 		<div class="innerWidth" style="position:relative;">
 			<div style="height:50px">
@@ -63,7 +87,7 @@
 			</div>
 			<div class="bs-example jumbotron" style="position:relative;background-color: #FFF;border-radius: 3px;border-style: solid;border-color: #eee;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
 			
-				<div class="panel panel-default" id="projectStory" ng-if="vm.projectStory">
+				<div id="oop" class="panel panel-default" id="projectStory" ng-if="vm.projectStory">
 					<div class="panel-heading">
 						<h3 class="panel-title">Project Story</h3>
 					</div>
@@ -72,17 +96,17 @@
 		 			</div>
 				</div>
 				<div class="panel panel-default" ng-if="vm.projectMeta.Images"> <!-- images -->
-					<div class="panel-heading" style="display: flex;">
+					<div class="panel-heading hover-color" style="display: flex;">
 						<h3 class="panel-title">Images:</h3><span style="width:6px;"></span><span>({{vm.projectMeta.Images.length}} total)</span>
 					</div>
-					<div class="panel-body" jp-ng-blink active='true' options='{"duration":2000,"itteration":2}'>
+					<div class="panel-body" jp-ng-blink active='true' options='{"duration":2000,"itteration":1}'>
 						<div style="overflow: hidden;">
 							<ul class="col-xs-6 col-md-3 normalResizeUl" style="display:inline-flex;overflow:visible" rn-carousel>				    	
-								<li ng-repeat="(key, value) in vm.projectMeta.Images">
+								<li ng-repeat="(key, value) in vm.projectMeta.Images track by $index" class="animate-repeat">
 									<a href="{{value.url}}" draggable="false" data-lightbox="images" data-title="{{value.name}}">
-									    <img class="normalResize" draggable="false" src="{{value.url}}" alt="Could not locate image.">
+									    <img class="normalResize" draggable="false" ng-src="{{value.url}}" alt="Could not locate image.">
 									</a>
-									<div style="overflow:hidden;padding:7px;" >{{value.name}}</div>
+									<p style="overflow:hidden;padding:7px;" >{{$index + 1}}:{{value.name}}</p>
 							    </li>
 							</ul>
 						</div>
@@ -99,24 +123,24 @@
 					<div class="panel-heading" style="display: flex;">
 						<h3 class="panel-title">Models:</h3><span style="width:6px;"></span><span>({{vm.projectMeta.Models.length}} total)</span>
 					</div>
-					<div class="panel-body">
+					<div class="panel-body" jp-ng-blink active='true' options='{"duration":2000,"itteration":1}'>
 						<div style="overflow: hidden;">
 							<ul class="col-xs-6 col-md-3 normalResizeUl" style="display: inline-flex;overflow:visible" rn-carousel>
-						   		<li ng-repeat="value in vm.modelImages">
+						   		<li ng-repeat="value in vm.modelImages track by $index" class="animate-repeat">
 									<a href="{{value.urlImage}}" draggable="false" data-lightbox="models" 
 										url-image="{{value.urlImage}}" 
 										url-unity="{{value.urlUnity}}" 
 										data-type="{{value.dataType}}">
-									    <img class="normalResize" draggable="false" src="{{value.urlImage}}" alt="Could not locate image.">
+									    <img class="normalResize" draggable="false" ng-src="{{value.urlImage}}" alt="Could not locate image.">
 									</a>
-									<div style="overflow:hidden;padding:7px;" >{{value.name}}</div>
+									<p style="overflow:hidden;padding:7px;" >{{$index + 1}}:{{value.name}}</p>
 							    </li>
 							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="modelSpacer"></div>
+			
 		</div>
 	</div>
 </div>

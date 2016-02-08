@@ -9,25 +9,25 @@
 	        		"COMPANY_NAME" : {
 	        			"MAXIMUM_LENGTH": 30,
 	        			"MINIMUM_LENGTH": 3,
-	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"},
+	        			"VALID_PATTERN":'\\w+'},
 	        		"PASSWORD": {
 	        			"MAXIMUM_LENGTH": 20,
 	        			"MINIMUM_LENGTH": 6,
-	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}       			
+	        			"VALID_PATTERN":'\\w+'}       			
 	        	},
 		    	"COMPANY_REGISTRATION_FORM" : {
 		    		"COMPANY_NAME" : {
 		    			"MAXIMUM_LENGTH": 30,
 	        			"MINIMUM_LENGTH": 3,
-	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"},			    			
+	        			"VALID_PATTERN":'\\w+'},			    			
 		    		"PASSWORD": {
 		    			"MAXIMUM_LENGTH": 20,
 	        			"MINIMUM_LENGTH": 6,
-	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"},			    		
+	        			"VALID_PATTERN":'\\w+'},			    		
 	    			"EMAIL": {
 		    			"MAXIMUM_LENGTH": 50,
 	        			"MINIMUM_LENGTH": 8,
-	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}			    			
+	        			"VALID_PATTERN":'\\w+'}			    			
 		    	}
         	}
          })

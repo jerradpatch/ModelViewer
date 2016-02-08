@@ -127,9 +127,9 @@ public class ValidateUtil {
 		return;		
 	}
 	
-	final static String PROJECTNAME_FAIL1 = "\"Member name is too long, required maximum length of "+PROJECTNAME_LENGTH_MAX+"\"";
-	final static String PROJECTNAME_FAIL2 = "\"Member name is too short, required minimum length of "+PROJECTNAME_LENGTH_MIN+"\"";
-	final static String PROJECTNAME_FAIL3 = "\"Member name contains restricted characters, \""+PROJECTNAME_RESTRICTED_CHARACTERS+"\" not allowed\"";	
+	final static String PROJECTNAME_FAIL1 = "\"Project name is too long, required maximum length of "+PROJECTNAME_LENGTH_MAX+"\"";
+	final static String PROJECTNAME_FAIL2 = "\"Project name is too short, required minimum length of "+PROJECTNAME_LENGTH_MIN+"\"";
+	final static String PROJECTNAME_FAIL3 = "\"Project name contains restricted characters, \""+PROJECTNAME_RESTRICTED_CHARACTERS+"\" not allowed\"";	
 	void validateProjectName(String projectName, ReturnedObject ro){
 		
 		if(projectName == null){

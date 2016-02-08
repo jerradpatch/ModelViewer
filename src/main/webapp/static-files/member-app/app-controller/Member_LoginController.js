@@ -2,22 +2,22 @@
     'use strict';
  
     angular
-        .module('app')
+        .module('app.member')
         .constant("CONSTANTS_Member_LoginController", {
         	"Member_LoginController" : {
 	        	"MEMBER_LOGIN_FORM" : {
 	        		"COMPANY_NAME" : {
 	        			"MAXIMUM_LENGTH": 30,
 	        			"MINIMUM_LENGTH": 3,
-	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"},
+	        			"VALID_PATTERN":'\\w+'},
 	        		"MEMBER_NAME" : {
 	        			"MAXIMUM_LENGTH": 30,
 	        			"MINIMUM_LENGTH": 3,
-	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"},
+	        			"VALID_PATTERN":'\\w+'},
 	        		"PASSWORD": {
 	        			"MAXIMUM_LENGTH": 20,
 	        			"MINIMUM_LENGTH": 6,
-	        			"VALID_PATTERN":"/^([0-9a-zA-Z@._-])+$/"}     		
+	        			"VALID_PATTERN":"\\w+"}     		
 	        		}  
 	        	}
          })

@@ -2,7 +2,7 @@
     'use strict';
  
     angular
-        .module('app', ['ngRoute', 'ngCookies', 'ngFileUpload', 'angular-carousel'])
+        .module('app', ['app.member','ngRoute', 'ngCookies','ngFileUpload','angular-carousel','ngAnimate'])
         .config(config)
         .run(run);
  
@@ -27,16 +27,6 @@
             .when('/Company_RegisterView', {
                 controller: 'Company_RegisterController',
                 templateUrl: '/ModelViewer/static-files/login-app/app-view/Company_RegisterView.html',
-                controllerAs: 'vm'
-            })
-            .when('/Member_ProjectView', {
-                controller: 'Member_ProjectController',
-                templateUrl: '/ModelViewer/static-files/member-app/app-view/Member_ProjectView.html',
-                controllerAs: 'vm'
-            })
-            .when('/Member_AccountView', {
-                controller: 'Member_AccountController',
-                templateUrl: '/ModelViewer/static-files/member-app/app-view/Member_AccountView.html',
                 controllerAs: 'vm'
             })
             .otherwise({ redirectTo: '/HomeView' });

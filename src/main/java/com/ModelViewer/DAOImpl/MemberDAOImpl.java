@@ -10,13 +10,18 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ModelViewer.DAO.MemberDAO;
+import com.ModelViewer.LoginApp.Service.MemberService;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
 import com.ModelViewer.Model.MemberModel;
 
 public class MemberDAOImpl implements MemberDAO{
 
+	private static final Logger logger = LoggerFactory.getLogger(MemberService.class);
+	
 	private SessionFactory sessionFactory;
 	public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -85,11 +90,13 @@ public class MemberDAOImpl implements MemberDAO{
 
 	}
 	
-	public void CreateUpdateAMember(String userName, String member, String password, ReturnedObject ro) {
-		if(GetMemberData(userName,member,ro) != null){
-			DeleteAMember(userName,member,ro);			
+	public void CreateUpdateAMember(String userName, String memberNameOld,String memberPasswordOld,String member,String password, ReturnedObject ro) {
+		if(GetMemberData(userName,memberNameOld,ro) != null){ //delete old and create new
+			DeleteAMember(userName,memberNameOld,ro);
+			logger.debug("user: "+userName+" member deleted: "+memberNameOld);
 		}
 		CreateAMember(userName, member, password, ro);
+		logger.debug("user: "+userName+" member created: "+member);
 	}
 	
 	public void DeleteAMember(String userName, String member, ReturnedObject ro){
