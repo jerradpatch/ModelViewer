@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,11 +17,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ModelViewer.DAO.MemberDAO;
 import com.ModelViewer.DAO.ProjectMemberDAO;
 import com.ModelViewer.DAO.UserDAO;
+import com.ModelViewer.Model.UserModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Controller
 @ResponseBody
 @RequestMapping("/MemberAndProjectMemberHybridService")
+@EnableTransactionManagement
+@Transactional(readOnly = false, rollbackFor=Exception.class, propagation = Propagation.REQUIRED)
 public class MemberAndProjectMemberHybridService {
 
 	private final static String EMPTY_STRING = "\"\"";
@@ -45,33 +51,45 @@ public class MemberAndProjectMemberHybridService {
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "member", required = true) String member,
 			@RequestParam(value = "companyP", required = true) String companyPassword)
-			throws JsonProcessingException {
+			throws Exception {
 		
 		logger.info("DeleteMember request recieved: "+userName);
 		
 		ReturnedObject ro = new ReturnedObject();
+		
+		//password check
 		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
 		if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+			ro.throwException();
     	}else if(passwordFound == null || !passwordFound.equals(companyPassword)){
     		ro.setSuccess(false);
     		ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();	
+    		ro.throwException();	
 		}
 		
 		memberDAO.DeleteAMember(userName, member, ro);
 		if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+			ro.throwException();
     	}
 		
 		projectMemberDAO.DeleteAMemberFromAllProject(userName, member, ro);
 		if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
-    	}
+			ro.throwException();
+    	} 
 		
-		ro.setSuccess(true);
-		ro.setMessage(EMPTY_STRING);
-		return ro.ToJSONString();	
+		//if global user, add user back
+		if(member.equals("global")){
+			UserModel um = new UserModel();
+			um.setUserName(userName);
+			memberDAO.CreateUpdateAMember(um, "global", "global", "global", "global", ro);
+			logger.debug("created member global");
+			if(ro.isSuccess() == false){
+				ro.throwException();
+	    	} 
+			return ro.ToJSONString(true,"Global Member Must Always Exist");
+		}
+
+		return ro.ToJSONString(true,EMPTY_STRING);	
 	}
 	
 }

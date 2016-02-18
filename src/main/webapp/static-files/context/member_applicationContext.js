@@ -21,10 +21,24 @@
         });
     }
     
-    run.$inject = ['$rootScope', '$location', '$cookieStore', '$http'];
-    function run($rootScope, $location, $cookieStore, $http) {
+    run.$inject = ['$rootScope', '$location', '$cookieStore', '$http','AuthService'];
+    function run($rootScope, $location, $cookieStore, $http, $routeParams, AuthService) {
         // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
+        
+        //when url contains information about project trying to be seen
+        var searchObject = $location.search();
+        if(searchObject["projectName"]){
+        	var projectName = searchObject["projectName"];
+        	UserProfileInfo.setCurrentProject(projectName)
+        }
+        if(searchObject["companyName"] && searchObject["global"]){
+        	var companyName = searchObject["companyName"];
+        	var member = "global";
+        	var password = "global";
+        	AuthService.SetCredentials( companyName, member, password);
+        }
+
 //        if ($rootScope.globals.currentUser) {
 //            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
 //        }

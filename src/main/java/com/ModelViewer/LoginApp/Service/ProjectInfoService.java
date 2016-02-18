@@ -6,11 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.transaction.annotation.Propagation;
 import com.ModelViewer.DAO.MemberDAO;
 import com.ModelViewer.DAO.ProjectInfoDAO;
 import com.ModelViewer.DAO.UserDAO;
@@ -21,6 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 @ResponseBody
 @RequestMapping("/ProjectInfoService")
+@EnableTransactionManagement
+@Transactional(readOnly = false, rollbackFor=Exception.class, propagation = Propagation.REQUIRED)
 public class ProjectInfoService {
 	
 	private static final String EMPTY_STRING = "\"\"";

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import com.ModelViewer.DAO.MemberDAO;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
 import com.ModelViewer.Model.MemberModel;
+import com.ModelViewer.Model.UserModel;
 
 public class MemberDAOValidation implements MemberDAO{
 
@@ -52,11 +53,11 @@ public class MemberDAOValidation implements MemberDAO{
 		return memberDAO.GetMemberData(userName, member, ro);
 	}
 
-	public void CreateUpdateAMember(String userName, String memberNameOld,String memberPasswordOld,String member,String password, ReturnedObject ro) {
-		vu.validateUserName(userName, ro);
-		if(!ro.isSuccess()){
-			return;
-		}
+	public void CreateUpdateAMember(UserModel um, String memberNameOld,String memberPasswordOld,String member,String password, ReturnedObject ro) {
+//		vu.validateUserName(userName, ro);
+//		if(!ro.isSuccess()){
+//			return;
+//		}
 		
 		vu.validateMemberName(member, ro);
 		if(!ro.isSuccess()){
@@ -78,7 +79,7 @@ public class MemberDAOValidation implements MemberDAO{
 			return;
 		}
 		
-		memberDAO.CreateUpdateAMember(userName, memberNameOld, memberPasswordOld, member, password, ro);
+		memberDAO.CreateUpdateAMember(um, memberNameOld, memberPasswordOld, member, password, ro);
 	}
 
 	public void DeleteAMember(String userName, String member, ReturnedObject ro) {

@@ -61,7 +61,7 @@
 			<H4>Create/Update Member</H4>
 		</div>
 		<div class="panel-body">
-			<form name="newMemberForm" ng-submit="vm.MemberDialogAccept(currentMemberName, currentMememberPassword, currentMemberNameOld, currentMememberPasswordOld);vm.createMemberDialog=false;" role="form">
+			<form name="newMemberForm" ng-submit="vm.MemberDialogAccept(currentMemberName, currentMememberPassword);vm.createMemberDialog=false;" role="form">
 				<div class="form-group"  style="margin-bottom: 5px;" 
 					ng-class="{ 'has-error': newMemberForm.memberName.$dirty && (newMemberForm.memberName.$error.required || newMemberForm.memberName.$error.pattern || newMemberForm.memberName.$error.maxlength || newMemberForm.memberName.$error.minlength )}">
 					<input type="text" name="memberName" style="margin-bottom:5px" class="form-control" placeholder="Name" ng-model="vm.memberNameToCreate"

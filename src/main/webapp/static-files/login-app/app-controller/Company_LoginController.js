@@ -27,7 +27,7 @@
 	    			"EMAIL": {
 		    			"MAXIMUM_LENGTH": 50,
 	        			"MINIMUM_LENGTH": 8,
-	        			"VALID_PATTERN":'\\w+'}			    			
+	        			"VALID_PATTERN":''}			    			
 		    	}
         	}
          })

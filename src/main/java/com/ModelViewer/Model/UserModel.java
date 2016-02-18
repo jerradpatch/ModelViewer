@@ -1,18 +1,23 @@
 package com.ModelViewer.Model;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="UserModel")
 public class UserModel {
 
 	@Id
-    @Column(name="userName")
+    @Column
 	private String userName;
 	
 	@Column
@@ -26,6 +31,10 @@ public class UserModel {
 	
 	@Column
 	private Timestamp dateLastLoggedIn;
+	
+//	@OneToMany(fetch=FetchType.EAGER, mappedBy="userModel", cascade=CascadeType.PERSIST)
+//    private transient Set<MemberModel> members;
+	
 	
 	public String getUserName() {
 		return userName;
@@ -57,5 +66,11 @@ public class UserModel {
 	public void setDateLastLoggedIn(Timestamp dateLastLoggedIn) {
 		this.dateLastLoggedIn = dateLastLoggedIn;
 	}
+//	public Set<MemberModel> getMembers() {
+//		return members;
+//	}
+//	public void setMembers(Set<MemberModel> members) {
+//		this.members = members;
+//	}
 	
 }

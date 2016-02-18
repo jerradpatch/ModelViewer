@@ -14,12 +14,12 @@
     	
     	
     	function setCookieValue(key,value){	
-    		var scookie = $cookieStore.get('AuthService');
+    		var scookie = $cookieStore.get('UserProfileInfo');
     		scookie[key] = value;  		
-    		$cookieStore.put('AuthService', scookie);
+    		$cookieStore.put('UserProfileInfo', scookie);
     	}
     	function getCookieValue(key){	
-    		var scookie = $cookieStore.get('AuthService');
+    		var scookie = $cookieStore.get('UserProfileInfo');
     		var value = scookie[key];  		
     		return value;
     	}
@@ -31,6 +31,13 @@
     		}
     		setCookieValue(where,true);
     		return false;
+    	}
+    	
+    	function getCurrentProject(){
+    		return $cookieStore.get('currentProject');
+    	}
+    	function setCurrentProject(currentProject){
+    		return $cookieStore.put('currentProject',currentProject);
     	}
     	
 //    	if($cookieStore.get('AuthService') != null){

@@ -25,23 +25,20 @@ public class UserDAOImpl implements UserDAO{
 	
 	public UserModel GetUserByUserName(String userName, ReturnedObject ro) {
 		logger.debug("GetUserByUserName: username "+userName);
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria userQuery = session.createCriteria(UserModel.class);
         userQuery.add(Restrictions.eq("userName",userName));
         userQuery.setMaxResults(1);
         UserModel userModel = (UserModel) userQuery.uniqueResult();
-        session.close();
         return userModel;
 	}
 	
 	public String GetUserPasswordByUserName(String userName, ReturnedObject ro){
-		Session session = this.sessionFactory.openSession();
+		Session session = this.sessionFactory.getCurrentSession();
         Criteria userQuery = session.createCriteria(UserModel.class);
         userQuery.add(Restrictions.eq("userName",userName));
         userQuery.setProjection(Projections.property("password"));
         String password = (String) userQuery.uniqueResult();
-        session.close();
-        
         return password;
 	}
 
@@ -55,13 +52,8 @@ public class UserDAOImpl implements UserDAO{
 		}
 		if(!ro.isSuccess()){
 			return;
-		}
-
-		Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.persist(user);
-        tx.commit();
-        session.close();
+		}		
+		this.sessionFactory.getCurrentSession().persist(user);
 	}
 	public void CreateUserByValues(String userName, String password, String email, ReturnedObject ro) {
 		
@@ -73,58 +65,22 @@ public class UserDAOImpl implements UserDAO{
 		}
 		if(!ro.isSuccess()){
 			return;
-		}
-		
+		}		
 		um = new UserModel();
 		um.setUserName(userName);
 		um.setPassword(password);
-		um.setEmail(email);
-		
-		Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.persist(um);
-        tx.commit();
-        session.close();
-        
-        return;
+		um.setEmail(email);		
+		this.sessionFactory.getCurrentSession().persist(um);
 	}
-	public void UpdateUserLoginToCurrentTime(String userName, ReturnedObject ro) {
-		
-		Session session = this.sessionFactory.openSession();
+	public void UpdateUserLoginToCurrentTime(String userName, ReturnedObject ro) {		
+		Session session = this.sessionFactory.getCurrentSession();
         UserModel um = GetUserByUserName(userName, ro);
-        Transaction tx = session.beginTransaction();
-        session.update(um);
         um.setDateLastLoggedIn(new Timestamp(System.currentTimeMillis()));
-        tx.commit();
-        session.close();
-             
-        return;
+        session.update(um);
 	}
-//	public UserModel UpdateByUserName(String UserName, ReturnedObject ro) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 
 	public void DeleteByModel(UserModel UserName, ReturnedObject ro) {
-		Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.delete(UserName);
-        tx.commit();
-        session.close();
-        return;
+		this.sessionFactory.getCurrentSession().delete(UserName);
 	}
-	
-	/* if passwords for use = return true, else false */
-//	public boolean ComparePasswords(String userName, String password){
-//		if(userName == null || userName.isEmpty() || password == null || password.isEmpty()){
-//			return false;
-//		}
-//		
-//		String passwordDB = GetUserPasswordByUserName(userName);
-//		if(password.equals(passwordDB)){
-//			return true;
-//		}
-//		return false;
-//	}
 
 }

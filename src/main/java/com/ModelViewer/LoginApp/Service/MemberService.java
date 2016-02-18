@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ModelViewer.DAO.MemberDAO;
 import com.ModelViewer.DAO.UserDAO;
 import com.ModelViewer.Model.MemberModel;
+import com.ModelViewer.Model.UserModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,6 +27,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 @ResponseBody
 @RequestMapping("/MemberService")
+@EnableTransactionManagement
+@Transactional(readOnly = false, rollbackFor=Exception.class, propagation = Propagation.REQUIRED)
 public class MemberService {
 
 	private static final String EMPTY_STRING = "\"\"";
@@ -171,7 +177,9 @@ public class MemberService {
 			memberPasswordOld = password;
 		}
 		
-		memberDAO.CreateUpdateAMember(userName,memberNameOld,memberPasswordOld, member,password,ro);
+		UserModel um = new UserModel();
+		um.setUserName(userName);
+		memberDAO.CreateUpdateAMember(um,memberNameOld,memberPasswordOld, member,password,ro);
 		if(ro.isSuccess() == false){
     		return ro.ToJSONString();
     	} else {
@@ -181,34 +189,34 @@ public class MemberService {
     	}
 	}
 	
-	@RequestMapping(value = "/DeleteAMember", method = RequestMethod.GET)
-	public String DeleteAMember(
-			@RequestParam(value = "userName", required = true) String userName,
-			@RequestParam(value = "member", required = true) String member,
-			@RequestParam(value = "companyP", required = true) String companyPassword)
-			throws JsonProcessingException {
-		
-		logger.info("DeleteAMember request recieved: "+userName);
-		
-		ReturnedObject ro = new ReturnedObject();
-		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
-    	if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
-    	}else if(passwordFound == null || !passwordFound.equals(companyPassword)){
-    		ro.setSuccess(false);
-    		ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();	
-		}
-		
-		memberDAO.DeleteAMember(userName,member,ro);
-		if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
-    	} else {
-    		ro.setSuccess(true);
-    		ro.setMessage(EMPTY_STRING);
-    		return ro.ToJSONString();
-    	}
-	}
+	//@RequestMapping(value = "/DeleteAMember", method = RequestMethod.GET)
+//	public String DeleteAMember(
+//			@RequestParam(value = "userName", required = true) String userName,
+//			@RequestParam(value = "member", required = true) String member,
+//			@RequestParam(value = "companyP", required = true) String companyPassword)
+//			throws JsonProcessingException {
+//		
+//		logger.info("DeleteAMember request recieved: "+userName);
+//		
+//		ReturnedObject ro = new ReturnedObject();
+//		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
+//    	if(ro.isSuccess() == false){
+//    		return ro.ToJSONString();
+//    	}else if(passwordFound == null || !passwordFound.equals(companyPassword)){
+//    		ro.setSuccess(false);
+//    		ro.setMessage(ACCESS_FORBIDDEN);
+//			return ro.ToJSONString();	
+//		}
+//		
+//		memberDAO.DeleteAMember(userName,member,ro);
+//		if(ro.isSuccess() == false){
+//    		return ro.ToJSONString();
+//    	} else {
+//    		ro.setSuccess(true);
+//    		ro.setMessage(EMPTY_STRING);
+//    		return ro.ToJSONString();
+//    	}
+//	}
 		
 }
 

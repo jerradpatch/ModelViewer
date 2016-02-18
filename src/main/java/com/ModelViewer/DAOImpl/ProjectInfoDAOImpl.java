@@ -23,7 +23,7 @@ public class ProjectInfoDAOImpl implements ProjectInfoDAO{
     }
 	
 	public ProjectInfoModel GetProjectInfo(String userName, String projectName, ReturnedObject ro) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria userQuery = session.createCriteria(ProjectInfoModel.class);
         userQuery.add(Restrictions.eq("userName",userName));
         userQuery.add(Restrictions.eq("projectName",projectName));
@@ -41,7 +41,6 @@ public class ProjectInfoDAOImpl implements ProjectInfoDAO{
         	ro.setMessage("ProjectInfoDAOImpl: there was more then one project found, should only be one");
         	ro.setSuccess(false);
         } 
-        session.close();
         if(projectInfo == null){
         	return new ProjectInfoModel();
         }
@@ -59,23 +58,17 @@ public class ProjectInfoDAOImpl implements ProjectInfoDAO{
 			if(!ro.isSuccess()){
 				return;
 			}
-		}
-	
-		Session session = this.sessionFactory.openSession();
-		session.beginTransaction();		
-		session.save(pim);
-		session.getTransaction().commit();
-		session.close();		
+		}	
+		this.sessionFactory.getCurrentSession().save(pim);	
 	}
 	
 	public void DeleteProjectInfo(ProjectInfoModel pim, ReturnedObject ro){
-		Session session=this.sessionFactory.openSession(); 
+		Session session=this.sessionFactory.getCurrentSession(); 
 		String hql = "delete from ProjectInfoModel pmm where pmm.userName= :userName and pmm.projectName= :projectName"; 
 		session.createQuery(hql)
 			.setString("userName", new String(pim.getUserName()))
 			.setString("projectName", new String(pim.getProjectName()))
-			.executeUpdate();
-		session.close();				
+			.executeUpdate();				
 	}
 
 }

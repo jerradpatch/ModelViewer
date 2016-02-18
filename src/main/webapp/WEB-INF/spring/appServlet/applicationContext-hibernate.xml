@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation=" 
+	    http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+        
+    
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/ModelViewer" />
+        <property name="username" value="jerrad" />
+        <property name="password" value="darrej" />
+        <property name="defaultAutoCommit" value="false" />      
+    </bean>
+
+    <bean id="hibernate5AnnotatedSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="packagesToScan">
+            <list>
+                <value>com.ModelViewer.Model</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+               <!--  <prop key="hibernate.current_session_context_class">thread</prop> -->
+                 <prop key="hibernate.show_sql">false</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <!-- <tx:annotation-driven transaction-manager="transactionManager"/>  -->
+   
+    <!-- setup the transaction manager -->
+	<bean id="transactionManager"
+	    class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+	    <property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
+	</bean>
+    
+    <!-- 
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+	    <property name="sessionFactory">
+	      	<ref bean="hibernate5AnnotatedSessionFactory"/>
+	    </property>
+ 	 </bean>  -->
+ 	 
+    <!-- ensure that the above transactional advice runs for any execution
+     of an operation defined by the FooService interface -->
+    <aop:config>
+        <aop:pointcut id="serviceOperation" expression="execution(* com.ModelViewer.LoginApp.Service.UserService.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation"/>
+    </aop:config>
+    
+    <!-- the transactional advice (what 'happens'; see the <aop:advisor/> bean below)-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="*" rollback-for="Exception" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice> 
+    
+    <!-- service beans -->
+    <bean id="userService" class="com.ModelViewer.LoginApp.Service.UserService"></bean>
+    
+     
+     <!--  DAO configurations -->
+    <bean id="UserDAOImpl" class="com.ModelViewer.DAOImpl.UserDAOImpl">
+        <property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
+	</bean>
+    <bean id="ProjectMemberDAOImpl" class="com.ModelViewer.DAOImpl.ProjectMemberDAOImpl">
+        <property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
+	</bean>	
+	<bean id="ProjectInfoDAOImpl" class="com.ModelViewer.DAOImpl.ProjectInfoDAOImpl">
+        <property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
+	</bean>	
+	<bean id="MemberDAOImpl" class="com.ModelViewer.DAOImpl.MemberDAOImpl">
+        <property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
+	</bean>
+		<bean id="FileDAOImpl" class="com.ModelViewer.DAOImpl.FileDAOImpl">
+	</bean>
+	
+	<!-- component scanner -->
+	<context:component-scan base-package="com.ModelViewer.DAO.Validation"/>
+	
+	<!-- DAO Validation -->
+	<bean id="UserDAO" class="com.ModelViewer.DAO.Validation.UserDAOValidation"></bean>
+    <bean id="ProjectMemberDAO" class="com.ModelViewer.DAO.Validation.ProjectMemberDAOValidation"></bean>
+    <bean id="ProjectInfoDAO" class="com.ModelViewer.DAO.Validation.ProjectInfoDAOValidation"></bean>	
+	<bean id="MemberDAO" class="com.ModelViewer.DAO.Validation.MemberDAOValidation"></bean>
+	<bean id="FileDAO" class="com.ModelViewer.DAO.Validation.FileDAOValidation"></bean>
+	
+</beans:beans>

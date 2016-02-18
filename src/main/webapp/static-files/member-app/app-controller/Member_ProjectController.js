@@ -75,7 +75,7 @@
         GetStory();
         
         function GetProject(){
-        	return $cookieStore.get("Member_ProjectController.currentProject");
+        	return UserProfileInfo.get("currentProject");
         }
         
         function GetStory(){
