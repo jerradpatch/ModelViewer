@@ -9,27 +9,47 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 @Entity
 @IdClass(MemberModelId.class)
 public class MemberModel {
-
+	
 	@Id
-    @Column(length=20)
+    @Column(nullable = false, length=50)
 	private String userName;
 	
 	@Id
-    @Column(length=20)
+    @Column(nullable = false, length=50)
 	private String member;
 	
-	@Column(length=20)
+	@Column(nullable = false, length=50)
 	private String password;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="userName")
-	private transient UserModel userModel;	
+	@Column(nullable = true, length=50)
+	private String firstName;
+	
+	@Column(nullable = true, length=50)
+	private String lastName;
+	
+	@Column(nullable = true, length=50)
+	private String role;
+	
+	@Column(nullable = true, length=150)
+	private String email;	
+	
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumns({
+		@JoinColumn(name="userName", insertable = false, updatable = false),
+		@JoinColumn(name="projectName", insertable = false, updatable = false)		
+	})
+	private ProjectMemberModel projectMemberModel;	
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="userName", insertable = false, updatable = false)
+	private UserModel userModel;	
+	
+	
+	
 	
 	public String getUserName() {
 		return userName;
@@ -56,6 +76,46 @@ public class MemberModel {
 	}
 
 	
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public ProjectMemberModel getProjectMemberModel() {
+		return projectMemberModel;
+	}
+
+	public void setProjectMemberModel(ProjectMemberModel projectMemberModel) {
+		this.projectMemberModel = projectMemberModel;
+	}
+
 	public UserModel getUserModel() {
 		return userModel;
 	}

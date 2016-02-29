@@ -156,4 +156,18 @@ public class ProjectMemberDAOValidation implements ProjectMemberDAO{
 		projectMemberDAO.DeleteAMemberFromAProject(userName, projectName, member, ro);
 	}
 
+	public List<String> GetListOfUserProject(String userName, String projectName, ReturnedObject ro) {
+		vu.validateUserName(userName, ro);
+		if(!ro.isSuccess()){
+			return null;
+		}
+		
+		vu.validateProjectName(projectName, ro);
+		if(!ro.isSuccess()){
+			return null;
+		}
+
+		return projectMemberDAO.GetListOfUserProject(userName, projectName, ro);
+	}
+
 }

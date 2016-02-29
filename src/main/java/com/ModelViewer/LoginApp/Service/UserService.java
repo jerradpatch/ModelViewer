@@ -59,29 +59,26 @@ public class UserService {
 	public String ComparePasswordsForUser(
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "password", required = true) String password) 
-					throws JsonProcessingException {
+					throws JsonProcessingException, ReturnedObject {
 		
 		logger.info("GetUserByUserName request recieved: "+userName);
 		
 		ReturnedObject ro = new ReturnedObject();
 		
-		
 		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
     	if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException();
+    		return null;
     	}else if(passwordFound == null || !passwordFound.equals(password)){
-    		ro.setSuccess(false);
-    		ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();	
+    		ro.throwException(false,ACCESS_FORBIDDEN);
+    		return null;
 		}
     	userDAO.UpdateUserLoginToCurrentTime(userName, ro);
     	if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
-    	} else {
-    		ro.setSuccess(true);
-    		ro.setMessage(EMPTY_STRING);
-    		return ro.ToJSONString();
+    		ro.throwException();
+    		return null;
     	}
+    	return ro.ToJSONString(true, EMPTY_STRING);
 	}
 	
 	
@@ -90,19 +87,18 @@ public class UserService {
 	public String CreateUser(@RequestBody(required = true) String jsonUserModel) throws Exception {
 		
 		UserModel userModel = mapper.readValue(jsonUserModel, UserModel.class);
-		
-		StringBuilder log = new StringBuilder("CreateUser request recieved: ");
-		log.append(userModel.getUserName()).append(" email: ").append(userModel.getEmail());		
-		logger.debug(log.toString());
-
+		logger.debug("CreateUser request recieved: "+jsonUserModel);
+		logger.debug(mapper.writeValueAsString(userModel));
 		ReturnedObject ro = new ReturnedObject();
 		
 		UserModel um = userDAO.GetUserByUserName(userModel.getUserName(),ro);
     	if(ro.isSuccess() == false){
     		ro.throwException();
+    		return null;
     	}   	
 		if(um != null){
-    		ro.throwException(false,USER_EXISTS);			
+    		ro.throwException(false,USER_EXISTS);	
+    		return null;
 		}
 		
 		//create member, global		
@@ -112,12 +108,14 @@ public class UserService {
 		userDAO.CreateUserByModel(userModel,ro);
 		if(!ro.isSuccess()){
 			ro.throwException();
+			return null;
 		}
 		
 		//add the global member to this users possible members to add to a project
 		memberDAO.CreateUpdateAMember(userModel, "global", "global", "global", "global", ro);	
 		if(!ro.isSuccess()){
 			ro.throwException();
+			return null;
 		}
 
 		return ro.ToJSONString(true, EMPTY_STRING);

@@ -11,4 +11,10 @@
         <property name="maxUploadSize" value="10000000000" />
     </bean>
     
+    <!-- mail chimp: mandrill -->
+    <bean id="Mandrill"
+        class="com.microtripit.mandrillapp.lutung.MandrillApi">
+        <constructor-arg type="java.lang.String" value="42b4caea7d029b118d0ad8c507e9cb1c-us12"/>
+    </bean>
+    
 </beans>

@@ -11,5 +11,20 @@ public class MemberModelId implements Serializable{
 	
 	private String userName;
 	private String member;
-	private String password;
+	
+	@Override
+	public boolean equals(Object obj){
+		if(obj instanceof MemberModelId){
+			MemberModelId pobj = (MemberModelId) obj;
+			if(pobj.userName.equals(this.userName) &&
+					pobj.member.equals(this.member))
+				return true;
+		}
+		return false;
+	}
+	
+	@Override 
+	public int hashCode(){
+		return (this.userName+this.member).hashCode();
+	}
 }

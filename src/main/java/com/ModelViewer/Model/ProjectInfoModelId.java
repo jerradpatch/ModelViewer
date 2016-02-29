@@ -12,4 +12,20 @@ public class ProjectInfoModelId implements Serializable{
 	
 	private String userName;
 	private String projectName;
+	
+	@Override
+	public boolean equals(Object obj){
+		if(obj instanceof ProjectInfoModelId){
+			ProjectInfoModelId pobj = (ProjectInfoModelId) obj;
+			if(pobj.userName.equals(this.userName) &&
+					pobj.projectName.equals(this.projectName))
+				return true;
+		}
+		return false;
+	}
+	
+	@Override 
+	public int hashCode(){
+		return (this.userName+this.projectName).hashCode();
+	}
 }

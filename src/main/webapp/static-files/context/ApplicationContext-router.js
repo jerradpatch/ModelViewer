@@ -2,7 +2,7 @@
     'use strict';
  
     angular
-        .module('app', ['app.member','ngRoute', 'ngCookies','ngFileUpload','angular-carousel','ngAnimate','ngResource'])
+        .module('app', ['app.member','ngRoute', 'ngCookies','ngFileUpload','angular-carousel','ngAnimate','ngResource','ui.bootstrap'])
         .config(config)
         .factory('HTTPInterceptorErrorService', HTTPInterceptorErrorService)
         .run(run);
@@ -39,12 +39,12 @@
         $httpProvider.interceptors.push('HTTPInterceptorErrorService');
     }
  
-    run.$inject = ['$rootScope', '$location', '$cookieStore', '$http'];
-    function run($rootScope, $location, $cookieStore, $http) {
+    run.$inject = ['$rootScope', '$location', '$cookieStore', '$http', 'ErrorModel'];
+    function run($rootScope, $location, $cookieStore, $http, ErrorModel) {
         // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
-        
-       
+        $rootScope.ErrorModel = ErrorModel;
+
 //        if ($rootScope.globals.currentUser) {
 //            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
 //        }
@@ -59,16 +59,25 @@
 //        });
     }
     
-    HTTPInterceptorErrorService.$inject = ['$q','$rootScope'];
-    function HTTPInterceptorErrorService($q,$rootScope) { 
+    HTTPInterceptorErrorService.$inject = ['$q','$rootScope','ErrorModel'];
+    function HTTPInterceptorErrorService($q,$rootScope,ErrorModel) { 
     	  return {
-    		  responseError: function(response) {	
-    				$rootScope.error = response;
-    				console.log(response);
-    				return $q.reject({"status":"fail", "message": response});
+    		  responseError: function(response) {
+    			  	if(response.data){
+    			  		ErrorModel.pushModel(response);
+    			  		return response;
+    			  	} else {
+    			  		var errorModel = ErrorModel.getNewModel(false,response);
+    			  		ErrorModel.pushModel(errorModel);
+    			  		return errorModel.model;
+    			  	}
+    			  	return;
     			}
     	  };
+    	  
+    	  
     }
+
 
  
 })();

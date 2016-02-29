@@ -55,7 +55,7 @@ public class ProjectInfoService {
 		@RequestParam(value = "projectName", required = true) String projectName,
 		@RequestParam(value = "memberName", required = false) String memberName, 
 		@RequestParam(value = "memberPass", required = false) String memberPass)
-				throws JsonProcessingException {
+				throws JsonProcessingException, ReturnedObject {
 		
 		logger.info("GetProjectStory request recieved userName: "+userName+" projectName: "+projectName +" memberName: "+memberName);
 		
@@ -64,35 +64,33 @@ public class ProjectInfoService {
 		if(userName != null && userPass != null){
 			String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
 	    	if(ro.isSuccess() == false){
-	    		return ro.ToJSONString();
+	    		ro.throwException();
+	    		return null;
 	    	}else if(passwordFound == null || !passwordFound.equals(userPass)){
-	    		ro.setSuccess(false);
-	    		ro.setMessage(ACCESS_FORBIDDEN);
-				return ro.ToJSONString();	
+	    		ro.throwException(false,ACCESS_FORBIDDEN);
+	    		return null;
 			}
 		} else if(memberName != null && memberPass != null){
 			String passwordFound = memberDAO.GetMemberPassword(userName, memberName, ro);
 	    	if(ro.isSuccess() == false){
-	    		return ro.ToJSONString();
+	    		ro.throwException();
+	    		return null;
 	    	}else if(passwordFound == null || !passwordFound.equals(memberPass)){
-	    		ro.setSuccess(false);
-	    		ro.setMessage(ACCESS_FORBIDDEN);
-				return ro.ToJSONString();	
+	    		ro.throwException(false,ACCESS_FORBIDDEN);
+	    		return null;
 			}			
 		} else {
-			ro.setSuccess(false);
-    		ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();
+    		ro.throwException(false,ACCESS_FORBIDDEN);
+    		return null;
 		}
 		
 		ProjectInfoModel projectInfo = projectInfoDAO.GetProjectInfo(userName, projectName, ro);
 		if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException();
+    		return null;
     	}
-		
-		ro.setSuccess(true);
-		ro.setMessage("\""+projectInfo.getStory()+"\"");
-		return ro.ToJSONString();
+
+		return ro.ToJSONString(true,"\""+projectInfo.getStory()+"\"");
 	}
 	
 	@RequestMapping(value = "/CreateUpdateProjectInfo", method = RequestMethod.GET)
@@ -103,7 +101,7 @@ public class ProjectInfoService {
 		@RequestParam(value = "memberName", required = false) String memberName, 
 		@RequestParam(value = "memberPass", required = false) String memberPass,
 		@RequestParam(value = "story", required = false) String story)
-				throws JsonProcessingException {
+				throws JsonProcessingException, ReturnedObject {
 		
 		logger.info("GetProjectStory request recieved: "+userName+" projectName:"+projectName +" story:"+story);
 		
@@ -112,25 +110,24 @@ public class ProjectInfoService {
 		if(userName != null && userPass != null){
 			String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
 	    	if(ro.isSuccess() == false){
-	    		return ro.ToJSONString();
+	    		ro.throwException();
+	    		return null;
 	    	}else if(passwordFound == null || !passwordFound.equals(userPass)){
-	    		ro.setSuccess(false);
-	    		ro.setMessage(ACCESS_FORBIDDEN);
-				return ro.ToJSONString();	
+	    		ro.throwException(false,ACCESS_FORBIDDEN);
+	    		return null;
 			}
 		} else if(memberName != null && memberPass != null){
 			String passwordFound = memberDAO.GetMemberPassword(userName, memberName, ro);
 	    	if(ro.isSuccess() == false){
-	    		return ro.ToJSONString();
+	    		ro.throwException();
+	    		return null;
 	    	}else if(passwordFound == null || !passwordFound.equals(userPass)){
-	    		ro.setSuccess(false);
-	    		ro.setMessage(ACCESS_FORBIDDEN);
-				return ro.ToJSONString();	
+	    		ro.throwException(false,ACCESS_FORBIDDEN);
+	    		return null;	
 			}			
 		} else {
-			ro.setSuccess(false);
-    		ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();
+    		ro.throwException(false,ACCESS_FORBIDDEN);
+    		return null;	
 		}
 		ProjectInfoModel pim = new ProjectInfoModel();
 		pim.setUserName(userName);
@@ -139,10 +136,10 @@ public class ProjectInfoService {
 		
 		projectInfoDAO.CreateProjectInfo(pim, ro);
 		if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException(false,ACCESS_FORBIDDEN);
+    		return null;	
     	}
 		
-		ro.setSuccess(true);
-		return ro.ToJSONString();
+		return ro.ToJSONString(true, "");
 	}
 }

@@ -80,7 +80,7 @@ public class MemberDAOImpl implements MemberDAO{
 		
 		Session session = this.sessionFactory.getCurrentSession();
         memberModel.setUserModel(um);
-        memberModel.setUserName(um.getUserName());
+      //  memberModel.setUserName(um.getUserName());
         memberModel.setMember(member);
         memberModel.setPassword(password);
         session.save(memberModel);

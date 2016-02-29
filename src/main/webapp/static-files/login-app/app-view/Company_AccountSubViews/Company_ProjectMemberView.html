@@ -82,32 +82,35 @@
 
 
 <div class="panel panel-default" ng-app="app" ng-controller="Company_ProjectMemberController as vm">
-	<div class="panel-heading">
-		<div>
-			<span><H4 style="display:inline-block">Projects</H4></span>
-			<span style="float:right;width: 50%;margin-right: 20px;">
+	<div class="panel-heading clearfix">
+			<span class="controls-left">
+				<div>
+					<H4 style="float:left;">Projects</H4>
+				</div>
+			</span>
+			<span class="controls-right">
 				<form name="projectForm" ng-submit="projectForm.$setPristine(); vm.CreateANewProject(vm.projectNameToAdd)" role="form">
 					<div class="form-group" ng-class="{ 'has-error': projectForm.projectName.$dirty && (projectForm.projectName.$error.required || projectForm.projectName.$error.pattern || projectForm.projectName.$error.maxlength || projectForm.projectName.$error.minlength)}">
 						<div class="input-group">			
-							<input type="text" name="projectName" class="form-control" placeholder="Project Name" ng-model="vm.projectNameToAdd"
+							<input type="text" name="projectName" class="form-control" placeholder="Create a new project" ng-model="vm.projectNameToAdd"
 							ng-maxlength="{{CONSTANTS_Company_ProjectMemberController.Company_ProjectMemberController.PROJECTS.NEW_PROJECT_INPUT.MAXIMUM_LENGTH}}"
 							ng-minlength="{{CONSTANTS_Company_ProjectMemberController.Company_ProjectMemberController.PROJECTS.NEW_PROJECT_INPUT.MINIMUM_LENGTH}}"
 							ng-pattern="{{CONSTANTS_Company_ProjectMemberController.Company_ProjectMemberController.PROJECTS.NEW_PROJECT_INPUT.VALID_PATTERN}}" required />
 							<span class="input-group-btn">
-								<button type="submit" ng-disabled="projectForm.$invalid || vm.dataLoading" class="btn btn-default projectMemberView_AddMember">Project</button>
+								<button type="submit" ng-disabled="projectForm.$invalid || vm.dataLoading" 
+									class="glyphicon glyphicon-tasks btn btn-default projectMemberView_AddMember"></button>
 							</span>
 						</div>	
 					</div>
 				</form>
 			</span>			
-		</div>
 	</div>  
 	<div class="panel-body">
 		<!-- repeat for all projects -->
 	 	<div class="panel panel-default animate-repeat" ng-repeat="(key, values) in vm.projectMember">
 			<div class="panel-heading clearfix">
-				<span style="float:left;">
-					<div style="display:flex">
+				<span class="controls-left">
+					<div>
 						<h5 style="padding-right:5px">{{key}}</h5>
 						<!-- dont have the project information needed at this point
 						<h5 ng-hide="values.Images.lengh" style="padding-right:5px">Images: 0</h5>
@@ -116,17 +119,28 @@
 						<h5 ng-show="values.Models.lengh" style="padding-right:5px">Models: {{values.Models.lengh}}</h5>  -->
 					</div>
 				</span>
-				<span style="float: right;">
+				<span class="controls-right">
 					<div class="btn-group" role="group" aria-label="...">
 					
-						<button type="button" class="btn btn-default projectMemberView_deleteProject" 
-							ng-click="vm.DeleteAProject(key)">Project</button>
-							
-						<button type="button" class="btn btn-default" 
-							ng-click="vm.pd.ProjectEditProjectDialog_Toggle(key)">Edit</button>
-							
-						<button type="button" class="btn btn-default projectMemberView_AddMember" 
-							ng-click="vm.ProjectEditMemberDialog_Toggle(key,values)">Member</button>
+						<button type="button" class="glyphicon glyphicon-remove btn btn-default projectMemberView_deleteProject" 
+							uib-tooltip="Delete project" tooltip-append-to-body=true
+							ng-click="vm.DeleteAProject(key)"></button>
+					</div>
+					
+					<div class="btn-group" role="group" aria-label="...">		
+						<button type="button" class="glyphicon glyphicon-edit btn btn-default" 
+							uib-tooltip="Edit files" tooltip-append-to-body=true
+							ng-click="vm.pd.ProjectEditProjectDialog_Toggle(key)"></button>
+					
+					</div>
+					<div class="btn-group" role="group" aria-label="...">			
+						<button type="button" class=" glyphicon glyphicon-envelope btn btn-default" 
+							uib-tooltip="Email members project link" tooltip-append-to-body=true
+							ng-click="vm.pd.ProjectEditProjectDialog_Toggle(key)"
+							></button>	
+						<button type="button" class="glyphicon glyphicon-user btn btn-default projectMemberView_AddMember" 
+							uib-tooltip="Add members" tooltip-append-to-body=true
+							ng-click="vm.ProjectEditMemberDialog_Toggle(key,values)"></button>
 					</div>
 				</span>
 				

@@ -17,23 +17,23 @@ import javax.persistence.Table;
 public class UserModel {
 
 	@Id
-    @Column
+	@Column(nullable = false, length=50)
 	private String userName;
 	
-	@Column
+	@Column(nullable = false, length=50)
 	private String password;
 	
-	@Column
+	@Column(nullable = true, length=150)
 	private String email;
 	
-	@Column
+	@Column(nullable = false)
 	private Timestamp dateCreated;
 	
-	@Column
+	@Column(nullable = false)
 	private Timestamp dateLastLoggedIn;
 	
-//	@OneToMany(fetch=FetchType.EAGER, mappedBy="userModel", cascade=CascadeType.PERSIST)
-//    private transient Set<MemberModel> members;
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="userModel", cascade=CascadeType.PERSIST)
+    private Set<MemberModel> members;
 	
 	
 	public String getUserName() {
@@ -66,11 +66,11 @@ public class UserModel {
 	public void setDateLastLoggedIn(Timestamp dateLastLoggedIn) {
 		this.dateLastLoggedIn = dateLastLoggedIn;
 	}
-//	public Set<MemberModel> getMembers() {
-//		return members;
-//	}
-//	public void setMembers(Set<MemberModel> members) {
-//		this.members = members;
-//	}
+	public Set<MemberModel> getMembers() {
+		return members;
+	}
+	public void setMembers(Set<MemberModel> members) {
+		this.members = members;
+	}
 	
 }

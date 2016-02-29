@@ -61,20 +61,22 @@ public class MemberAndProjectMemberHybridService {
 		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
 		if(ro.isSuccess() == false){
 			ro.throwException();
+			return null;
     	}else if(passwordFound == null || !passwordFound.equals(companyPassword)){
-    		ro.setSuccess(false);
-    		ro.setMessage(ACCESS_FORBIDDEN);
-    		ro.throwException();	
+    		ro.throwException(false, ACCESS_FORBIDDEN);	
+    		return null;
 		}
 		
 		memberDAO.DeleteAMember(userName, member, ro);
 		if(ro.isSuccess() == false){
 			ro.throwException();
+			return null;
     	}
 		
 		projectMemberDAO.DeleteAMemberFromAllProject(userName, member, ro);
 		if(ro.isSuccess() == false){
 			ro.throwException();
+			return null;
     	} 
 		
 		//if global user, add user back

@@ -62,31 +62,29 @@ public class MemberService {
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "companyP", required = true) String companyPassword)
 			
-			throws JsonProcessingException {
+			throws JsonProcessingException, ReturnedObject {
 		
 		logger.info("GetListOfMember request recieved: "+userName);
 		
 		ReturnedObject ro = new ReturnedObject();
 		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
     	if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException(false,ACCESS_FORBIDDEN);
+			return null;
     	}else if(passwordFound == null || !passwordFound.equals(companyPassword)){
-    		ro.setSuccess(false);
-    		ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();	
+    		ro.throwException(false,ACCESS_FORBIDDEN);
+			return null;	
 		}
 		
 		List<String> members = memberDAO.GetListOfMember(userName,ro);
 		if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException();
+			return null;
     	} else if(members == null){
-    		ro.setSuccess(false);
-    		ro.setMessage(NO_MEMBER);
-    		return ro.ToJSONString();
+    		ro.throwException(false,NO_MEMBER);
+			return null;	
 		} else {
-    		ro.setSuccess(true);
-    		ro.setMessage(mapper.writeValueAsString(members));
-    		return ro.ToJSONString();
+    		return ro.ToJSONString(true, mapper.writeValueAsString(members));
     	}
 	}
 
@@ -95,31 +93,29 @@ public class MemberService {
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "member", required = true) String member,
 			@RequestParam(value = "companyP", required = true) String companyP)
-			throws JsonProcessingException {
+			throws JsonProcessingException, ReturnedObject {
 		
 		logger.info("GetMemberData request recieved: "+userName);
 		
 		ReturnedObject ro = new ReturnedObject();
 		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
     	if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException();
+			return null;
     	}else if(passwordFound == null || !passwordFound.equals(companyP)){
-    		ro.setSuccess(false);
-    		ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();	
+    		ro.throwException(false,ACCESS_FORBIDDEN);
+			return null;
 		}
 		
 		MemberModel memberRet = memberDAO.GetMemberData(userName,member,ro);
 		if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException();
+			return null;
     	} else if(memberRet == null){
-    		ro.setSuccess(false);
-    		ro.setMessage(NO_MEMBER);
-    		return ro.ToJSONString();
+    		ro.throwException(false,ACCESS_FORBIDDEN);
+    		return null;
 		} else {
-    		ro.setSuccess(true);
-    		ro.setMessage(mapper.writeValueAsString(memberRet));
-    		return ro.ToJSONString();
+    		return ro.ToJSONString(true, mapper.writeValueAsString(memberRet));
     	}
 	}
 	
@@ -128,25 +124,21 @@ public class MemberService {
 			@RequestParam(value = "userName", required = true) String userName,
 			@RequestParam(value = "member", required = true) String member,
 			@RequestParam(value = "memberPassword", required = true) String memberPassword)
-			throws JsonProcessingException {
+			throws JsonProcessingException, ReturnedObject {
 		
 		logger.info("ComparePasswordsForMember request recieved: "+userName+" member: "+member);
 		
 		ReturnedObject ro = new ReturnedObject();
 		String passwordFound = memberDAO.GetMemberPassword(userName,member,ro);
     	if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException();
+    		return null;
     	}else if(passwordFound == null || !passwordFound.equals(memberPassword)){
-    		ro.setSuccess(false);
-    		ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();	
+    		ro.throwException(false,ACCESS_FORBIDDEN);
+    		return null;
 		}
-    	
-    	ro.setSuccess(true);
-    	ro.setMessage(EMPTY_STRING);
-	
-		return ro.ToJSONString();
-	
+
+		return ro.ToJSONString(true, EMPTY_STRING);	
 	}
 	
 	@RequestMapping(value = "/CreateUpdateAMember", method = RequestMethod.GET)
@@ -157,18 +149,18 @@ public class MemberService {
 			@RequestParam(value = "companyP", required = true) String companyPassword,
 			@RequestParam(value = "memberNameOld", required = false) String memberNameOld,
 			@RequestParam(value = "memberPasswordOld", required = false) String memberPasswordOld)
-					throws JsonProcessingException {
+					throws JsonProcessingException, ReturnedObject {
 		
 		logger.info("CreateUpdateAMember request recieved: member: "+member);
 		
 		ReturnedObject ro = new ReturnedObject();
 		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
     	if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException();
+    		return null;
     	}else if(passwordFound == null || !passwordFound.equals(companyPassword)){
-    		ro.setSuccess(false);
-    		ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();	
+    		ro.throwException(false,ACCESS_FORBIDDEN);
+    		return null;
 		}
     	
     	//if creating a new memeber set old = new
@@ -181,11 +173,10 @@ public class MemberService {
 		um.setUserName(userName);
 		memberDAO.CreateUpdateAMember(um,memberNameOld,memberPasswordOld, member,password,ro);
 		if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException();
+    		return null;
     	} else {
-    		ro.setSuccess(true);
-    		ro.setMessage(EMPTY_STRING);
-    		return ro.ToJSONString();
+    		return ro.ToJSONString(true,EMPTY_STRING);
     	}
 	}
 	

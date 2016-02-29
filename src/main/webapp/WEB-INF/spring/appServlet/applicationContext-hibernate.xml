@@ -12,11 +12,32 @@
         http://www.springframework.org/schema/aop/spring-aop.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-        
+     
+ 
+         <!-- ensure that the above transactional advice runs for any execution
+     of an operation defined by the FooService interface 
+    <aop:config>
+        <aop:pointcut id="serviceOperation" expression="execution(* com.ModelViewer.LoginApp.Service.UserService.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation"/>
+    </aop:config>
     
+    <bean id="afterExceptionHandeler" class="com.ModelViewer.AOP.AfterExceptionHandeler"></bean>
+    <aop:config>
+
+    	<aop:aspect id="myAspect" ref="afterExceptionHandeler">
+
+        	<aop:pointcut id="aopTransactionManager" expression="bean(transactionManager)"/>
+
+        	<aop:around pointcut-ref="aopTransactionManager" method="handleExceptionAfter"/>
+
+    	</aop:aspect>
+	</aop:config> -->
+
+   
+
 	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/ModelViewer" />
+        <property name="url" value="jdbc:mysql://localhost:3306/ModelViewerAuto?createDatabaseIfNotExist=true" />
         <property name="username" value="jerrad" />
         <property name="password" value="darrej" />
         <property name="defaultAutoCommit" value="false" />      
@@ -33,7 +54,8 @@
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
                <!--  <prop key="hibernate.current_session_context_class">thread</prop> -->
-                 <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">create</prop>
             </props>
         </property>
     </bean>
@@ -52,13 +74,6 @@
 	      	<ref bean="hibernate5AnnotatedSessionFactory"/>
 	    </property>
  	 </bean>  -->
- 	 
-    <!-- ensure that the above transactional advice runs for any execution
-     of an operation defined by the FooService interface -->
-    <aop:config>
-        <aop:pointcut id="serviceOperation" expression="execution(* com.ModelViewer.LoginApp.Service.UserService.*(..))"/>
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation"/>
-    </aop:config>
     
     <!-- the transactional advice (what 'happens'; see the <aop:advisor/> bean below)-->
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
@@ -86,6 +101,7 @@
 	</bean>
 		<bean id="FileDAOImpl" class="com.ModelViewer.DAOImpl.FileDAOImpl">
 	</bean>
+	
 	
 	<!-- component scanner -->
 	<context:component-scan base-package="com.ModelViewer.DAO.Validation"/>

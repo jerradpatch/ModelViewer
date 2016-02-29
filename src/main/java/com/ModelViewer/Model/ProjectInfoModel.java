@@ -1,9 +1,14 @@
 package com.ModelViewer.Model;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.OneToMany;
 
 @Entity
 @IdClass(ProjectInfoModelId.class)
@@ -19,6 +24,7 @@ public class ProjectInfoModel {
 	
 	@Column
 	private String story;
+
 
 	public String getUserName() {
 		if(userName == null){
@@ -52,5 +58,5 @@ public class ProjectInfoModel {
 	public void setStory(String story) {
 		this.story = story;
 	}
-	
+
 }

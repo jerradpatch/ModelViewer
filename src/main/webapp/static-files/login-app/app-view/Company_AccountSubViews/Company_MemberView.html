@@ -20,14 +20,15 @@
 	<div class="panel-heading">
 		<div>
 			<span><H4 style="display:inline-block">Members</H4></span>
-			<span style="float:right;width: 60%;margin-right: 10px;">
-				<button class="btn btn-default memberCreateMemberButtons" type="button" 
+			<span class="controls">
+				<button class="glyphicon glyphicon-user btn btn-default memberCreateMemberButtons" type="button" 
+						uib-tooltip="New memeber"
 						style="float:right;margin-right:10px" 
 						ng-click="vm.createMemberDialog = !vm.createMemberDialog;
 								  vm.memberNameToCreate = '';
 								  vm.memberPasswordToCreate = '';
 								  vm.memberNameToCreateOld = '';
-								  vm.memberPasswordToCreateOld = '';"> Member
+								  vm.memberPasswordToCreateOld = '';">
 				</button>
 			</span>			
 		</div>
@@ -43,17 +44,21 @@
 						id="exampleInputAmount" placeholder="{{member}}" 
 						ng-bind="member" readonly>
 					<span class="input-group-btn">
-					    <button type = "button" class = "btn btn-default"					   	
+					    <button type = "button" 
+					    	class = "glyphicon glyphicon-edit btn btn-default"		
+					    	uib-tooltip="Edit memeber"			   	
 						   	ng-click="vm.createMemberDialog = true;
-									  vm.GetMemberData(member);">Edit
+									  vm.GetMemberData(member);">
 					   	</button>
-					   	<button type = "button" class = "btn btn-default memberDeleteButtons" 					   	
-							ng-click="vm.DeleteMember(member);">Delete
+					   	<button type = "button" 
+					   		class = "glyphicon glyphicon-remove btn btn-default memberDeleteButtons" 	
+					   		uib-tooltip="Delete memeber"					   	
+							ng-click="vm.DeleteMember(member);">
 					   	</button>
 				   </span>
 			   	</div>
-		</div>		
-	</div>
+			</div>		
+		</div>
 
 	<div id="CreateMemberDialogId" style="z-index: 10" class="panel panel-default HVCenter animate-show" 
 		ng-show="vm.createMemberDialog">

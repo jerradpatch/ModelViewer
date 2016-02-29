@@ -19,6 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,6 +39,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 @ResponseBody
 @RequestMapping("/FileService")
+@EnableTransactionManagement
+@Transactional(readOnly = false, rollbackFor=Exception.class, propagation = Propagation.REQUIRED)
 public class FileService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(FileService.class);
@@ -90,7 +95,7 @@ public class FileService {
 			@RequestParam(value = "projectName", required = true) String projectName,
 			@RequestParam(value = "userP", required = true) String password,
 			@RequestParam(value = "file", required = true) MultipartFile fileMultiPart
-			) throws IOException{
+			) throws IOException, ReturnedObject{
 	
 		logger.debug("UploadFileAProjectFile: userName:"+userName+" projectName:"+projectName +" fileName:"+fileMultiPart.getName());
 		
@@ -98,31 +103,29 @@ public class FileService {
 		
 		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro); 
     	if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException();
+    		return null;
     	} else if(passwordFound == null || !passwordFound.equals(password)){
-    		ro.setSuccess(false);
-    		ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();	
+        	ro.throwException(false,ACCESS_FORBIDDEN);
+    		return null;	
 		}
     	
         if (fileMultiPart.isEmpty()) {
-        	ro.setMessage(COULD_NOT_SAVE_FILE);
-            ro.setSuccess(false);
-        	return ro.ToJSONString();
+        	ro.throwException(false,COULD_NOT_SAVE_FILE);
+    		return null;
         }
         
     	//validate that this user, check if this project exists for this user
     	projectMemberDAO.GetProject(userName, projectName, ro);
     	if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException();
+    		return null;
     	}
     	//test for the correct file type
     	 String inFileType = fileMultiPart.getContentType();
     	 if(!inFileType.equals(PNG_MIME_TYPE) && !inFileType.equals(JPEG_MIME_TYPE) && !inFileType.equals(MODEL_MIME_TYPE)){
-     		
-             ro.setMessage(File_TYPE_NOT_ALLOWED);
-             ro.setSuccess(false);
-             return ro.ToJSONString();
+             ro.throwException(false, File_TYPE_NOT_ALLOWED);
+             return null;
      	}
         	
     	String fileName = fileMultiPart.getOriginalFilename();
@@ -130,37 +133,35 @@ public class FileService {
     		//check that they havent already saved 5 files
     		Integer fileCount = fileDAO.GetProjectImageCount(userName, projectName, ro);
         	if(ro.isSuccess() == false){
-        		return ro.ToJSONString();
+        		ro.throwException();
+        		return null;
         	}
     		
     		if(fileCount <= MAXIMUM_IMAGE_COUNT){  //test if their image size not exceeded
     			
     			fileDAO.UploadAProjectFile_streaming(userName,projectName,fileName,fileMultiPart.getInputStream(), ro);
             	if(ro.isSuccess() == false){
-            		return ro.ToJSONString();
+            		ro.throwException();
+            		return null;
             	}
             	
-    			ro.setMessage(EMPTY_STRING);
-                ro.setSuccess(true);   
+                return ro.ToJSONString(true, EMPTY_STRING);
                 
-    		} else {
+    		} 
     			
-                ro.setMessage(IMAGE_LIMIT_EXCEEDED);
-                ro.setSuccess(false);        			
-    		}
+    		ro.throwException(false,IMAGE_LIMIT_EXCEEDED);
+    		return null;
     		
-    		return ro.ToJSONString();
+    		
     	} 
     	
 		fileDAO.UploadAProjectFile_streaming(userName,projectName,fileName,fileMultiPart.getInputStream(), ro);
     	if(ro.isSuccess() == false){
-    		return ro.ToJSONString();
+    		ro.throwException();
+    		return null;
     	}
     	
-		ro.setMessage(EMPTY_STRING);
-        ro.setSuccess(true);   
-    	
-    	
+
 //		int fileCount = fileDAO.GetProjectFileCount(userName, projectName, ro);
 //    	if(ro.isSuccess() == false){
 //    		return ro.ToJSONString();
@@ -184,10 +185,9 @@ public class FileService {
 //            ro.setSuccess(false);        			
 //		}
 		
-		return ro.ToJSONString();	
-
+		return ro.ToJSONString(true, EMPTY_STRING);	
 	}
-	
+
 	@RequestMapping(value = "/GetFileAProjectFile", method = RequestMethod.GET)
 	public void GetFileAProjectFile(
 			@RequestParam(value = "userName", required = false) String userName,
@@ -261,38 +261,38 @@ public class FileService {
 			@RequestParam(value = "member", required = false) String member,
 			@RequestParam(value = "uPass", required = false) String uPass,
 			@RequestParam(value = "memberP", required = false) String memberP
-			) throws IOException{
+			) throws IOException, ReturnedObject{
 		
 		ReturnedObject ro = new ReturnedObject();
 		
 		if(userName != null && uPass != null){
 			String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro); 
 			if(ro.isSuccess() == false){
-				return ro.ToJSONString();
+				ro.throwException();
+				return null;
 			} else if(passwordFound == null || !passwordFound.equals(uPass)){
-				ro.setSuccess(false);
-				ro.setMessage(ACCESS_FORBIDDEN);
-				return ro.ToJSONString();	
+				ro.throwException(false,ACCESS_FORBIDDEN);
+				return null;	
 			}
 		} else if (member != null && memberP != null){
 			String passwordFound = memberDAO.GetMemberPassword(userName, memberP, ro); 
 			if(ro.isSuccess() == false){
-				return ro.ToJSONString();
+				ro.throwException();
+				return null;
 			} else if(passwordFound == null || !passwordFound.equals(memberP)){
-				ro.setSuccess(false);
-				ro.setMessage(ACCESS_FORBIDDEN);
-				return ro.ToJSONString();	
+				ro.throwException(false, ACCESS_FORBIDDEN);
+				return null;	
 			}			
 		} else {
-			ro.setSuccess(false);
-			ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();				
+			ro.throwException(false, ACCESS_FORBIDDEN);
+    		return null;				
 		}
 		
 		logger.debug("GetAllFileMetaData: userName: "+userName+" projectName: "+projectName+" memberName: "+member);
 		HashMap<Object, Object> fileMeta = fileDAO.GetFileListForAProjectAndMetaData(userName, projectName, ro);
     	if(ro.isSuccess() == false || fileMeta == null){
-    		return ro.ToJSONString();
+    		ro.throwException();
+    		return null;
     	}
     	
     	//make json object {images:<all images>,projects:<all projects>}
@@ -300,9 +300,8 @@ public class FileService {
     	try{
     		rootFileList = (List<HashMap<String,String>>) fileMeta.get("list");
     	} catch (Exception e){
-			ro.setSuccess(false);
-			ro.setMessage("error getting files");
-			return ro.ToJSONString();    		
+			ro.throwException(false,"error getting files");
+    		return null;    		
     	}
     	HashMap<Object, Object> retJson = new HashMap<Object, Object>();
     	
@@ -337,20 +336,7 @@ public class FileService {
     		}
     	}
     	retJson.put("Models", modelList);
-    	
-//    	ProjectInfoModel story = projectInfoDAO.GetProjectInfo(userName, projectName, ro);   	
-//    	if(!ro.isSuccess()){
-//    		return ro.ToJSONString();
-//    	}
-//    	if(story == null || story.getStory() == null){
-//    		retJson.put("Story", "");	    		
-//    	} else {
-//    	   	retJson.put("Story", story.getStory());	
-//    	}
-    	
-    	ro.setSuccess(true);
-    	ro.setMessage(mapper.writeValueAsString(retJson));
-    	return ro.ToJSONString();
+    	return ro.ToJSONString(true, mapper.writeValueAsString(retJson));
 	}
 	
 	@RequestMapping(value = "/DeleteFile", method = RequestMethod.GET)
@@ -359,16 +345,16 @@ public class FileService {
 			@RequestParam(value = "projectName", required = true) String projectName,
 			@RequestParam(value = "fileName", required = true) String fileName,
 			@RequestParam(value = "uPass", required = true) String uPass
-			) throws IOException{
+			) throws IOException, ReturnedObject{
 		
 		ReturnedObject ro = new ReturnedObject();
 		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro); 
 		if(ro.isSuccess() == false){
-			return ro.ToJSONString();
+			ro.throwException();
+    		return null;
 		} else if(passwordFound == null || !passwordFound.equals(uPass)){
-			ro.setSuccess(false);
-			ro.setMessage(ACCESS_FORBIDDEN);
-			return ro.ToJSONString();	
+			ro.throwException(false, ACCESS_FORBIDDEN);
+    		return null;	
 		}		
 		
 		fileDAO.DeleteFile(userName,projectName,fileName,ro);

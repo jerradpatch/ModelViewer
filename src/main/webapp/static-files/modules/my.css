@@ -1,4 +1,22 @@
 
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+.controls-left {
+	max-width:50%;
+	padding-left: 10px;
+	float: left;
+}
+
+.controls-right {
+	max-width:50%;
+	padding-right: 10px;
+	float: right;
+}
+.glyphicon {
+	top: 0px;
+	line-height: inherit;
+}
+ 
 .panel-heading {
 	font-family: 'Montserrat', sans-serif;
 }
@@ -41,6 +59,7 @@ p{
   opacity:1;
 }
 
+
 .animate-show.ng-hide-add, .animate-show.ng-hide-remove {
   transition: all linear 0.5s;
 }
@@ -50,3 +69,80 @@ p{
   opacity: 0;
   padding: 0 10px;
 }
+
+.animate-show.ng-hide-add, .animate-show.ng-hide-remove {
+  transition: all linear 0.5s;
+}
+
+.animate-show.ng-hide {
+  line-height: 0;
+  opacity: 0;
+  padding: 0 10px;
+}
+
+.animate-hide.ng-hide-add {
+  -webkit-animation:3s hide;
+  animation:3s hide;
+}
+
+@keyframes hide {
+  0% {
+    opacity:1;
+    transform: scale(1);
+  }
+  80% {
+    transform: scale(1.00);
+  }
+  100% { 
+    opacity:0;
+    transform: scale(0.5);
+  }
+}
+
+@-webkit-keyframes hide {
+  0% {
+    opacity:1;
+    transform: scale(1);
+  }
+  80% {
+    transform: scale(1.00);
+  }
+  100% { 
+    opacity:0;
+    transform: scale(0.5);
+  }
+}
+
+/*
+.animate-hide.ng-hide-remove {
+  -webkit-animation:3s show;
+  animation:3s show;
+}
+
+@keyframes show {
+  0% {
+    opacity:0;
+    transform: scale(0.5);
+  }
+  70% {
+    transform: scale(1.02);
+  }
+  100% { 
+    opacity:1;
+    transform: scale(1);
+  }
+}
+
+@-webkit-keyframes show {
+  0% {
+    opacity:0;
+    transform: scale(0.5);
+  }
+  70% {
+    transform: scale(1.02);
+  }
+  100% { 
+    opacity:1;
+    transform: scale(1);
+  }
+}*/
