@@ -1,5 +1,6 @@
 package com.ModelViewer.Model;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,57 +8,76 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import com.ModelViewer.DAO.Validation.ValidateUtil;
+import com.ModelViewer.LoginApp.Service.ReturnedObject;
+
 @Entity
-@IdClass(ProjectMemberModelId.class)
-public class ProjectMemberModel{
+public class ProjectMemberModel implements Serializable{
 
+
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1065589547453243877L;
 
 	@Id
-	@Column(nullable = false,length=50)
-	private String userName;
+	@GeneratedValue(generator="system-uuid")
+	@GenericGenerator(name="system-uuid", strategy = "uuid")
+	@Column(name = "uuid", unique = true)
+	private String uuid;
 	
-	@Id
+	
 	@Column(nullable = false,length=50)
 	private String projectName;
 
 	@Column(nullable = true,length=300)
 	private String story;	
 	
+	@JoinColumn(name="Id", insertable = false, updatable = false)
+	@ManyToOne (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+	private UserModel userModel;	
 
-	@OneToMany (cascade=CascadeType.ALL, mappedBy="projectMemberModel", fetch = FetchType.LAZY)
+	@ManyToMany (cascade=CascadeType.ALL, mappedBy="projectMemberModel", fetch = FetchType.LAZY)
 	private Set<MemberModel> members = new HashSet<MemberModel>();
 	
+	@JoinColumn(name="Id")
+	@OneToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<FileModel> fileModels = new HashSet<FileModel>();	
 	
-	
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
 	public ProjectMemberModel(){
 		super();
 	}
 	
 	public ProjectMemberModel(String userName, String projectName){
 		super();
-		this.userName = userName;
 		this.projectName = projectName;
 	}
+
 	
-	
-	
-	
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+
 	public String getProjectName() {
 		return projectName;
 	}
-	public void setProjectName(String projectName) {
+	public void setProjectName(String projectName) throws ReturnedObject {
+		ValidateUtil.validateProjectName(projectName);
 		this.projectName = projectName;
 	}
 	public Set<MemberModel> getMembers() {
@@ -69,5 +89,19 @@ public class ProjectMemberModel{
 	
 	
 	
+	@Override
+	public boolean equals(Object obj){
+		if(obj instanceof ProjectMemberModel){
+			ProjectMemberModel pobj = (ProjectMemberModel) obj;
+			if(pobj.uuid.equals(this.uuid)){
+				return true;
+			}
+		}
+		return false;
+	}
 	
+	@Override 
+	public int hashCode(){
+		return (this.uuid).hashCode();
+	}
 }

@@ -1,17 +1,18 @@
 package com.ModelViewer.DAO;
 
-import java.util.List;
+import java.util.Set;
 
-import com.ModelViewer.LoginApp.Service.ReturnedObject;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import com.ModelViewer.Model.MemberModel;
-import com.ModelViewer.Model.UserModel;
+import com.ModelViewer.Model.ProjectMemberModel;
 
 public interface MemberDAO {
 
-	public List<String> GetListOfMember(String userName, ReturnedObject ro);
-	public String GetMemberPassword(String userName, String member, ReturnedObject ro);
-	public MemberModel GetMemberData(String userName, String member, ReturnedObject ro);
-	public void CreateUpdateAMember(UserModel um, String memberNameOld,String memberPasswordOld,String member,String password, ReturnedObject ro);
-	public void DeleteAMember(String userName, String member, ReturnedObject ro);
+	public void createMember(@RequestBody(required = true) MemberModel memberModel) throws Exception;
+	public MemberModel readMember(@RequestBody(required = true) MemberModel memberModel) throws Exception;
+	public Set<ProjectMemberModel> readMemberProjects(MemberModel memberModel) throws Exception;
+	public void updateMember(@RequestBody(required = true) MemberModel memberModel) throws Exception;
+	public void deleteMember(@RequestBody(required = true) MemberModel memberModel) throws Exception;
 	
 }

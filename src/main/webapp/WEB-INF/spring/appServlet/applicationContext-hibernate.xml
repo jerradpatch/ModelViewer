@@ -82,35 +82,30 @@
         </tx:attributes>
     </tx:advice> 
     
-    <!-- service beans -->
-    <bean id="userService" class="com.ModelViewer.LoginApp.Service.UserService"></bean>
+    <!-- service beans
+    <bean id="userService" class="com.ModelViewer.LoginApp.Service.UserService"></bean>  -->
     
      
      <!--  DAO configurations -->
-    <bean id="UserDAOImpl" class="com.ModelViewer.DAOImpl.UserDAOImpl">
+    <bean id="UserDAO" class="com.ModelViewer.DAOImpl.UserDAOImpl">
         <property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
 	</bean>
-    <bean id="ProjectMemberDAOImpl" class="com.ModelViewer.DAOImpl.ProjectMemberDAOImpl">
+    <bean id="ProjectMemberDAO" class="com.ModelViewer.DAOImpl.ProjectMemberDAOImpl">
         <property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
 	</bean>	
-	<bean id="ProjectInfoDAOImpl" class="com.ModelViewer.DAOImpl.ProjectInfoDAOImpl">
-        <property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
-	</bean>	
-	<bean id="MemberDAOImpl" class="com.ModelViewer.DAOImpl.MemberDAOImpl">
+	<bean id="MemberDAO" class="com.ModelViewer.DAOImpl.MemberDAOImpl">
         <property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
 	</bean>
-		<bean id="FileDAOImpl" class="com.ModelViewer.DAOImpl.FileDAOImpl">
+		<bean id="FileDAO" class="com.ModelViewer.DAOImpl.FileDAOImpl">
 	</bean>
 	
 	
-	<!-- component scanner -->
-	<context:component-scan base-package="com.ModelViewer.DAO.Validation"/>
-	
-	<!-- DAO Validation -->
+
+	<!-- DAO Validation
 	<bean id="UserDAO" class="com.ModelViewer.DAO.Validation.UserDAOValidation"></bean>
     <bean id="ProjectMemberDAO" class="com.ModelViewer.DAO.Validation.ProjectMemberDAOValidation"></bean>
     <bean id="ProjectInfoDAO" class="com.ModelViewer.DAO.Validation.ProjectInfoDAOValidation"></bean>	
 	<bean id="MemberDAO" class="com.ModelViewer.DAO.Validation.MemberDAOValidation"></bean>
-	<bean id="FileDAO" class="com.ModelViewer.DAO.Validation.FileDAOValidation"></bean>
+	<bean id="FileDAO" class="com.ModelViewer.DAO.Validation.FileDAOValidation"></bean>  -->
 	
 </beans:beans>

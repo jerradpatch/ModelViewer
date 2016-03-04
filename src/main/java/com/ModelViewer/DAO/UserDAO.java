@@ -1,19 +1,17 @@
 package com.ModelViewer.DAO;
 
-import com.ModelViewer.LoginApp.Service.ReturnedObject;
+
+import java.util.Set;
+
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.ModelViewer.Model.MemberModel;
 import com.ModelViewer.Model.UserModel;
 
 public interface UserDAO {
-	
-	public UserModel GetUserByUserName(String userName, ReturnedObject ro);
-	public String GetUserPasswordByUserName(String userName, ReturnedObject ro);
-	public void CreateUserByModel(UserModel um, ReturnedObject ro);
-	public void CreateUserByValues(String userName, String password, String email, ReturnedObject ro);
-//	public UserModel UpdateByUserName(String name);
-//	public UserModel DeleteByUserName(String name);
-	public void DeleteByModel(UserModel um, ReturnedObject ro);
-	public void UpdateUserLoginToCurrentTime(String userName, ReturnedObject ro);
-	
-	
 
+	public void createUser(@RequestBody(required = true) UserModel userModel) throws Exception;
+	public UserModel readUser(@RequestBody(required = true) UserModel userModel) throws Exception;
+	public Set<MemberModel> readMemberList(@RequestBody(required = true) UserModel userModel) throws Exception;
+	public void updateUser(@RequestBody(required = true) UserModel userModel) throws Exception;
 }

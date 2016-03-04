@@ -72,13 +72,17 @@ public class ReturnedObject extends Exception{
 	}
 	
 	public void throwException() throws ReturnedObject{
-		throw new ReturnedObject(this.ToJSONString());
+		throw new ReturnedObject(false, this.ToJSONString());
 	}
 	
 	public void throwException(boolean success, String message) throws ReturnedObject{
 		this.success = success;
 		this.message = message;
 		throw new ReturnedObject(this.ToJSONString());
+	}
+	
+	public static void sThrowException(String message) throws ReturnedObject{
+		throw new ReturnedObject(message);
 	}
 	
 }

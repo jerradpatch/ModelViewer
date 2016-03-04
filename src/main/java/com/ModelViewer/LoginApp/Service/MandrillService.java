@@ -50,11 +50,11 @@ public class MandrillService {
 			) throws IOException, ReturnedObject{
 		
 			ReturnedObject ro = new ReturnedObject();
-			ProjectMemberModel projectMember = projectMemberDAO.GetProject(userName, projectName, ro);
+		//	ProjectMemberModel projectMember = projectMemberDAO.GetProject(userName, projectName, ro);
 			
-			logger.debug(mapper.writeValueAsString(projectMember));
+	//		logger.debug(mapper.writeValueAsString(projectMember));
 			
-			logger.debug(mapper.writeValueAsString(projectMember.getMembers()));
+	//		logger.debug(mapper.writeValueAsString(projectMember.getMembers()));
 			
 			return null;	
 				

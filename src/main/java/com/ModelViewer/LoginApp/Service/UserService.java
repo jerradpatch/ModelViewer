@@ -3,6 +3,8 @@ package com.ModelViewer.LoginApp.Service;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ModelViewer.DAO.MemberDAO;
 import com.ModelViewer.DAO.UserDAO;
+import com.ModelViewer.Model.MemberModel;
+import com.ModelViewer.Model.ProjectMemberModel;
 import com.ModelViewer.Model.UserModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,13 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @EnableTransactionManagement
 @Transactional(readOnly = false, rollbackFor=Exception.class, propagation = Propagation.REQUIRED)
 public class UserService {
-	private static final String EMPTY_STRING = "\"\"";
-	private final static String USER_EXISTS = "\"This company name already exists, please choose another\"";
-	private final static String ACCESS_FORBIDDEN = "\"Access Forbbiden\"";
-	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-	
-	private ObjectMapper mapper = new ObjectMapper();
-	
+
 	@Inject
 	@Qualifier("UserDAO")
 	UserDAO userDAO;
@@ -50,78 +48,82 @@ public class UserService {
 	 */
 	@RequestMapping(value = "/alive", method = RequestMethod.GET)
 	public String home() {
-		logger.info("alive request recieved");
-		
+
 		return "hello world";
 	}
 	
-	@RequestMapping(value = "/ComparePasswordsForUser", method = RequestMethod.GET)
-	public String ComparePasswordsForUser(
-			@RequestParam(value = "userName", required = true) String userName,
-			@RequestParam(value = "password", required = true) String password) 
-					throws JsonProcessingException, ReturnedObject {
-		
-		logger.info("GetUserByUserName request recieved: "+userName);
-		
-		ReturnedObject ro = new ReturnedObject();
-		
-		String passwordFound = userDAO.GetUserPasswordByUserName(userName, ro);
-    	if(ro.isSuccess() == false){
-    		ro.throwException();
-    		return null;
-    	}else if(passwordFound == null || !passwordFound.equals(password)){
-    		ro.throwException(false,ACCESS_FORBIDDEN);
-    		return null;
-		}
-    	userDAO.UpdateUserLoginToCurrentTime(userName, ro);
-    	if(ro.isSuccess() == false){
-    		ro.throwException();
-    		return null;
-    	}
-    	return ro.ToJSONString(true, EMPTY_STRING);
-	}
+
+//	public boolean comparePasswordsForUser(@RequestBody(required = true) UserModel userModel) throws Exception{
+//
+//		String passwordFound = userDAO.readUser(userModel).getPassword();
+//    	if(passwordFound == null || !passwordFound.equals(userModel.getPassword())){
+//    		ReturnedObject.sThrowException(false,ACCESS_FORBIDDEN);
+//		}
+//    	return true;
+//	}
 	
 	
-	@RequestMapping(value = "/CreateUser", method = RequestMethod.POST)
-	//@Transactional(readOnly = false, rollbackFor=Exception.class, propagation = Propagation.REQUIRED)
-	public String CreateUser(@RequestBody(required = true) String jsonUserModel) throws Exception {
-		
-		UserModel userModel = mapper.readValue(jsonUserModel, UserModel.class);
-		logger.debug("CreateUser request recieved: "+jsonUserModel);
-		logger.debug(mapper.writeValueAsString(userModel));
-		ReturnedObject ro = new ReturnedObject();
-		
-		UserModel um = userDAO.GetUserByUserName(userModel.getUserName(),ro);
-    	if(ro.isSuccess() == false){
-    		ro.throwException();
-    		return null;
-    	}   	
+	@RequestMapping(value = "/createUser", method = RequestMethod.POST)
+	public void createUser(@RequestBody(required = true) UserModel userModel) throws Exception {
+
+		UserModel um = userDAO.readUser(userModel);	
 		if(um != null){
-    		ro.throwException(false,USER_EXISTS);	
-    		return null;
+			ReturnedObject.sThrowException(USER_EXISTS);	
 		}
 		
 		//create member, global		
 		Long currentTime = System.currentTimeMillis();
 		userModel.setDateCreated(new Timestamp(currentTime));
 		userModel.setDateLastLoggedIn(new Timestamp(currentTime));
-		userDAO.CreateUserByModel(userModel,ro);
-		if(!ro.isSuccess()){
-			ro.throwException();
-			return null;
-		}
-		
-		//add the global member to this users possible members to add to a project
-		memberDAO.CreateUpdateAMember(userModel, "global", "global", "global", "global", ro);	
-		if(!ro.isSuccess()){
-			ro.throwException();
-			return null;
-		}
+		userDAO.createUser(userModel);
 
-		return ro.ToJSONString(true, EMPTY_STRING);
+		//add the global member to this users possible members to add to a project
+		MemberModel memberModel = new MemberModel(null, userModel.getUserName(), "global", "global", null, null, null, null, null, null);	
+		memberDAO.createMember(memberModel);	
+
+	}
+	@RequestMapping(value = "/readUser", method = RequestMethod.POST)
+	public UserModel readUser(@RequestBody(required = true) UserModel userModel) throws Exception {
+		 return userDAO.readUser(userModel);	
+	}
+	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+	public void updateUser(@RequestBody(required = true) UserModel userModel) throws Exception {
+
+		userDAO.updateUser(userModel);	
+		Long currentTime = System.currentTimeMillis();
+		userModel.setDateLastLoggedIn(new Timestamp(currentTime));
+		userDAO.createUser(userModel);
+
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

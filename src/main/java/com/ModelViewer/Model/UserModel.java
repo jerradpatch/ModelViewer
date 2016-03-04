@@ -1,22 +1,39 @@
 package com.ModelViewer.Model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import com.ModelViewer.DAO.Validation.ValidateUtil;
+import com.ModelViewer.LoginApp.Service.ReturnedObject;
 
 @Entity
-public class UserModel {
+public class UserModel implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8966262352528139382L;
+	
 	@Id
+	@GeneratedValue(generator="system-uuid")
+	@GenericGenerator(name="system-uuid", strategy = "uuid")
+	@Column(name = "uuid", unique = true)
+	private String uuid;
+	
 	@Column(nullable = false, length=50)
 	private String userName;
 	
@@ -31,27 +48,46 @@ public class UserModel {
 	
 	@Column(nullable = false)
 	private Timestamp dateLastLoggedIn;
+
+	@JoinColumn(name="Id", insertable = true, updatable = true)
+	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
+    private Set<FileModel> FileModels;
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="userModel", cascade=CascadeType.PERSIST)
+	@JoinColumn(name="Id", insertable = true, updatable = true)
+	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
     private Set<MemberModel> members;
 	
+	@JoinColumn(name="Id", insertable = true, updatable = true)
+	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
+	private Set<ProjectMemberModel> projectMemberModels = new HashSet<ProjectMemberModel>();
 	
+	
+	
+	public String getUuid() {
+		return uuid;
+	}
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 	public String getUserName() {
 		return userName;
 	}
-	public void setUserName(String userName) {
+	public void setUserName(String userName) throws ReturnedObject {
+		ValidateUtil.validateUserName(userName);
 		this.userName = userName;
 	}
 	public String getPassword() {
 		return password;
 	}
-	public void setPassword(String password) {
+	public void setPassword(String password) throws ReturnedObject {
+		ValidateUtil.validatePassword(password);
 		this.password = password;
 	}
 	public String getEmail() {
 		return email;
 	}
-	public void setEmail(String email) {
+	public void setEmail(String email) throws ReturnedObject {
+		ValidateUtil.validateEmail(email);
 		this.email = email;
 	}
 	public Timestamp getDateCreated() {
@@ -72,5 +108,27 @@ public class UserModel {
 	public void setMembers(Set<MemberModel> members) {
 		this.members = members;
 	}
+	public Set<ProjectMemberModel> getProjectMemberModels() {
+		return projectMemberModels;
+	}
+	public void setProjectMemberModel(Set<ProjectMemberModel> projectMemberModels) {
+		this.projectMemberModels = projectMemberModels;
+	}
 	
+	
+	@Override
+	public boolean equals(Object obj){
+		if(obj instanceof UserModel){
+			UserModel pobj = (UserModel) obj;
+			if(pobj.uuid.equals(this.uuid)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override 
+	public int hashCode(){
+		return (this.uuid).hashCode();
+	}
 }
