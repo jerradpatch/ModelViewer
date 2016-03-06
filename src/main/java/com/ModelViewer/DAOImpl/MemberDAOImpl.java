@@ -11,6 +11,7 @@ import com.ModelViewer.DAO.MemberDAO;
 
 import com.ModelViewer.Model.MemberModel;
 import com.ModelViewer.Model.ProjectMemberModel;
+import com.ModelViewer.Model.UserModel;
 
 public class MemberDAOImpl implements MemberDAO{
 
@@ -26,9 +27,8 @@ public class MemberDAOImpl implements MemberDAO{
 	public MemberModel readMember(MemberModel memberModel) throws Exception {
 		return this.sessionFactory.getCurrentSession().get(MemberModel.class,memberModel.getUuid());
 	}
-	public Set<ProjectMemberModel> readMemberProjects(MemberModel memberModel) throws Exception {
-		MemberModel mm = this.sessionFactory.getCurrentSession().get(MemberModel.class, memberModel.getUuid());
-		return mm.getProjectMemberModel();
+	public Set<MemberModel> readMemberList(MemberModel memberModel) throws Exception {
+		return readMember(memberModel).getUserModel().getMembers();
 	}
 	public void updateMember(MemberModel memberModel) throws Exception {
 		this.sessionFactory.getCurrentSession().update(memberModel);

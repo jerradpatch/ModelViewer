@@ -23,6 +23,18 @@ public class UserDAOImpl implements UserDAO{
 	public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
+	
+	public void createUser(UserModel userModel) throws Exception {
+		this.sessionFactory.getCurrentSession().persist(userModel);
+	}
+
+	public UserModel readUser(UserModel userModel) throws Exception {
+		return this.sessionFactory.getCurrentSession().get(UserModel.class,userModel.getUuid());
+	}
+
+	public void updateUser(UserModel userModel) throws Exception {
+		this.sessionFactory.getCurrentSession().update(userModel);
+	}
 
 //	public void CreateUserByModel(UserModel user, ReturnedObject ro) {
 //		
@@ -56,22 +68,6 @@ public class UserDAOImpl implements UserDAO{
 //        String password = (String) userQuery.uniqueResult();
 //        return password;
 //	}
-
-	public void createUser(UserModel userModel) throws Exception {
-		this.sessionFactory.getCurrentSession().persist(userModel);
-	}
-
-	public UserModel readUser(UserModel userModel) throws Exception {
-		return this.sessionFactory.getCurrentSession().get(UserModel.class,userModel.getUuid());
-	}
-
-	public void updateUser(UserModel userModel) throws Exception {
-		this.sessionFactory.getCurrentSession().update(userModel);
-	}
-
-	public Set<MemberModel> readMemberList(UserModel userModel) throws Exception {
-		return readUser(userModel).getMembers();
-	}
 
 //	public void CreateUserByValues(String userName, String password, String email, ReturnedObject ro) {
 //		

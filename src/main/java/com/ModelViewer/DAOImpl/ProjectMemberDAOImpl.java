@@ -1,6 +1,8 @@
 package com.ModelViewer.DAOImpl;
 
 
+import java.util.Set;
+
 import org.hibernate.SessionFactory;
 import com.ModelViewer.DAO.ProjectMemberDAO;
 import com.ModelViewer.Model.ProjectMemberModel;
@@ -22,7 +24,10 @@ public class ProjectMemberDAOImpl implements ProjectMemberDAO{
 	public void deleteProject(ProjectMemberModel projectMemberModel) throws Exception {
 		this.sessionFactory.getCurrentSession().delete(projectMemberModel);
 	}
-	
+	public Set<ProjectMemberModel> readMemberProjects(ProjectMemberModel projectMemberModel) throws Exception {
+		ProjectMemberModel pmm = this.sessionFactory.getCurrentSession().get(ProjectMemberModel.class, projectMemberModel.getUuid());
+		return pmm.getUserModel().getProjectMemberModels();
+	}
 	
 	
 //	

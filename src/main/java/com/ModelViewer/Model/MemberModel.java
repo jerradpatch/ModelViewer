@@ -51,12 +51,16 @@ public class MemberModel implements Serializable{
 	@Column(nullable = true, length=150)
 	private String email;	
 	
-	@ManyToMany (cascade=CascadeType.ALL, mappedBy="memberModel", fetch = FetchType.LAZY)
+	@ManyToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<ProjectMemberModel> projectMemberModel = new HashSet<ProjectMemberModel>();
 	
-	@JoinColumn(name="Id", insertable = false, updatable = false)
+
 	@ManyToOne(fetch=FetchType.LAZY)
 	private UserModel userModel;
+	
+	
+	
+	
 	
 	public MemberModel(String uuid, String memberName, String password, String firstName, String lastName,
 			String role, String email, Set<ProjectMemberModel> projectMemberModel, UserModel userModel) {

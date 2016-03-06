@@ -9,14 +9,14 @@ import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ModelViewer.LoginApp.Service.FileService;
+import com.ModelViewer.LoginApp.Service.FileMetaService;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Aspect
 public class Interceptor {
 
-	private static final Logger logger = LoggerFactory.getLogger(FileService.class);
+	private static final Logger logger = LoggerFactory.getLogger(FileMetaService.class);
 	private static final ObjectMapper mapper = new ObjectMapper();
 	//inplace point-cut expression, aspect oriented programming
 	@Around("@annotation(org.springframework.web.bind.annotation.RequestMapping)")

@@ -75,12 +75,12 @@
 	    </property>
  	 </bean>  -->
     
-    <!-- the transactional advice (what 'happens'; see the <aop:advisor/> bean below)-->
+    <!-- the transactional advice (what 'happens'; see the <aop:advisor/> bean below)
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
             <tx:method name="*" rollback-for="Exception" propagation="REQUIRED"/>
         </tx:attributes>
-    </tx:advice> 
+    </tx:advice> -->
     
     <!-- service beans
     <bean id="userService" class="com.ModelViewer.LoginApp.Service.UserService"></bean>  -->
@@ -96,10 +96,13 @@
 	<bean id="MemberDAO" class="com.ModelViewer.DAOImpl.MemberDAOImpl">
         <property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
 	</bean>
-		<bean id="FileDAO" class="com.ModelViewer.DAOImpl.FileDAOImpl">
+	<bean id="FileDAO" class="com.ModelViewer.DAOImpl.FileS3Repository">
+		<property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
+		<property name="amazonS3Client" ref="com.amazonaws.services.s3.AmazonS3" />
 	</bean>
-	
-	
+	<bean id="FileMetaDAO" class="com.ModelViewer.DAOImpl.FileMetaDAOImpl">
+		<property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />	
+	</bean>
 
 	<!-- DAO Validation
 	<bean id="UserDAO" class="com.ModelViewer.DAO.Validation.UserDAOValidation"></bean>

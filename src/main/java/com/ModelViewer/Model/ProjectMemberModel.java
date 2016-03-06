@@ -33,9 +33,8 @@ public class ProjectMemberModel implements Serializable{
 	@Id
 	@GeneratedValue(generator="system-uuid")
 	@GenericGenerator(name="system-uuid", strategy = "uuid")
-	@Column(name = "uuid", unique = true)
+	@Column(name = "uuid", unique = true,nullable = false)
 	private String uuid;
-	
 	
 	@Column(nullable = false,length=50)
 	private String projectName;
@@ -43,25 +42,19 @@ public class ProjectMemberModel implements Serializable{
 	@Column(nullable = true,length=300)
 	private String story;	
 	
-	@JoinColumn(name="Id", insertable = false, updatable = false)
+	@JoinColumn(name="uuid", insertable = false, updatable = false)
 	@ManyToOne (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
 	private UserModel userModel;	
 
-	@ManyToMany (cascade=CascadeType.ALL, mappedBy="projectMemberModel", fetch = FetchType.LAZY)
-	private Set<MemberModel> members = new HashSet<MemberModel>();
+	@ManyToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<MemberModel> members;
 	
-	@JoinColumn(name="Id")
+	@JoinColumn(name="uuid")
 	@OneToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<FileModel> fileModels = new HashSet<FileModel>();	
+	private Set<FileMetaModel> fileModels;	
 	
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-
+	
+	
 	public ProjectMemberModel(){
 		super();
 	}
@@ -70,9 +63,16 @@ public class ProjectMemberModel implements Serializable{
 		super();
 		this.projectName = projectName;
 	}
-
 	
+	
+	public String getUuid() {
+		return uuid;
+	}
 
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+	
 	public String getProjectName() {
 		return projectName;
 	}
@@ -80,15 +80,39 @@ public class ProjectMemberModel implements Serializable{
 		ValidateUtil.validateProjectName(projectName);
 		this.projectName = projectName;
 	}
+	
+	public String getStory() {
+		return story;
+	}
+
+	public void setStory(String story) throws ReturnedObject {
+		ValidateUtil.validateTextField(story);
+		this.story = story;
+	}
+	
 	public Set<MemberModel> getMembers() {
 		return members;
 	}
 	public void setMembers(Set<MemberModel> members) {
 		this.members = members;
 	}
-	
-	
-	
+
+	public UserModel getUserModel() {
+		return userModel;
+	}
+
+	public void setUserModel(UserModel userModel) {
+		this.userModel = userModel;
+	}
+
+	public Set<FileMetaModel> getFileModels() {
+		return fileModels;
+	}
+
+	public void setFileModels(Set<FileMetaModel> fileModels) {
+		this.fileModels = fileModels;
+	}
+
 	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof ProjectMemberModel){

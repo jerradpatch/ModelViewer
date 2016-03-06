@@ -106,14 +106,14 @@ public class ProjectMemberService {
 	}
 	@RequestMapping(value = "/readUserProjects", method = RequestMethod.POST)
 	public Set<ProjectMemberModel> readUserProjects(@RequestBody(required = true) UserModel userModel) throws Exception {
-		return userModel.getProjectMemberModel();
+		return userModel.getProjectMemberModels();
 	}
 	@RequestMapping(value = "/readUserProjectsAndMembers", method = RequestMethod.POST)
 	public HashMap<ProjectMemberModel,Set<MemberModel>> readUserProjectsAndMembers(@RequestBody(required = true) UserModel userModel) throws Exception {
 		
 		HashMap<ProjectMemberModel,Set<MemberModel>> pm = new HashMap<ProjectMemberModel,Set<MemberModel>>();
 		
-		for(ProjectMemberModel pmm : userModel.getProjectMemberModel()){
+		for(ProjectMemberModel pmm : userModel.getProjectMemberModels()){
 			pm.put(pmm, pmm.getMembers());
 		}
 		return pm;

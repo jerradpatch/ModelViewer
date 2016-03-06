@@ -36,6 +36,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Transactional(readOnly = false, rollbackFor=Exception.class, propagation = Propagation.REQUIRED)
 public class UserService {
 
+	private final static String USER_EXISTS = "\"This company name already exists, please choose another\"";
+	private final static String ACCESS_FORBIDDEN = "\"Access Forbbiden\"";
+
 	@Inject
 	@Qualifier("UserDAO")
 	UserDAO userDAO;
@@ -78,7 +81,7 @@ public class UserService {
 		userDAO.createUser(userModel);
 
 		//add the global member to this users possible members to add to a project
-		MemberModel memberModel = new MemberModel(null, userModel.getUserName(), "global", "global", null, null, null, null, null, null);	
+		MemberModel memberModel = new MemberModel(null, userModel.getUserName(), "global", "global", null, null, null, null, null);	
 		memberDAO.createMember(memberModel);	
 
 	}

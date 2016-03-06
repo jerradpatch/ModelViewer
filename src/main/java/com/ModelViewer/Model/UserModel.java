@@ -49,17 +49,17 @@ public class UserModel implements Serializable{
 	@Column(nullable = false)
 	private Timestamp dateLastLoggedIn;
 
-	@JoinColumn(name="Id", insertable = true, updatable = true)
+	@JoinColumn(name="uuid", insertable = true, updatable = true)
 	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
-    private Set<FileModel> FileModels;
+    private Set<FileMetaModel> FileModels;
 	
-	@JoinColumn(name="Id", insertable = true, updatable = true)
+	@JoinColumn(name="uuid", insertable = true, updatable = true)
 	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
     private Set<MemberModel> members;
 	
-	@JoinColumn(name="Id", insertable = true, updatable = true)
+	@JoinColumn(name="uuid", insertable = true, updatable = true)
 	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
-	private Set<ProjectMemberModel> projectMemberModels = new HashSet<ProjectMemberModel>();
+	private Set<ProjectMemberModel> projectMemberModels;
 	
 	
 	
