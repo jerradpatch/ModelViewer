@@ -35,15 +35,7 @@ public class ProjectMemberService {
 	@Inject
 	@Qualifier("ProjectMemberDAO")
 	ProjectMemberDAO projectMemberDAO;
-	
-	@Inject
-	@Qualifier("UserDAO")
-	UserDAO userDAO;
-	
-	@Inject
-	@Qualifier("MemberDAO")
-	MemberDAO memberDAO;
-	
+
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -52,7 +44,40 @@ public class ProjectMemberService {
 		
 		return "hello world";
 	}
-
+	@RequestMapping(value = "/createProject", method = RequestMethod.POST)
+	public boolean createProject(@RequestBody(required = true) ProjectMemberModel projectMemberModel) throws Exception{
+		projectMemberDAO.createProject(projectMemberModel);   	
+    	return true; 	
+	}
+	@RequestMapping(value = "/readMemberProjects", method = RequestMethod.POST)
+	public Set<ProjectMemberModel> readMemberProjects(@RequestBody(required = true) MemberModel memberModel) throws Exception{	
+		return memberModel.getProjectMemberModel();
+	}
+	@RequestMapping(value = "/readUserProjects", method = RequestMethod.POST)
+	public Set<ProjectMemberModel> readUserProjects(@RequestBody(required = true) UserModel userModel) throws Exception {
+		return userModel.getProjectMemberModels();
+	}
+	@RequestMapping(value = "/readUserProjectsAndMembers", method = RequestMethod.POST)
+	public HashMap<ProjectMemberModel,Set<MemberModel>> readUserProjectsAndMembers(@RequestBody(required = true) UserModel userModel) throws Exception {
+		
+		HashMap<ProjectMemberModel,Set<MemberModel>> pm = new HashMap<ProjectMemberModel,Set<MemberModel>>();
+		
+		for(ProjectMemberModel pmm : userModel.getProjectMemberModels()){
+			pm.put(pmm, pmm.getMembers());
+		}
+		return pm;
+	}
+	@RequestMapping(value = "/updateProject", method = RequestMethod.POST)
+	public boolean updateProject(@RequestBody(required = true) ProjectMemberModel updateProject) throws Exception{
+		projectMemberDAO.updateProject(updateProject);
+		return true;
+	}
+	
+	@RequestMapping(value = "/deleteProject", method = RequestMethod.POST)
+	public boolean deleteProject(@RequestBody(required = true) ProjectMemberModel projectMemberModel) throws Exception{
+		projectMemberDAO.deleteProject(projectMemberModel);
+		return true;
+	}
 	//TODO moved to user
 //	@RequestMapping(value = "/GetListOfProjectsAndMembers", method = RequestMethod.GET)
 //	public String GetListOfProjectsAndMembers(
@@ -94,41 +119,6 @@ public class ProjectMemberService {
 //    	return true;
 //	}
 //	
-	
-	@RequestMapping(value = "/createProject", method = RequestMethod.POST)
-	public boolean createProject(@RequestBody(required = true) ProjectMemberModel projectMemberModel) throws Exception{
-		projectMemberDAO.createProject(projectMemberModel);   	
-    	return true; 	
-	}
-	@RequestMapping(value = "/readMemberProjects", method = RequestMethod.POST)
-	public Set<ProjectMemberModel> readMemberProjects(@RequestBody(required = true) MemberModel memberModel) throws Exception{	
-		return memberModel.getProjectMemberModel();
-	}
-	@RequestMapping(value = "/readUserProjects", method = RequestMethod.POST)
-	public Set<ProjectMemberModel> readUserProjects(@RequestBody(required = true) UserModel userModel) throws Exception {
-		return userModel.getProjectMemberModels();
-	}
-	@RequestMapping(value = "/readUserProjectsAndMembers", method = RequestMethod.POST)
-	public HashMap<ProjectMemberModel,Set<MemberModel>> readUserProjectsAndMembers(@RequestBody(required = true) UserModel userModel) throws Exception {
-		
-		HashMap<ProjectMemberModel,Set<MemberModel>> pm = new HashMap<ProjectMemberModel,Set<MemberModel>>();
-		
-		for(ProjectMemberModel pmm : userModel.getProjectMemberModels()){
-			pm.put(pmm, pmm.getMembers());
-		}
-		return pm;
-	}
-	@RequestMapping(value = "/updateProject", method = RequestMethod.POST)
-	public boolean updateProject(@RequestBody(required = true) ProjectMemberModel updateProject) throws Exception{
-		projectMemberDAO.updateProject(updateProject);
-		return true;
-	}
-	
-	@RequestMapping(value = "/deleteProject", method = RequestMethod.POST)
-	public boolean deleteProject(@RequestBody(required = true) ProjectMemberModel projectMemberModel) throws Exception{
-		projectMemberDAO.deleteProject(projectMemberModel);
-		return true;
-	}
 	
 	//TODO //this is part of Delete memeber
 //	@RequestMapping(value = "/DeleteAMemberFromAllProjects", method = RequestMethod.GET)

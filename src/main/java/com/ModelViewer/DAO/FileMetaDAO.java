@@ -7,6 +7,7 @@ import com.ModelViewer.Model.FileMetaModel;
 public interface FileMetaDAO {
 
 	public void createFileMeta(FileMetaModel fileMetaModel) throws Exception;
+	public FileMetaModel readFileMeta(FileMetaModel fileMetaModel) throws Exception;
 	public Set<FileMetaModel> readFileMetaList(FileMetaModel fileMetaModel) throws Exception;
 	public void deleteFileMeta(FileMetaModel fileMetaModel) throws Exception;
 	

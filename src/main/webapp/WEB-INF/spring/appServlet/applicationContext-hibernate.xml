@@ -82,9 +82,14 @@
         </tx:attributes>
     </tx:advice> -->
     
-    <!-- service beans
-    <bean id="userService" class="com.ModelViewer.LoginApp.Service.UserService"></bean>  -->
-    
+
+	<bean id="BasicAWSCredentials" class="com.amazonaws.auth.BasicAWSCredentials">
+		<constructor-arg type="java.lang.String" name="accessKey" value="1234"/>
+		<constructor-arg type="java.lang.String" name="secretKey" value="1231"/>
+	</bean>
+	<bean id="AmazonS3" class="com.amazonaws.services.s3.AmazonS3Client">
+		<constructor-arg name="awsCredentials" ref="BasicAWSCredentials" />
+	</bean>    
      
      <!--  DAO configurations -->
     <bean id="UserDAO" class="com.ModelViewer.DAOImpl.UserDAOImpl">
@@ -95,20 +100,14 @@
 	</bean>	
 	<bean id="MemberDAO" class="com.ModelViewer.DAOImpl.MemberDAOImpl">
         <property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
-	</bean>
+	</bean>	
 	<bean id="FileDAO" class="com.ModelViewer.DAOImpl.FileS3Repository">
-		<property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
-		<property name="amazonS3Client" ref="com.amazonaws.services.s3.AmazonS3" />
+		<property name="amazonS3" ref="AmazonS3" />
+		<property name="baseBucket" value="s3://1.0/" />
 	</bean>
 	<bean id="FileMetaDAO" class="com.ModelViewer.DAOImpl.FileMetaDAOImpl">
 		<property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />	
 	</bean>
 
-	<!-- DAO Validation
-	<bean id="UserDAO" class="com.ModelViewer.DAO.Validation.UserDAOValidation"></bean>
-    <bean id="ProjectMemberDAO" class="com.ModelViewer.DAO.Validation.ProjectMemberDAOValidation"></bean>
-    <bean id="ProjectInfoDAO" class="com.ModelViewer.DAO.Validation.ProjectInfoDAOValidation"></bean>	
-	<bean id="MemberDAO" class="com.ModelViewer.DAO.Validation.MemberDAOValidation"></bean>
-	<bean id="FileDAO" class="com.ModelViewer.DAO.Validation.FileDAOValidation"></bean>  -->
 	
 </beans:beans>

@@ -16,6 +16,13 @@
 		    <version>0.0.7</version>
 		</dependency>
 		
+		<!-- Spring AWS -->
+	    <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+	        <artifactId>spring-cloud-starter-aws</artifactId>
+	        <version>1.0.4.RELEASE</version>
+	    </dependency>
+	    
 		<!--  jackson JSNO stuff -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

@@ -4,29 +4,34 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.WritableResource;
 
 import com.ModelViewer.DAO.FileDAO;
-import com.ModelViewer.Model.FileMetaModel;
 import com.amazonaws.services.s3.AmazonS3;
 
  
 
-public class FileS3Repository implements FileDAO {
+public class FileS3Repository implements FileDAO, ResourceLoaderAware{
 
 	private ResourceLoader resourceLoader;
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
-	}	
+	}
+	
+	private AmazonS3 amazonS3;
+	public void setAmazonS3(AmazonS3 amazonS3) {
+		this.amazonS3 = amazonS3;
+	}
+	
 	private String baseBucket;
 	public void setBaseBucket(String baseBucket) {
 		this.baseBucket = baseBucket;
 	}	
-	private AmazonS3 amazonS3;
 	
-	
+
 	public void createFile(String userName, String projectName, String fileName,InputStream fileIn) throws Exception {
 		String s3Location = makeS3FileLocation(userName,projectName,fileName);
 		Resource resource = this.resourceLoader.getResource(s3Location);

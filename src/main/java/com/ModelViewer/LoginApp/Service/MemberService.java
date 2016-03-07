@@ -31,10 +31,6 @@ public class MemberService {
 	@Qualifier("MemberDAO")
 	MemberDAO memberDAO;
 	
-	@Inject
-	@Qualifier("UserDAO")
-	UserDAO userDAO;
-	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -45,23 +41,13 @@ public class MemberService {
 	}
 
 	
-////	@RequestMapping(value = "/ComparePasswordsForMember", method = RequestMethod.GET)
-//	public boolean ComparePasswordsForMember(@RequestBody(required = true) MemberModel memberModel) throws Exception{
-//		MemberModel memberModelDb = memberDAO.readMember(memberModel);
-//    	if(memberModelDb == null || !memberModelDb.getPassword().equals(memberModel.getPassword())){
-//    		ReturnedObject.sThrowException(false,ACCESS_FORBIDDEN);
-//		}
-//
-//		return true;
-//	}
-	
 	@RequestMapping(value = "/createMember", method = RequestMethod.POST)
 	public void CreateAMember(@RequestBody(required = true) MemberModel memberModel) throws Exception{
 		memberDAO.createMember(memberModel);
 	}	
 	@RequestMapping(value = "/readMemberList", method = RequestMethod.POST)
-	public Set<MemberModel> readListOfMember(@RequestBody(required = true) UserModel userModel) throws Exception {
-		Set<MemberModel> members = userDAO.readMemberList(userModel);	
+	public Set<MemberModel> readListOfMember(@RequestBody(required = true) MemberModel memberModel) throws Exception {
+		Set<MemberModel> members = memberDAO.readMemberList(memberModel);
 		return members;
 	}
 

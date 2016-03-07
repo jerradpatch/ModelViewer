@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class UserService {
 
 	private final static String USER_EXISTS = "\"This company name already exists, please choose another\"";
-	private final static String ACCESS_FORBIDDEN = "\"Access Forbbiden\"";
 
 	@Inject
 	@Qualifier("UserDAO")
@@ -46,25 +45,12 @@ public class UserService {
 	@Inject
 	@Qualifier("MemberDAO")
 	MemberDAO memberDAO;
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 */
+
 	@RequestMapping(value = "/alive", method = RequestMethod.GET)
 	public String home() {
 
 		return "hello world";
 	}
-	
-
-//	public boolean comparePasswordsForUser(@RequestBody(required = true) UserModel userModel) throws Exception{
-//
-//		String passwordFound = userDAO.readUser(userModel).getPassword();
-//    	if(passwordFound == null || !passwordFound.equals(userModel.getPassword())){
-//    		ReturnedObject.sThrowException(false,ACCESS_FORBIDDEN);
-//		}
-//    	return true;
-//	}
-	
 	
 	@RequestMapping(value = "/createUser", method = RequestMethod.POST)
 	public void createUser(@RequestBody(required = true) UserModel userModel) throws Exception {
@@ -97,7 +83,17 @@ public class UserService {
 		userModel.setDateLastLoggedIn(new Timestamp(currentTime));
 		userDAO.createUser(userModel);
 
-	}
+	}	
+
+//	public boolean comparePasswordsForUser(@RequestBody(required = true) UserModel userModel) throws Exception{
+//
+//		String passwordFound = userDAO.readUser(userModel).getPassword();
+//    	if(passwordFound == null || !passwordFound.equals(userModel.getPassword())){
+//    		ReturnedObject.sThrowException(false,ACCESS_FORBIDDEN);
+//		}
+//    	return true;
+//	}
+	
 	
 }
 

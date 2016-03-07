@@ -1,5 +1,6 @@
 package com.ModelViewer.DAOImpl;
 
+import java.sql.Timestamp;
 import java.util.Set;
 import org.hibernate.SessionFactory;
 import com.ModelViewer.DAO.FileMetaDAO;
@@ -14,7 +15,13 @@ public class FileMetaDAOImpl implements FileMetaDAO{
 	
 	
 	public void createFileMeta(FileMetaModel fileMetaModel) throws Exception {
+    	java.util.Date date= new java.util.Date();
+    	Timestamp ts = new Timestamp(date.getTime()); 
+    	fileMetaModel.setDateCreated(ts);
 		this.sessionFactory.getCurrentSession().persist(fileMetaModel);
+	}
+	public FileMetaModel readFileMeta(FileMetaModel fileMetaModel) throws Exception {
+		return this.sessionFactory.getCurrentSession().get(FileMetaModel.class, fileMetaModel.getUuid());
 	}
 	public Set<FileMetaModel> readFileMetaList(FileMetaModel fileMetaModel) throws Exception {
 		FileMetaModel fm = this.sessionFactory.getCurrentSession().get(FileMetaModel.class, fileMetaModel.getUuid());
@@ -23,6 +30,7 @@ public class FileMetaDAOImpl implements FileMetaDAO{
 	public void deleteFileMeta(FileMetaModel fileMetaModel) throws Exception {
 		this.sessionFactory.getCurrentSession().delete(fileMetaModel);
 	}
+
 
 	
 	

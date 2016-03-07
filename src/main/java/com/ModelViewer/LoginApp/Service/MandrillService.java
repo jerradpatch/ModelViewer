@@ -15,14 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.ModelViewer.DAO.MemberDAO;
 import com.ModelViewer.DAO.ProjectMemberDAO;
-import com.ModelViewer.Model.ProjectMemberModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microtripit.mandrillapp.lutung.MandrillApi;
-import com.microtripit.mandrillapp.lutung.view.MandrillMessage;
 
 @Controller
 @ResponseBody
@@ -31,9 +26,7 @@ import com.microtripit.mandrillapp.lutung.view.MandrillMessage;
 @Transactional(readOnly = false, rollbackFor=Exception.class, propagation = Propagation.REQUIRED)
 public class MandrillService {
 
-	private static final Logger logger = LoggerFactory.getLogger(MandrillService.class);
-	private static final ObjectMapper mapper = new ObjectMapper();
-	
+
 	@Inject
 	@Qualifier("Mandrill")
 	MandrillApi mandrillApi;

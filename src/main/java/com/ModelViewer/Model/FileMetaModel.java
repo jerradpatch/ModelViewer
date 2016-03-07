@@ -1,5 +1,6 @@
 package com.ModelViewer.Model;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -10,19 +11,25 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ModelViewer.DAO.Validation.ValidateUtil;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
 
 @Entity
-public class FileMetaModel implements Serializable{
+public class FileMetaModel implements Serializable {
 	
 
 	private static final long serialVersionUID = 2674621279979020137L;
-
+	private static final String MODEL_MIME_TYPE = "application/zip";
+	private static final String JPEG_MIME_TYPE = "image/jpeg";
+	private static final String PNG_MIME_TYPE = "image/png";
+	private static final String File_TYPE_NOT_ALLOWED = "\"This file type is not allowed. Only \".zip\", \".jpg\\.jpeg\", and \".png\" file types are allowed.\"";
+	private static final String COULD_NOT_SAVE_FILE = "\"Could not save file, file empty.\"";
+	
 	@Id
 	@GeneratedValue(generator="system-uuid")
 	@GenericGenerator(name="system-uuid", strategy = "uuid")
@@ -56,6 +63,9 @@ public class FileMetaModel implements Serializable{
 	
 	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
 	private ProjectMemberModel projectMemberModel;
+	
+	@Transient
+	private InputStream inputStream;
 	
 	public FileMetaModel() {
 		super();
@@ -109,6 +119,10 @@ public class FileMetaModel implements Serializable{
 	}
 
 	public void setMimeType(String mimeType) throws ReturnedObject {
+		if(!mimeType.equals(PNG_MIME_TYPE) && !mimeType.equals(JPEG_MIME_TYPE) && !mimeType.equals(MODEL_MIME_TYPE)
+				&& !mimeType.equals(PNG_MIME_TYPE)){
+			ReturnedObject.sThrowException(File_TYPE_NOT_ALLOWED);
+	 	}
 		ValidateUtil.validateFileName(mimeType);
 		this.mimeType = mimeType;
 	}
@@ -136,7 +150,19 @@ public class FileMetaModel implements Serializable{
 	public void setProjectMemberModel(ProjectMemberModel projectMemberModel) {
 		this.projectMemberModel = projectMemberModel;
 	}
+	
+	public InputStream getInputStream() {
+		return inputStream;
+	}
 
+	public void setInputStream(InputStream inputStream) throws ReturnedObject {
+        if (inputStream == null) {
+        	ReturnedObject.sThrowException(COULD_NOT_SAVE_FILE);
+        }
+        this.inputStream = inputStream;
+	}
+
+	
 	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof FileMetaModel){
