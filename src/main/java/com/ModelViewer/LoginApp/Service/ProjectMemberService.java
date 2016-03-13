@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ModelViewer.DAO.MemberDAO;
 import com.ModelViewer.DAO.ProjectMemberDAO;
-import com.ModelViewer.DAO.UserDAO;
 import com.ModelViewer.Model.MemberModel;
 import com.ModelViewer.Model.ProjectMemberModel;
 import com.ModelViewer.Model.UserModel;
@@ -40,25 +38,24 @@ public class ProjectMemberService {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/alive", method = RequestMethod.GET)
-	public String home() {
-		
+	public Object home() {		
 		return "hello world";
 	}
 	@RequestMapping(value = "/createProject", method = RequestMethod.POST)
-	public boolean createProject(@RequestBody(required = true) ProjectMemberModel projectMemberModel) throws Exception{
+	public Object createProject(@RequestBody(required = true) ProjectMemberModel projectMemberModel) throws Exception{
 		projectMemberDAO.createProject(projectMemberModel);   	
     	return true; 	
 	}
 	@RequestMapping(value = "/readMemberProjects", method = RequestMethod.POST)
-	public Set<ProjectMemberModel> readMemberProjects(@RequestBody(required = true) MemberModel memberModel) throws Exception{	
+	public Object readMemberProjects(@RequestBody(required = true) MemberModel memberModel) throws Exception{	
 		return memberModel.getProjectMemberModel();
 	}
 	@RequestMapping(value = "/readUserProjects", method = RequestMethod.POST)
-	public Set<ProjectMemberModel> readUserProjects(@RequestBody(required = true) UserModel userModel) throws Exception {
+	public Object readUserProjects(@RequestBody(required = true) UserModel userModel) throws Exception {
 		return userModel.getProjectMemberModels();
 	}
 	@RequestMapping(value = "/readUserProjectsAndMembers", method = RequestMethod.POST)
-	public HashMap<ProjectMemberModel,Set<MemberModel>> readUserProjectsAndMembers(@RequestBody(required = true) UserModel userModel) throws Exception {
+	public Object readUserProjectsAndMembers(@RequestBody(required = true) UserModel userModel) throws Exception {
 		
 		HashMap<ProjectMemberModel,Set<MemberModel>> pm = new HashMap<ProjectMemberModel,Set<MemberModel>>();
 		
@@ -68,13 +65,13 @@ public class ProjectMemberService {
 		return pm;
 	}
 	@RequestMapping(value = "/updateProject", method = RequestMethod.POST)
-	public boolean updateProject(@RequestBody(required = true) ProjectMemberModel updateProject) throws Exception{
+	public Object updateProject(@RequestBody(required = true) ProjectMemberModel updateProject) throws Exception{
 		projectMemberDAO.updateProject(updateProject);
 		return true;
 	}
 	
 	@RequestMapping(value = "/deleteProject", method = RequestMethod.POST)
-	public boolean deleteProject(@RequestBody(required = true) ProjectMemberModel projectMemberModel) throws Exception{
+	public Object deleteProject(@RequestBody(required = true) ProjectMemberModel projectMemberModel) throws Exception{
 		projectMemberDAO.deleteProject(projectMemberModel);
 		return true;
 	}

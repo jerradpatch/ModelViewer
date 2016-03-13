@@ -35,29 +35,36 @@ public class MemberService {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/alive", method = RequestMethod.GET)
-	public String home() {
+	public Object home() {
 
 		return "hello world";
 	}
-
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public Object readMember_userNamePassword(@RequestBody(required = true) MemberModel memberModel) throws Exception {
+		MemberModel memberModelRet =  memberDAO.readMember_userNamePassword(memberModel);
+		if(memberModelRet == null){
+			ReturnedObject.sThrowException("Access Denied");
+		}
+		return memberModelRet;
+	}
 	
 	@RequestMapping(value = "/createMember", method = RequestMethod.POST)
 	public void CreateAMember(@RequestBody(required = true) MemberModel memberModel) throws Exception{
 		memberDAO.createMember(memberModel);
 	}	
 	@RequestMapping(value = "/readMemberList", method = RequestMethod.POST)
-	public Set<MemberModel> readListOfMember(@RequestBody(required = true) MemberModel memberModel) throws Exception {
+	public Object readListOfMember(@RequestBody(required = true) MemberModel memberModel) throws Exception {
 		Set<MemberModel> members = memberDAO.readMemberList(memberModel);
 		return members;
 	}
 
 	@RequestMapping(value = "/readMember", method = RequestMethod.POST)
-	public MemberModel readMember(@RequestBody(required = true) MemberModel memberModel) throws Exception {	
+	public Object readMember(@RequestBody(required = true) MemberModel memberModel) throws Exception {	
 		MemberModel memberRet = memberDAO.readMember(memberModel);
 		return memberRet;
 	}
 	@RequestMapping(value = "/readUserMembers", method = RequestMethod.POST)
-	public Set<MemberModel> readUserMembers(@RequestBody(required = true) UserModel userModel) throws Exception {
+	public Object readUserMembers(@RequestBody(required = true) UserModel userModel) throws Exception {
 		return userModel.getMembers();
 	}
 	@RequestMapping(value = "/updateMember", method = RequestMethod.POST)

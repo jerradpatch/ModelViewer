@@ -1,21 +1,18 @@
 package com.ModelViewer.Model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import com.ModelViewer.DAO.Validation.ValidateUtil;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
@@ -31,9 +28,9 @@ public class ProjectMemberModel implements Serializable{
 	private static final long serialVersionUID = 1065589547453243877L;
 
 	@Id
-	@GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid", strategy = "uuid")
-	@Column(name = "uuid", unique = true,nullable = false)
+//	@GeneratedValue(generator="system-uuid")
+//	@GenericGenerator(name="system-uuid", strategy = "uuid")
+	@Column(unique = true, nullable = false)
 	private String uuid;
 	
 	@Column(nullable = false,length=50)
@@ -41,15 +38,15 @@ public class ProjectMemberModel implements Serializable{
 
 	@Column(nullable = true,length=300)
 	private String story;	
-	
-	@JoinColumn(name="uuid", insertable = false, updatable = false)
-	@ManyToOne (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
-	private UserModel userModel;	
 
+	@JoinColumn (name = "userModel_uuid_fk", referencedColumnName="uuid")
+	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
+	private UserModel userModel;
+	
 	@ManyToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<MemberModel> members;
 	
-	@JoinColumn(name="uuid")
+	@JoinColumn(name="projectMemberModel_uuid_fk", referencedColumnName="uuid")
 	@OneToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<FileMetaModel> fileModels;	
 	
@@ -57,11 +54,13 @@ public class ProjectMemberModel implements Serializable{
 	
 	public ProjectMemberModel(){
 		super();
+		this.uuid = UUID.randomUUID().toString();
 	}
 	
 	public ProjectMemberModel(String userName, String projectName){
 		super();
 		this.projectName = projectName;
+		this.uuid = UUID.randomUUID().toString();
 	}
 	
 	

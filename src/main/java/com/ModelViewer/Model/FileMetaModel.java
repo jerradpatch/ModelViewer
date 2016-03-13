@@ -3,6 +3,7 @@ package com.ModelViewer.Model;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
@@ -31,9 +33,9 @@ public class FileMetaModel implements Serializable {
 	private static final String COULD_NOT_SAVE_FILE = "\"Could not save file, file empty.\"";
 	
 	@Id
-	@GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid", strategy = "uuid")
-	@Column(name = "uuid", unique = true)
+//	@GeneratedValue(generator="system-uuid")
+//	@GenericGenerator(name="system-uuid", strategy = "uuid")
+	@Column(unique = true, nullable = false)
 	private String uuid;
 
 
@@ -58,9 +60,11 @@ public class FileMetaModel implements Serializable {
 	@Column(nullable = false)
 	private Timestamp dateLastDownloaded;
 	
+	@JoinColumn (name = "userModel_uuid_fk", referencedColumnName="uuid")
 	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
 	private UserModel userModel;
-	
+
+	@JoinColumn (name = "projectMemberModel_uuid_fk", referencedColumnName="uuid")
 	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
 	private ProjectMemberModel projectMemberModel;
 	
@@ -69,10 +73,12 @@ public class FileMetaModel implements Serializable {
 	
 	public FileMetaModel() {
 		super();
+		this.uuid = UUID.randomUUID().toString();
 	}
 	
 	public FileMetaModel(String fileName, String fileLocation, Long fileSize, String mimeType, Timestamp dateCreated) {
 		super();
+		this.uuid = UUID.randomUUID().toString();
 		this.fileName = fileName;
 		this.fileLocation = fileLocation;
 		this.fileSize = fileSize;

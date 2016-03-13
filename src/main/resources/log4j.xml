@@ -11,7 +11,7 @@
 	</appender>
 	
 	<!-- Application Loggers -->
-	<logger name="com.ModelViewer">
+	<logger name="com.ModelViewer.*">
 		<level value="debug" />
 	</logger>
 	

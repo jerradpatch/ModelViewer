@@ -3,6 +3,7 @@ package com.ModelViewer.Model;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,11 +28,10 @@ public class MemberModel implements Serializable{
 	private static final long serialVersionUID = 6676621279977420137L;
 	
 	@Id
-	@GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid", strategy = "uuid")
-	@Column(name = "uuid", unique = true)
+//	@GeneratedValue(generator="system-uuid") //this is so I can keep the transactional manager to roll back any 
+//	@GenericGenerator(name="system-uuid", strategy = "uuid")
+	@Column(unique = true, nullable = false)
 	private String uuid;
-	
 	
     @Column(nullable = false, length=50)
 	private String memberName;
@@ -51,10 +51,11 @@ public class MemberModel implements Serializable{
 	@Column(nullable = true, length=150)
 	private String email;	
 	
+	
 	@ManyToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<ProjectMemberModel> projectMemberModel = new HashSet<ProjectMemberModel>();
 	
-
+	@JoinColumn (name = "userModel_uuid_fk", referencedColumnName="uuid")
 	@ManyToOne(fetch=FetchType.LAZY)
 	private UserModel userModel;
 	
@@ -62,26 +63,30 @@ public class MemberModel implements Serializable{
 	
 	
 	
-	public MemberModel(String uuid, String memberName, String password, String firstName, String lastName,
-			String role, String email, Set<ProjectMemberModel> projectMemberModel, UserModel userModel) {
+	public MemberModel(String memberName, String password, String firstName, String lastName,
+			String role, String email, UserModel userModel) {
 		super();
-		this.uuid = uuid;
+		this.uuid = UUID.randomUUID().toString();
 		this.memberName = memberName;
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.role = role;
 		this.email = email;
-		this.projectMemberModel = projectMemberModel;
-		this.userModel = userModel;
 	}
 
-	public MemberModel(String memberName, String password, UserModel userModel){
-		
+	public MemberModel(String memberName, String password, String firstName, String lastName){
+		this.uuid = UUID.randomUUID().toString();
+		this.memberName = memberName;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
 	}
 	
 	public MemberModel() {
 		super();
+		this.uuid = UUID.randomUUID().toString();
+		this.projectMemberModel = new HashSet<ProjectMemberModel>();
 	}	
 	
 

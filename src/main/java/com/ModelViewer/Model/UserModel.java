@@ -4,34 +4,34 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.Table;
+import javax.persistence.Index;
+import javax.persistence.CascadeType;
 
 import com.ModelViewer.DAO.Validation.ValidateUtil;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
 
+@Table(indexes = {@Index(columnList="userName,password")})
 @Entity
 public class UserModel implements Serializable{
 
-	/**
+	/**org.hibernate.id.UUIDGenerator TODO
 	 * 
 	 */
 	private static final long serialVersionUID = 8966262352528139382L;
 	
 	@Id
-	@GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid", strategy = "uuid")
-	@Column(name = "uuid", unique = true)
+//	@GeneratedValue(generator="system-uuid")
+//	@GenericGenerator(name="system-uuid", strategy = "uuid")
+	@Column(unique = true, nullable = false)
 	private String uuid;
 	
 	@Column(nullable = false, length=50)
@@ -49,18 +49,25 @@ public class UserModel implements Serializable{
 	@Column(nullable = false)
 	private Timestamp dateLastLoggedIn;
 
-	@JoinColumn(name="uuid", insertable = true, updatable = true)
-	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
-    private Set<FileMetaModel> FileModels;
+	//@JoinColumn(name="fileModels_fk_uuid", insertable = true, updatable = true)
 	
-	@JoinColumn(name="uuid", insertable = true, updatable = true)
-	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="userModel", cascade = CascadeType.ALL)
+    private Set<FileMetaModel> FileMetaModels;
+	
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="userModel", cascade = CascadeType.ALL)
     private Set<MemberModel> members;
-	
-	@JoinColumn(name="uuid", insertable = true, updatable = true)
-	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
+			
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="userModel", cascade = CascadeType.ALL)
 	private Set<ProjectMemberModel> projectMemberModels;
 	
+	
+	public UserModel(){
+		super();
+		this.uuid = UUID.randomUUID().toString();
+		this.FileMetaModels = new HashSet<FileMetaModel>();
+		this.members = new HashSet<MemberModel>();
+		this.projectMemberModels = new HashSet<ProjectMemberModel>();
+	}
 	
 	
 	public String getUuid() {

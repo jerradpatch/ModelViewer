@@ -13,5 +13,6 @@ public interface MemberDAO {
 	public Set<MemberModel> readMemberList(MemberModel MemberModel) throws Exception; //all members in a user
 	public void updateMember(@RequestBody(required = true) MemberModel memberModel) throws Exception;
 	public void deleteMember(@RequestBody(required = true) MemberModel memberModel) throws Exception;
+	public MemberModel readMember_userNamePassword(MemberModel memberModel);
 	
 }

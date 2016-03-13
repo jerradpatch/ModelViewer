@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xmlns:aws-context="http://www.springframework.org/schema/cloud/aws/context"
-	   xsi:schemaLocation="http://www.springframework.org/schema/cloud/aws/context
-	   http://www.springframework.org/schema/cloud/aws/context/spring-cloud-aws-context-1.0.xsd">
+	   xsi:schemaLocation="
+	   http://www.springframework.org/schema/beans 
+	   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	   http://www.springframework.org/schema/cloud/aws/context
+	   http://www.springframework.org/schema/cloud/spring-cloud-aws-context.xsd">
 
 	<aws-context:context-credentials>
 		<aws-context:simple-credentials access-key="AKIAIO" secret-key="wJalrXUtnFEMI/K7M" />

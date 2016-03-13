@@ -1,20 +1,10 @@
 package com.ModelViewer.DAOImpl;
 
-import java.sql.Timestamp;
-import java.util.Set;
-
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.ModelViewer.DAO.UserDAO;
-import com.ModelViewer.LoginApp.Service.ReturnedObject;
-import com.ModelViewer.Model.MemberModel;
 import com.ModelViewer.Model.UserModel;
 
 public class UserDAOImpl implements UserDAO{
@@ -24,14 +14,23 @@ public class UserDAOImpl implements UserDAO{
         this.sessionFactory = sessionFactory;
     }
 	
-	public void createUser(UserModel userModel) throws Exception {
+	public UserModel createUser(UserModel userModel) throws Exception {
 		this.sessionFactory.getCurrentSession().persist(userModel);
+		return userModel;
 	}
 
 	public UserModel readUser(UserModel userModel) throws Exception {
 		return this.sessionFactory.getCurrentSession().get(UserModel.class,userModel.getUuid());
 	}
 
+	public UserModel readUser_userNamePassword(UserModel userModel) {
+		Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(UserModel.class);
+		criteria.setMaxResults(1);
+		criteria.add(Restrictions.eq("userName", userModel.getUserName()));
+		criteria.add(Restrictions.eq("password", userModel.getPassword()));
+		return (UserModel) criteria.uniqueResult();
+	}
+	
 	public void updateUser(UserModel userModel) throws Exception {
 		this.sessionFactory.getCurrentSession().update(userModel);
 	}

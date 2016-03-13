@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation=" 
+	    http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">		
+		
+		<!-- 
+		<bean id="filterChainProxy" class="org.springframework.security.web.FilterChainProxy">
+		<constructor-arg>
+			<list>
+			<sec:filter-chain pattern="/restful/**" filters="
+				securityContextPersistenceFilterWithASCFalse,
+				basicAuthenticationFilter,
+				exceptionTranslationFilter,
+				filterSecurityInterceptor" />
+			<sec:filter-chain pattern="/**" filters="
+				securityContextPersistenceFilterWithASCTrue,
+				formLoginFilter,
+				exceptionTranslationFilter,
+				filterSecurityInterceptor" />
+			</list>
+		</constructor-arg>
+		</bean>  -->
+		
+	<context:annotation-config />
+	<context:component-scan base-package="com.ModelViewer.LoginApp.Service.Support.CustomSecurityInterceptor" />
+<!-- 
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/welcome.htm">welcomeController</prop>
+			</props>
+		</property>
+		<property name="interceptors">
+			<list>
+				<ref bean="maintenanceInterceptor" />
+				<ref bean="executeTimeInterceptor" />
+			</list>
+		</property>
+	</bean>  -->
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+		    <mvc:mapping path="/**"/>
+   		    <mvc:exclude-mapping path="/MemberService/login"/>
+		    <mvc:exclude-mapping path="/UserService/login"/>
+		    <mvc:exclude-mapping path="/UserService/createUser"/>
+			<bean class="com.ModelViewer.LoginApp.Service.Support.CustomSecurityInterceptor">
+				<property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory" />
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+		
+
+</beans>

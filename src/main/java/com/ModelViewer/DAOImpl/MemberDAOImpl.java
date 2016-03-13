@@ -3,15 +3,13 @@ package com.ModelViewer.DAOImpl;
 
 import java.util.Set;
 
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
-
-import org.springframework.web.bind.annotation.RequestBody;
+import org.hibernate.criterion.Restrictions;
 
 import com.ModelViewer.DAO.MemberDAO;
 
 import com.ModelViewer.Model.MemberModel;
-import com.ModelViewer.Model.ProjectMemberModel;
-import com.ModelViewer.Model.UserModel;
 
 public class MemberDAOImpl implements MemberDAO{
 
@@ -21,11 +19,18 @@ public class MemberDAOImpl implements MemberDAO{
     }
 
 	
-	public void createMember(@RequestBody(required = true) MemberModel memberModel){
+	public void createMember(MemberModel memberModel){
 		this.sessionFactory.getCurrentSession().persist(memberModel);
 	}
 	public MemberModel readMember(MemberModel memberModel) throws Exception {
 		return this.sessionFactory.getCurrentSession().get(MemberModel.class,memberModel.getUuid());
+	}
+	public MemberModel readMember_userNamePassword(MemberModel memberModel) {
+		Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(MemberModel.class);
+		criteria.setMaxResults(1);
+		criteria.add(Restrictions.eq("memberName", memberModel.getmemberName()));
+		criteria.add(Restrictions.eq("password", memberModel.getPassword()));
+		return (MemberModel) criteria.uniqueResult();
 	}
 	public Set<MemberModel> readMemberList(MemberModel memberModel) throws Exception {
 		return readMember(memberModel).getUserModel().getMembers();
@@ -111,6 +116,7 @@ public class MemberDAOImpl implements MemberDAO{
 //			.executeUpdate();
 //	}
 //	
+
 
 
 }
