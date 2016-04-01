@@ -34,26 +34,26 @@
 
   //      vm.removeSlide = removeSlide;
   //      vm.addSlide = addSlide;
-        vm.selectedClick = selectedClick;
+//        vm.selectedClick = selectedClick;
   //      vm.slideChanged = slideChanged;
  //       vm.beforeChange = beforeChange;
  //       vm.lastSlide = lastSlide;
 
         
-    	vm.gotoProjectPage = gotoProjectPage;
+//    	vm.gotoProjectPage = gotoProjectPage;
     	
     	
     	vm.projectsMemberIsAPartOf = {};
-    	GetProjectsMemberIsAPartOf();
+//    	GetProjectsMemberIsAPartOf();
     	
-    	vm.GetProjectsMemberIsAPartOf = GetProjectsMemberIsAPartOf;
-    	vm.GetAllFileMetaDataForAProject = GetAllFileMetaDataForAProject;
-    	vm.GetResource = GetResource;
-    	vm.getCompanyName = getCompanyName;
+//    	vm.GetProjectsMemberIsAPartOf = GetProjectsMemberIsAPartOf;
+//    	vm.GetAllFileMetaDataForAProject = GetAllFileMetaDataForAProject;
+//    	vm.GetResource = GetResource;
+//    	vm.getCompanyName = getCompanyName;
     	
     	var md = {};
     	vm.md = md;
-    	vm.md.ToggleAndSetModel = ToggleAndSetModel;
+//    	vm.md.ToggleAndSetModel = ToggleAndSetModel;
     	vm.md.modelVisible = false;
     	vm.md.modelToLoad = null;
     	
@@ -162,46 +162,46 @@
     		return url;
     	}
     	
-    	function GetProjectsMemberIsAPartOf(){
-          var ret;
-        	var memberPass = AuthService.GetPassword();
-        	var userName = AuthService.GetUser();
-        	var member = AuthService.GetMember();
-            ProjectMemberService.GetProjectsMemberIsAPartOf(userName,member,memberPass)
-                .then(function (response) {
-                	if(response.success){
-                		var data = response.message;
-	                    if (data !== null) {	                    	
-	                    	//vm.projectsMemberIsAPartOf = data;	                    	
-	                    	data.forEach(function (projectName) {
-	                    		GetAllFileMetaDataForAProject(projectName);
-	                    	})
-	                    	
-	                    	
-	                    } else {
-	                    	ret = response;
-	                    }
-                	} else {
-                		ret = response;
-                	}
-                });   		  		
-    	}
+//    	function GetProjectsMemberIsAPartOf(){
+//          var ret;
+//        	var memberPass = AuthService.GetPassword();
+//        	var userName = AuthService.GetUser();
+//        	var member = AuthService.GetMember();
+//            ProjectMemberService.GetProjectsMemberIsAPartOf(userName,member,memberPass)
+//                .then(function (response) {
+//                	if(response.success){
+//                		var data = response.message;
+//	                    if (data !== null) {	                    	
+//	                    	//vm.projectsMemberIsAPartOf = data;	                    	
+//	                    	data.forEach(function (projectName) {
+//	                    		GetAllFileMetaDataForAProject(projectName);
+//	                    	})
+//	                    	
+//	                    	
+//	                    } else {
+//	                    	ret = response;
+//	                    }
+//                	} else {
+//                		ret = response;
+//                	}
+//                });   		  		
+//    	}
 
-    	function GetAllFileMetaDataForAProject(projectName){
-        	var userName = AuthService.GetUser();
-        	var member = AuthService.GetMember();
-        	var memberPass = AuthService.GetPassword();
-    		FileService.GetAllFileMetaData(userName,projectName,null,member,memberPass)
-    		.then(function (response) {
-                if (response.success) {
-                	vm.projectsMemberIsAPartOf[projectName] = response.message;
-                	initSlides(vm.projectsMemberIsAPartOf);
-                } else {			                	
-                	vm.error = response.message;
-                	onError(response.message);
-                }
-			});	  		  		
-    	}
+//    	function GetAllFileMetaDataForAProject(projectName){
+//        	var userName = AuthService.GetUser();
+//        	var member = AuthService.GetMember();
+//        	var memberPass = AuthService.GetPassword();
+//    		FileService.GetAllFileMetaData(userName,projectName,null,member,memberPass)
+//    		.then(function (response) {
+//                if (response.success) {
+//                	vm.projectsMemberIsAPartOf[projectName] = response.message;
+//                	initSlides(vm.projectsMemberIsAPartOf);
+//                } else {			                	
+//                	vm.error = response.message;
+//                	onError(response.message);
+//                }
+//			});	  		  		
+//    	}
     	
     
     	

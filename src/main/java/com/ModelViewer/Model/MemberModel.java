@@ -9,21 +9,19 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import com.ModelViewer.DAO.Validation.ValidateUtil;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
+import com.ModelViewer.Model.Support.JacksonDepthLimit;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-public class MemberModel implements Serializable{
+public class MemberModel extends JacksonDepthLimit implements Serializable{
 	
 	private static final long serialVersionUID = 6676621279977420137L;
 	
@@ -36,6 +34,7 @@ public class MemberModel implements Serializable{
     @Column(nullable = false, length=50)
 	private String memberName;
 	
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(nullable = false, length=50)
 	private String password;
 	
@@ -53,27 +52,12 @@ public class MemberModel implements Serializable{
 	
 	
 	@ManyToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<ProjectMemberModel> projectMemberModel = new HashSet<ProjectMemberModel>();
+	private Set<ProjectMemberModel> projectMemberModels;
 	
 	@JoinColumn (name = "userModel_uuid_fk", referencedColumnName="uuid")
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	private UserModel userModel;
 	
-	
-	
-	
-	
-	public MemberModel(String memberName, String password, String firstName, String lastName,
-			String role, String email, UserModel userModel) {
-		super();
-		this.uuid = UUID.randomUUID().toString();
-		this.memberName = memberName;
-		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.role = role;
-		this.email = email;
-	}
 
 	public MemberModel(String memberName, String password, String firstName, String lastName){
 		this.uuid = UUID.randomUUID().toString();
@@ -86,7 +70,7 @@ public class MemberModel implements Serializable{
 	public MemberModel() {
 		super();
 		this.uuid = UUID.randomUUID().toString();
-		this.projectMemberModel = new HashSet<ProjectMemberModel>();
+		this.projectMemberModels = new HashSet<ProjectMemberModel>();
 	}	
 	
 
@@ -154,15 +138,27 @@ public class MemberModel implements Serializable{
 	}
 
 	public Set<ProjectMemberModel> getProjectMemberModel() {
-		return projectMemberModel;
+		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+			return null;
+		} else {
+			for(ProjectMemberModel fmm : this.projectMemberModels){
+				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+			}
+			return projectMemberModels;
+		}
 	}
 
 	public void setProjectMemberModel(Set<ProjectMemberModel> projectMemberModel) throws ReturnedObject {
-		this.projectMemberModel = projectMemberModel;
+		this.projectMemberModels = projectMemberModel;
 	}
 
 	public UserModel getUserModel() {
-		return userModel;
+		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+			return null;
+		} else {
+			userModel.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+			return userModel;
+		}
 	}
 
 	public void setUserModel(UserModel userModel) {

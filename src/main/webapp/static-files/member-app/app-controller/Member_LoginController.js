@@ -36,21 +36,10 @@
  
         
         function login() {       	
-        	MemberService.ComparePasswordsForMember(vm.companyName,vm.memberName,vm.memberPassword)
-            .then(function (response) {
-            	if("success" in response){
-	            	if(response.success){
-	            		AuthService.SetCredentials(vm.companyName, vm.memberPassword, vm.memberPassword);
-	                    $location.path(vm.successLoginLocation);
-	            	} else {
-	            		if("message" in response){
-	            			vm.error = response.message;
-	            		} else {
-	            			vm.error = "";
-	            		}
-	            	}
-            	}
-            });       
+        	
+//        	.then(function(){
+//                $location.path(vm.successLoginLocation);	            			
+//    		});
         };
         
         return vm;

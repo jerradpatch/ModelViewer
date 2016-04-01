@@ -42,21 +42,24 @@ public class ProjectMemberService {
 		return "hello world";
 	}
 	@RequestMapping(value = "/createProject", method = RequestMethod.POST)
-	public Object createProject(@RequestBody(required = true) ProjectMemberModel projectMemberModel) throws Exception{
+	public Object createProject(@RequestBody(required = true) Object obj) throws Exception{
+		ProjectMemberModel projectMemberModel = (ProjectMemberModel) obj;
 		projectMemberDAO.createProject(projectMemberModel);   	
     	return true; 	
 	}
 	@RequestMapping(value = "/readMemberProjects", method = RequestMethod.POST)
-	public Object readMemberProjects(@RequestBody(required = true) MemberModel memberModel) throws Exception{	
+	public Object readMemberProjects(@RequestBody(required = true) Object obj) throws Exception{	
+		MemberModel memberModel = (MemberModel) obj;
 		return memberModel.getProjectMemberModel();
 	}
 	@RequestMapping(value = "/readUserProjects", method = RequestMethod.POST)
-	public Object readUserProjects(@RequestBody(required = true) UserModel userModel) throws Exception {
+	public Object readUserProjects(@RequestBody(required = true) Object obj) throws Exception {
+		UserModel userModel = (UserModel) obj;
 		return userModel.getProjectMemberModels();
 	}
 	@RequestMapping(value = "/readUserProjectsAndMembers", method = RequestMethod.POST)
-	public Object readUserProjectsAndMembers(@RequestBody(required = true) UserModel userModel) throws Exception {
-		
+	public Object readUserProjectsAndMembers(@RequestBody(required = true) Object obj) throws Exception {
+		UserModel userModel = (UserModel) obj;
 		HashMap<ProjectMemberModel,Set<MemberModel>> pm = new HashMap<ProjectMemberModel,Set<MemberModel>>();
 		
 		for(ProjectMemberModel pmm : userModel.getProjectMemberModels()){
@@ -65,13 +68,15 @@ public class ProjectMemberService {
 		return pm;
 	}
 	@RequestMapping(value = "/updateProject", method = RequestMethod.POST)
-	public Object updateProject(@RequestBody(required = true) ProjectMemberModel updateProject) throws Exception{
-		projectMemberDAO.updateProject(updateProject);
+	public Object updateProject(@RequestBody(required = true) Object obj) throws Exception{
+		ProjectMemberModel projectMemberModel = (ProjectMemberModel) obj;
+		projectMemberDAO.updateProject(projectMemberModel);
 		return true;
 	}
 	
 	@RequestMapping(value = "/deleteProject", method = RequestMethod.POST)
-	public Object deleteProject(@RequestBody(required = true) ProjectMemberModel projectMemberModel) throws Exception{
+	public Object deleteProject(@RequestBody(required = true) Object obj) throws Exception{
+		ProjectMemberModel projectMemberModel = (ProjectMemberModel) obj;
 		projectMemberDAO.deleteProject(projectMemberModel);
 		return true;
 	}

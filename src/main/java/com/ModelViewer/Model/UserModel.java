@@ -2,6 +2,7 @@ package com.ModelViewer.Model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -9,7 +10,6 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -18,10 +18,21 @@ import javax.persistence.CascadeType;
 
 import com.ModelViewer.DAO.Validation.ValidateUtil;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
+import com.ModelViewer.Model.Support.JacksonDepthLimit;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+
+/**
+ * JacksonDepthLimit - to limit the depth jackson parser will look into the object.
+ * Collection unmodifibile returned to stop adding items, and thus not adding the uuid when the item is added. Needed for hibernate
+ * @author jerrad
+ *
+ */
 @Table(indexes = {@Index(columnList="userName,password")})
 @Entity
-public class UserModel implements Serializable{
+public class UserModel extends JacksonDepthLimit implements Serializable{
 
 	/**org.hibernate.id.UUIDGenerator TODO
 	 * 
@@ -34,9 +45,10 @@ public class UserModel implements Serializable{
 	@Column(unique = true, nullable = false)
 	private String uuid;
 	
-	@Column(nullable = false, length=50)
+	@Column(unique = true, nullable = false, length=50)
 	private String userName;
 	
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(nullable = false, length=50)
 	private String password;
 	
@@ -49,23 +61,24 @@ public class UserModel implements Serializable{
 	@Column(nullable = false)
 	private Timestamp dateLastLoggedIn;
 
-	//@JoinColumn(name="fileModels_fk_uuid", insertable = true, updatable = true)
-	
+	@JsonIgnoreProperties({"userModel"})
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="userModel", cascade = CascadeType.ALL)
-    private Set<FileMetaModel> FileMetaModels;
-	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="userModel", cascade = CascadeType.ALL)
-    private Set<MemberModel> members;
-			
+    private Set<MemberModel> memberModels;
+
+	@JsonIgnoreProperties({"userModel"})
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="userModel", cascade = CascadeType.ALL)
 	private Set<ProjectMemberModel> projectMemberModels;
+	
+	@JsonIgnoreProperties({"userModel"})
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="userModel", cascade = CascadeType.ALL)
+    private Set<FileMetaModel> fileMetaModels;
 	
 	
 	public UserModel(){
 		super();
 		this.uuid = UUID.randomUUID().toString();
-		this.FileMetaModels = new HashSet<FileMetaModel>();
-		this.members = new HashSet<MemberModel>();
+		this.fileMetaModels = new HashSet<FileMetaModel>();
+		this.memberModels = new HashSet<MemberModel>();
 		this.projectMemberModels = new HashSet<ProjectMemberModel>();
 	}
 	
@@ -109,19 +122,58 @@ public class UserModel implements Serializable{
 	public void setDateLastLoggedIn(Timestamp dateLastLoggedIn) {
 		this.dateLastLoggedIn = dateLastLoggedIn;
 	}
-	public Set<MemberModel> getMembers() {
-		return members;
+	public Set<MemberModel> getMemberModels() {
+		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+			return null;
+		} else {
+			for(MemberModel fmm : this.memberModels){
+				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+			}
+			return Collections.unmodifiableSet(memberModels);
+		}
 	}
-	public void setMembers(Set<MemberModel> members) {
-		this.members = members;
+	public void addMemberModel(MemberModel memberModel){
+		this.memberModels.add(memberModel);
+		memberModel.setUserModel(this);
+	}
+	public void setMemberModels(Set<MemberModel> members) {
+		this.memberModels = members;
 	}
 	public Set<ProjectMemberModel> getProjectMemberModels() {
-		return projectMemberModels;
+		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+			return null;
+		} else {
+			for(ProjectMemberModel fmm : this.projectMemberModels){
+				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+			}
+			return Collections.unmodifiableSet(projectMemberModels);
+		}
+	}
+	public void addProjectMemberModel(ProjectMemberModel projectMemberModel){
+		this.projectMemberModels.add(projectMemberModel);
+		projectMemberModel.setUserModel(this);
 	}
 	public void setProjectMemberModel(Set<ProjectMemberModel> projectMemberModels) {
 		this.projectMemberModels = projectMemberModels;
+	}	
+	public Set<FileMetaModel> getFileMetaModels() {
+		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+			return null;
+		} else {
+			for(FileMetaModel fmm : this.fileMetaModels){
+				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+			}
+			return Collections.unmodifiableSet(fileMetaModels);
+		}
 	}
-	
+	public void setFileMetaModels(Set<FileMetaModel> fileMetaModels) {
+		this.fileMetaModels = fileMetaModels;
+	}
+	public void addFileMetaModel(FileMetaModel fileMetaModel){
+		this.fileMetaModels.add(fileMetaModel);
+		fileMetaModel.setUserModel(this);
+	}
+
 	
 	@Override
 	public boolean equals(Object obj){

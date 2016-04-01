@@ -9,58 +9,80 @@
     function AuthService($cookieStore) {    	
     	
     	var service = {};
-    	var auth = {};
+    	service.memberModel = null;
+    	service.userModel = null;
+    	service.readUserModel = readUserModel;
+    	service.updateUserModel = updateUserModel;
+    	service.readMemberModel = readMemberModel;
+    	service.updateMemberModel = updateMemberModel;
     	
-    	if($cookieStore.get('AuthService') != null){
-    		GetCredentialsFromCookie();
-    	} else {
-	    	var user = "";
-	    	var member = "";
-	    	var password = "";	
-	    	
-	    	service.auth = auth;
-	    	service.auth.password = password;
-	    	service.auth.user = user;
-	    	service.auth.member = member;
+    	return service;
+    	
+    	function readUserModel(){
+    		return service.userModel;
     	}
-    	service.GetCredentialsFromCookie = GetCredentialsFromCookie;
-    	service.GetPassword = GetPassword;
-    	service.GetUser = GetUser;
-    	service.GetMember = GetMember;
-    	service.SetCredentials = SetCredentials;
-    	service.ClearCredentials = ClearCredentials;
-
-    	
-        function GetCredentialsFromCookie() {
-        	var auth = $cookieStore.get('AuthService');
-        	if(auth != null){
-        		service.auth = auth;
-        	}
-        }        
-        function GetPassword(){
-        	return service.auth.password;
-        }
-        
-        function GetUser(){
-        	return service.auth.password;
-        }    
-        
-        function GetMember(){
-        	return service.auth.member;
-        } 
-        function SetCredentials(username, password, member) {
-        	if(typeof member !== "undefined"){
-        		service.auth.member = member;
-        	}
-        	service.auth.user = username;
-        	service.auth.password = password;
-            $cookieStore.put('AuthService', service.auth);
-        }
-        function ClearCredentials() {
-        	service.auth.password = "";
-        	service.auth.user = "";
-            $cookieStore.remove('AuthService');
-        }
+    	function updateUserModel(userModel){
+    		service.userModel = userModel;
+    	}
+    	function readMemberModel(){
+    		return service.memberModel;
+    	}
+    	function updateMemberModel(memberModel){
+    		service.memberModel = memberModel;
+    	}   	   	
+//    	var service = {};
+//    	var auth = {};
+//    	
+//    	if($cookieStore.get('AuthService') != null){
+//    		GetCredentialsFromCookie();
+//    	} else {
+//	    	var user = "";
+//	    	var member = "";
+//	    	var password = "";	
+//	    	
+//	    	service.auth = auth;
+//	    	service.auth.password = password;
+//	    	service.auth.user = user;
+//	    	service.auth.member = member;
+//    	}
+//    	service.GetCredentialsFromCookie = GetCredentialsFromCookie;
+//    	service.GetPassword = GetPassword;
+//    	service.GetUser = GetUser;
+//    	service.GetMember = GetMember;
+//    	service.SetCredentials = SetCredentials;
+//    	service.ClearCredentials = ClearCredentials;
+//
+//    	
+//        function GetCredentialsFromCookie() {
+//        	var auth = $cookieStore.get('AuthService');
+//        	if(auth != null){
+//        		service.auth = auth;
+//        	}
+//        }        
+//        function GetPassword(){
+//        	return service.auth.password;
+//        }
+//        
+//        function GetUser(){
+//        	return service.auth.password;
+//        }    
+//        
+//        function GetMember(){
+//        	return service.auth.member;
+//        } 
+//        function SetCredentials(username, password, member) {
+//        	if(typeof member !== "undefined"){
+//        		service.auth.member = member;
+//        	}
+//        	service.auth.user = username;
+//        	service.auth.password = password;
+//            $cookieStore.put('AuthService', service.auth);
+//        }
+//        function ClearCredentials() {
+//        	service.auth.password = "";
+//        	service.auth.user = "";
+//            $cookieStore.remove('AuthService');
+//        }
     	return service;
     };
     

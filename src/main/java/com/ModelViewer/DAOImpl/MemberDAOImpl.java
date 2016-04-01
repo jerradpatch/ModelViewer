@@ -33,7 +33,7 @@ public class MemberDAOImpl implements MemberDAO{
 		return (MemberModel) criteria.uniqueResult();
 	}
 	public Set<MemberModel> readMemberList(MemberModel memberModel) throws Exception {
-		return readMember(memberModel).getUserModel().getMembers();
+		return readMember(memberModel).getUserModel().getMemberModels();
 	}
 	public void updateMember(MemberModel memberModel) throws Exception {
 		this.sessionFactory.getCurrentSession().update(memberModel);

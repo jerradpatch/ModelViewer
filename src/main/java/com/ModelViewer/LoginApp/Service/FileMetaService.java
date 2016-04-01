@@ -28,8 +28,8 @@ public class FileMetaService {
 	FileMetaDAO fileMetaDAO;
 	
 	@RequestMapping(value = "/readFileMetaList", method = RequestMethod.POST)
-	public Object readFileMetaList(@RequestBody(required = true) FileMetaModel fileMetaModel) throws Exception {
-		return fileMetaDAO.readFileMetaList(fileMetaModel);
+	public Object readFileMetaList(@RequestBody(required = true) Object Object) throws Exception {
+		return fileMetaDAO.readFileMetaList((FileMetaModel) Object);
 	}
 }
 

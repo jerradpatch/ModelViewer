@@ -56,6 +56,8 @@
 	<mvc:interceptors>
 		<mvc:interceptor>
 		    <mvc:mapping path="/**"/>
+		    <mvc:exclude-mapping path="/static-files/**"/>
+		    <mvc:exclude-mapping path="/*/alive"/>
    		    <mvc:exclude-mapping path="/MemberService/login"/>
 		    <mvc:exclude-mapping path="/UserService/login"/>
 		    <mvc:exclude-mapping path="/UserService/createUser"/>

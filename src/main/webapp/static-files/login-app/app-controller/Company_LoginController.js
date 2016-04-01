@@ -39,56 +39,41 @@
     Company_LoginController.$inject = ['$location','AuthService','UserService'];
     function Company_LoginController($location,AuthService,UserService) {
         var vm = this;
-        
-        vm.successLoginLocation = '/Company_AccountView';
-        
         vm.login = login;
         
         var rd = {};
         vm.rd = rd;
-        vm.rd.error = null;
         vm.rd.RegisterCompany = RegisterCompany;
+        vm.rd.error = null;
+      
+        return vm;
         
+        function login(userName, password) {       	     
+        	var um = UserService.newUserModel({'userName':userName,'password':password});
+        	UserService.login(um).then(function(umRet){
+				AuthService.updateUserModel(umRet);
+				$location.path('/Company_AccountView');	  
+        	});
 
-        function login() {       	
-        	UserService.ComparePasswordsForUser(vm.username,vm.password)
-            .then(function (response) {
-            	if("success" in response){
-	            	if(response.success){
-	            		AuthService.SetCredentials(vm.username, vm.password, "");
-	                    $location.path(vm.successLoginLocation);
-	            	} else {
-	            		if("message" in response){
-	            			vm.error = response.message;
-	            		} else {
-	            			vm.error = "";
-	            		}
-	            	}
-            	}
-            });       
         };
         
         //////////// RD DIALOG  area//////////////////
         function RegisterCompany(companyName,passwordA,passwordB,email){
         	if(passwordA === passwordB){
-        		UserService.CreateUser(companyName,passwordA,email)
-	        		.then(function (response) {
-		                if (response.success) {			                	
-	                		//alert(JSON.stringify(response));
-		                    vm.rd.error = null;
-		                    AuthService.SetCredentials(companyName, passwordA);
-		                    $location.path(vm.successLoginLocation);
-		                    return;
-		                }			                	
-		                
-		                vm.rd.error = response.message;
-		                //alert(vm.rd.error);
-			        });
-        	} else {
-        		 vm.rd.error = "Passwords do not match";
-        	}
+        		var userModel = UserService.newUserModel({'userName':companyName,'password':passwordA,'email':email});
+        		UserService.createUser(userModel);
+        	} 
         }
-
     }
  
 })();
+
+
+
+
+
+
+
+
+
+

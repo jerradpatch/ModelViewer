@@ -9,8 +9,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
 
 import com.ModelViewer.LoginApp.Service.FileMetaService;
@@ -19,20 +19,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component 
 @Aspect //AOP
+@EnableAspectJAutoProxy
 public class LoggingAndReturnInterceptor {
 
-	private static final Logger logger = LoggerFactory.getLogger(FileMetaService.class);
+	private static final Logger logger = Logger.getLogger(LoggingAndReturnInterceptor.class);
 	private ObjectMapper mapper = new ObjectMapper();
 	
 	//inplace point-cut expression, aspect oriented programming
-	@Around("@annotation(org.springframework.web.bind.annotation.RequestMapping)")
+	@Around("@annotation(org.springframework.web.bind.annotation.RequestMapping)") 
+	//aop is not passing parameters to service... in addition json "password" is not be deserialized due to jackson annotation on object
 	public Object aroundEachServiceCall(ProceedingJoinPoint pjp) throws Throwable {
-		logger.debug("made it to the AOP around");
+		logger.debug("begining AOP around");
 		int startTime = Calendar.getInstance().get(Calendar.MILLISECOND);
 		HashMap<String,Object> whole = new HashMap<String,Object>();
 		HashMap<String,Object> ret = new HashMap<String,Object>();
 		HashMap<String,Object> meta = new HashMap<String,Object>();
-		logger.debug("Service Request Made");
 		
 		MethodSignature signature = (MethodSignature) pjp.getSignature();
 		Method method = signature.getMethod();
@@ -45,6 +46,7 @@ public class LoggingAndReturnInterceptor {
 		Object retVal = null;
 		startTime = Calendar.getInstance().get(Calendar.MILLISECOND);
 		try {		
+			logger.debug("AOP service request made");
 			retVal = pjp.proceed();
 		} catch(ReturnedObject re){
 			int stopTime = Calendar.getInstance().get(Calendar.MILLISECOND);
@@ -80,7 +82,7 @@ public class LoggingAndReturnInterceptor {
 				
 		whole.put("data","");
 		logger.info( mapper.writeValueAsString(meta));//dont need success data in logs
-		
+		logger.debug("AOP service request complete");
         return ret;
 	}
 }

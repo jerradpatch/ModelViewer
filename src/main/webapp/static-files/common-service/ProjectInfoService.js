@@ -26,7 +26,7 @@
         } 
         
         
-                // private functions
+        // private functions
  
         function handleSuccess(res) {
             return res.data;

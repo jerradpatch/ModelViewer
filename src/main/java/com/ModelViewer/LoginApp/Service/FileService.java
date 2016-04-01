@@ -37,8 +37,9 @@ public class FileService {
 	FileDAO fileDAO;
 	
 	@RequestMapping(value = "/createFile", method = RequestMethod.POST)
-	public void createFile(@RequestParam(value = "fileMeta", required = true) FileMetaModel fileMetaModel) throws Exception{
+	public void createFile(@RequestParam(value = "fileMeta", required = true) Object obj) throws Exception{
 		
+		FileMetaModel fileMetaModel = (FileMetaModel) obj;
 		String userName = fileMetaModel.getUserModel().getUserName();
 		String projectName = fileMetaModel.getProjectMemberModel().getProjectName();
 		String fileName = fileMetaModel.getFileName();
@@ -47,12 +48,14 @@ public class FileService {
 	}
 	
 	@RequestMapping(value = "/deleteFile", method = RequestMethod.POST)
-	public void deleteFile(@RequestParam(value = "file", required = true) FileMetaModel fileMetaModel) throws Exception{
+	public void deleteFile(@RequestParam(value = "file", required = true) Object obj) throws Exception{
+		FileMetaModel fileMetaModel = (FileMetaModel) obj;
 		fileMetaDAO.deleteFileMeta(fileMetaModel);
 	}
 	
 	@RequestMapping(value = "/readFile", method = RequestMethod.POST)
-	public Object readFile(@RequestParam(value = "file", required = true) FileMetaModel fileMetaModel) throws Exception{
+	public Object readFile(@RequestParam(value = "file", required = true) Object obj) throws Exception{
+		FileMetaModel fileMetaModel = (FileMetaModel) obj;
 		String userName = fileMetaModel.getUserModel().getUserName();
 		String projectName = fileMetaModel.getProjectMemberModel().getProjectName();
 		String fileName = fileMetaModel.getFileName();

@@ -20,9 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ModelViewer.DAO.Validation.ValidateUtil;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
+import com.ModelViewer.Model.Support.JacksonDepthLimit;
 
 @Entity
-public class FileMetaModel implements Serializable {
+public class FileMetaModel extends JacksonDepthLimit implements Serializable {
 	
 
 	private static final long serialVersionUID = 2674621279979020137L;
@@ -142,7 +143,12 @@ public class FileMetaModel implements Serializable {
 	}
 
 	public UserModel getUserModel() {
-		return userModel;
+		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+			return null;
+		} else {
+			userModel.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+			return userModel;
+		}
 	}
 
 	public void setUserModel(UserModel userModel) {
@@ -150,7 +156,12 @@ public class FileMetaModel implements Serializable {
 	}
 
 	public ProjectMemberModel getProjectMemberModel() {
-		return projectMemberModel;
+		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+			return null;
+		} else {
+			userModel.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+			return projectMemberModel;
+		}
 	}
 
 	public void setProjectMemberModel(ProjectMemberModel projectMemberModel) {

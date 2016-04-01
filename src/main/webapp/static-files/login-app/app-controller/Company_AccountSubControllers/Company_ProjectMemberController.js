@@ -26,22 +26,22 @@
     	var vm = this;
     	
     	//varibles//////////////
-    	vm.projectMember = new GetProjectMembersHashmapByUserName();
-    	vm.error = null;
+//    	vm.projectMember = new GetProjectMembersHashmapByUserName();
+//    	vm.error = null;
     	vm.projectEditMemberDialog = false;
     	vm.projectEditMemberDialog_members = null;
     	vm.projectEditMemberDialog_project = null;
     	//functions///////////
-    	vm.GetProjectMembersHashmapByUserName = GetProjectMembersHashmapByUserName;
-    	vm.RefreshElements = RefreshElements;
-    	vm.DeleteAProject = DeleteAProject;
-    	vm.DeleteAMemberFromAProject = DeleteAMemberFromAProject;
-    	vm.CreateANewProject = CreateANewProject;
+//    	vm.GetProjectMembersHashmapByUserName = GetProjectMembersHashmapByUserName;
+//    	vm.RefreshElements = RefreshElements;
+//    	vm.DeleteAProject = DeleteAProject;
+//    	vm.DeleteAMemberFromAProject = DeleteAMemberFromAProject;
+//    	vm.CreateANewProject = CreateANewProject;
     	
     	//edit member dialog area//////
     	//functions
-    	vm.ProjectEditMemberDialog_Toggle = ProjectEditMemberDialog_Toggle;
-    	vm.ProjectEditMemberDialog_AddMember = ProjectEditMemberDialog_AddMember;
+//    	vm.ProjectEditMemberDialog_Toggle = ProjectEditMemberDialog_Toggle;
+//    	vm.ProjectEditMemberDialog_AddMember = ProjectEditMemberDialog_AddMember;
     	
     	//edit project dialog area/////////
     	var pd = {};
@@ -55,14 +55,14 @@
     	//if(vm.pd.projectEditProjectDialog_dialogShow){
     	//	GetAllFileMetaData();
     	//}
-    	vm.pd.DeleteFileFromProject = DeleteFileFromProject;
+//    	vm.pd.DeleteFileFromProject = DeleteFileFromProject;
     	
     	//vm.pd.progress = 0;
 
-    	vm.pd.ProjectEditProjectDialog_Toggle = ProjectEditProjectDialog_Toggle;
-    	vm.pd.UploadFileAProjectFile = UploadFileAProjectFile;
-    	vm.pd.saveStory = SaveStory;
-    	vm.pd.GetStory = GetStory;
+//    	vm.pd.ProjectEditProjectDialog_Toggle = ProjectEditProjectDialog_Toggle;
+//    	vm.pd.UploadFileAProjectFile = UploadFileAProjectFile;
+//    	vm.pd.saveStory = SaveStory;
+//    	vm.pd.GetStory = GetStory;
    
         //recieving message, page needed to be refreshed//////////////////////
         $scope.$on('refreshElementsEvent_child', function() { 
@@ -143,273 +143,274 @@
 
         
         //edit/add project information dialog area////////////////////////////////////////////////////////////////////////////////////////////  /   
-        function SaveStory(){
-        	var pass = AuthService.GetPassword();
-        	var userName = AuthService.GetUser();
-        	var projectName = vm.pd.projectEditProjectDialog_projectName;
-        	var member = AuthService.GetMember();
-        	var story = vm.pd.projectStory;
-        	if(story == null || story == ""){
-        		return;
-        	}
-        	ProjectInfoService.CreateUpdateProjectInfo(userName,pass,projectName,member,null,story)
-			.then(function (response) {
-                if (response.success) {			
-                	vm.error = response.message;
-                } else {			                	
-                	vm.error = response.message;
-                }
-			});	        	
-        }
-        function GetStory(){
-        	var pass = AuthService.GetPassword();
-        	var userName = AuthService.GetUser();
-        	var projectName = vm.pd.projectEditProjectDialog_projectName;
-        	var member = AuthService.GetMember();
-        	
-        	ProjectInfoService.ReadProjectInfo(userName,pass,projectName,member,null)
-			.then(function (response) {
-                if (response.success) {
-                	vm.pd.projectStory = response.message;
-                } else {			                	
-                	vm.error = response.message;
-                }
-			});	        	
-        }
+//        function SaveStory(){
+//        	var pass = AuthService.GetPassword();
+//        	var userName = AuthService.GetUser();
+//        	var projectName = vm.pd.projectEditProjectDialog_projectName;
+//        	var member = AuthService.GetMember();
+//        	var story = vm.pd.projectStory;
+//        	if(story == null || story == ""){
+//        		return;
+//        	}
+//        	ProjectInfoService.CreateUpdateProjectInfo(userName,pass,projectName,member,null,story)
+//			.then(function (response) {
+//                if (response.success) {			
+//                	vm.error = response.message;
+//                } else {			                	
+//                	vm.error = response.message;
+//                }
+//			});	        	
+//        }
+//        function GetStory(){
+//        	var pass = AuthService.GetPassword();
+//        	var userName = AuthService.GetUser();
+//        	var projectName = vm.pd.projectEditProjectDialog_projectName;
+//        	var member = AuthService.GetMember();
+//        	
+//        	ProjectInfoService.ReadProjectInfo(userName,pass,projectName,member,null)
+//			.then(function (response) {
+//                if (response.success) {
+//                	vm.pd.projectStory = response.message;
+//                } else {			                	
+//                	vm.error = response.message;
+//                }
+//			});	        	
+//        }
         
         function ProjectEditProjectDialog_Toggle(project){
         	//functionality, file upload, delete file uploaded, display current model uploaded- with timestamp
         	vm.pd.projectEditProjectDialog_projectName = project;
         	vm.pd.projectEditProjectDialog_dialogShow = !vm.pd.projectEditProjectDialog_dialogShow;
         	if(vm.pd.projectEditProjectDialog_dialogShow){
-        		GetAllFileMetaData();
-        		GetStory();
+//        		GetAllFileMetaData();
+//        		GetStory();
         	}
         }
+        
+        
         function abortFileAProjectFile(projectName,fileName){
         	$rootScope.$broadcast("FileService.recieve.abort", {"projectName":projectName,"fileName":fileName}); 
         }
         //add a new box
-        function addAFileTo_projectMetaData_list(projectName, fileName){
+//        function addAFileTo_projectMetaData_list(projectName, fileName){
         	
-        	var category = fileCategory(fileName);
-        	if(category == null){
-        		return; //could set an error here for wrong file type, maybe validation done at an upper layer
-        	}
-        	//if var not set, somthign is wrong should have been set, since the dialog is open, return
-        	if(vm.pd.projectMetaData[projectName] == null){
-        		return;
-        	}
-        	if(vm.pd.projectMetaData[projectName].Images == null || vm.pd.projectMetaData[projectName].Models == null){
-        		return;
-        	}
-        	if(category == "image"){
-        		var Images = vm.pd.projectMetaData[projectName].Images;
-        		if(findFileByName(Images, fileName) == null){
-        			Images.push({
-        			"name":fileName,
-        			"type":fileType(fileName)});
-        		}
-
-        	} else {
-        		//("model")
-        		var Models = vm.pd.projectMetaData[projectName].Models;
-        		if(findFileByName(Models, fileName) == null){
-        			Models.push({
-        			"name":fileName,
-        			"type":fileType(fileName)});
-        		}
-        	}
-        }
-        function deleteAFileFrom_projectMetaData_list(projectName, fileName){
-        	var category = fileCategory(fileName);
-        	if(category == null){
-        		return; //could set an error here for wrong file type, maybe validation done at an upper layer
-        	}
-        	//if var not set, somthign is wrong should have been set, since the dialog is open, return
-        	if(vm.pd.projectMetaData[projectName] == null){
-        		return;
-        	}
-        	if(vm.pd.projectMetaData[projectName].Images == null && vm.pd.projectMetaData[projectName].Models == null){
-        		return;
-        	}
-        	if(category == "image"){
-        		var Images = vm.pd.projectMetaData[projectName].Images;
-        		deleteFileByName(Images, fileName);
-        	} else {
-        		var Models = vm.pd.projectMetaData[projectName].Models;
-        		deleteFileByName(Models, fileName);
-        	}       	
-        }
+//        	var category = fileCategory(fileName);
+//        	if(category == null){
+//        		return; //could set an error here for wrong file type, maybe validation done at an upper layer
+//        	}
+//        	//if var not set, somthign is wrong should have been set, since the dialog is open, return
+//        	if(vm.pd.projectMetaData[projectName] == null){
+//        		return;
+//        	}
+//        	if(vm.pd.projectMetaData[projectName].Images == null || vm.pd.projectMetaData[projectName].Models == null){
+//        		return;
+//        	}
+//        	if(category == "image"){
+//        		var Images = vm.pd.projectMetaData[projectName].Images;
+//        		if(findFileByName(Images, fileName) == null){
+//        			Images.push({
+//        			"name":fileName,
+//        			"type":fileType(fileName)});
+//        		}
+//
+//        	} else {
+//        		var Models = vm.pd.projectMetaData[projectName].Models;
+//        		if(findFileByName(Models, fileName) == null){
+//        			Models.push({
+//        			"name":fileName,
+//        			"type":fileType(fileName)});
+//        		}
+//        	}
+//        }
+//        function deleteAFileFrom_projectMetaData_list(projectName, fileName){
+//        	var category = fileCategory(fileName);
+//        	if(category == null){
+//        		return; //could set an error here for wrong file type, maybe validation done at an upper layer
+//        	}
+//        	//if var not set, somthign is wrong should have been set, since the dialog is open, return
+//        	if(vm.pd.projectMetaData[projectName] == null){
+//        		return;
+//        	}
+//        	if(vm.pd.projectMetaData[projectName].Images == null && vm.pd.projectMetaData[projectName].Models == null){
+//        		return;
+//        	}
+//        	if(category == "image"){
+//        		var Images = vm.pd.projectMetaData[projectName].Images;
+//        		deleteFileByName(Images, fileName);
+//        	} else {
+//        		var Models = vm.pd.projectMetaData[projectName].Models;
+//        		deleteFileByName(Models, fileName);
+//        	}       	
+//        }
         
-        function updateValueIn_projectMetaData(fileName, propertyName, value){
-        	if(vm.pd.projectMetaData == null){
-        		return false;
-        	}
-        	if(fileName == null || updateObj == null){
-        		return false;
-        	}
-        	var val = vm.pd.projectMetaData;
-        	for (var group in val){
-				if (val.hasOwnProperty(group)) {
-					for (var item in val[group]){
-						if(item.name == fileName){
-							vm.pd.projectMetaData[group][item].name = value;
-						}
-					}
-        		}
-        	}
-        	return false;
-        }
+//        function updateValueIn_projectMetaData(fileName, propertyName, value){
+//        	if(vm.pd.projectMetaData == null){
+//        		return false;
+//        	}
+//        	if(fileName == null || updateObj == null){
+//        		return false;
+//        	}
+//        	var val = vm.pd.projectMetaData;
+//        	for (var group in val){
+//				if (val.hasOwnProperty(group)) {
+//					for (var item in val[group]){
+//						if(item.name == fileName){
+//							vm.pd.projectMetaData[group][item].name = value;
+//						}
+//					}
+//        		}
+//        	}
+//        	return false;
+//        }
         
-        function findFileIn_projectMetaData(projectName, fileName){
-        	if(vm.pd.projectMetaData[projectName] == null){
-        		return null;
-        	}
-        	var val = vm.pd.projectMetaData[projectName];
-        	for (var group in val){
-				if (val.hasOwnProperty(group)) {
-	        		var file = findFileByName(val[group], fileName);
-	        		if(file != null){
-	        			return file;
-	        		}
-        		}
-        	}
-        	return null;
-        }
+//        function findFileIn_projectMetaData(projectName, fileName){
+//        	if(vm.pd.projectMetaData[projectName] == null){
+//        		return null;
+//        	}
+//        	var val = vm.pd.projectMetaData[projectName];
+//        	for (var group in val){
+//				if (val.hasOwnProperty(group)) {
+//	        		var file = findFileByName(val[group], fileName);
+//	        		if(file != null){
+//	        			return file;
+//	        		}
+//        		}
+//        	}
+//        	return null;
+//        }
         //TODO test this
-        function deleteFileByName(ObjList, fileName){
-        	var val = null;
-        	for(var i = 0; i < ObjList.length; ++i){
-        		var item = ObjList[i];
-    			if('name' in item){
-    				var name = item.name;     
-    				if(name != null && fileName != null) {
-    					if(name == fileName){
-    						//alert(JSON.stringify(item));
-    						ObjList.splice(i,1);
-    					}
-    				}
-    			}
-    		}
-        }
-        function findFileByName(ObjList, fileName){
-        	var val = null;
-        	ObjList.forEach(function(item){
-    			if('name' in item){
-    				var name = item.name;     
-    				if(name != null && fileName != null) {
-    					if(name == fileName){
-    						//alert(JSON.stringify(item));
-    						val = item;
-    					}
-    				}
-    			}
-    		});
-        	return val;
-        }
-        //get item cate
-        function fileCategory(fileName){
-        	var type = fileType(fileName);
-        	if(type == "jpg" || type == "jpeg" || type == "png" ){
-        		return "image";
-        	} else {
-        		return "model";
-        	}
-        	
-        }
-        //get item type
-        function fileType(fileName){
-        	var partsArray = fileName.split('.');
-        	var sizeArray = partsArray.length;
-        	if(sizeArray != 2){
-        		return null;
-        	} 
-        	var type = partsArray[1];
-        	return type;
-        	
-        }
-        function setFileUploading(fileName){
-        	//find that file object varible se equal to current file being uploaded
-        }
-        function UploadFileAProjectFile(projectName,file){
-        	var pass = AuthService.GetPassword();
-        	var userName = AuthService.GetUser();
-        	FileService.UploadFileAProjectFile(userName, projectName, pass, file);
-        }
-        function DeleteFileFromProject(fileName){
-        	if(fileName == null){
-        		return;
-        	}
-        	if(vm.pd.projectEditProjectDialog_projectName == null){
-        		return;
-        	}
-        	var pass = AuthService.GetPassword();
-        	var userName = AuthService.GetUser();
-        	var projectName = vm.pd.projectEditProjectDialog_projectName;
-        	
-        	var fileObj = findFileIn_projectMetaData(projectName,fileName);
-        	if(fileObj == null || fileObj.status == null || fileObj.status == "complete"){
-	        	FileService.DeleteFile(userName,projectName,fileName,pass)
-	        	.then(function (response) {
-	                if (response.success) {
-	                	//if success then also remove it from the current local project file list
-	                	//vm.pd.projectMetaData[projectName] = response.message;	
-	                	deleteAFileFrom_projectMetaData_list(projectName,fileName);
-	                	
-	                } else {			                	
-	                	vm.error = response.message;
-	                	onError(response.message);
-	                }
-				});	
-        	} else if (fileObj.status == "queued"){
-        		deleteAFileFrom_projectMetaData_list(projectName,fileName);
-        	} else if (fileObj.status == "uploading"){
-        		abortFileAProjectFile(projectName, fileName);
-        	}
-        }
-        function GetAllFileMetaData(){
-        	if(vm.pd.projectEditProjectDialog_projectName != null){
-        		var projectName = vm.pd.projectEditProjectDialog_projectName;
-        		var uPass = AuthService.GetPassword();
-            	var userName = AuthService.GetUser();
-            	
-            	if(vm.pd.projectMetaData.hasOwnProperty(projectName)){
-            		return;
-            	}
-            	if(vm.pd.projectMetaData[projectName] != null){
-            		return;
-            	}
-            	
-        		FileService.GetAllFileMetaData(userName,projectName,uPass)
-        		.then(function (response) {
-	                if (response.success) {
-	                	vm.pd.projectMetaData[projectName] = response.message;			                	
-	                } else {			                	
-	                	vm.error = response.message;
-	                	onError(response.message);
-	                	vm.pd.projectMetaData[projectName] = null;
-	                }
-				});	 
-        	}
-        }    
+//        function deleteFileByName(ObjList, fileName){
+//        	var val = null;
+//        	for(var i = 0; i < ObjList.length; ++i){
+//        		var item = ObjList[i];
+//    			if('name' in item){
+//    				var name = item.name;     
+//    				if(name != null && fileName != null) {
+//    					if(name == fileName){
+//    						//alert(JSON.stringify(item));
+//    						ObjList.splice(i,1);
+//    					}
+//    				}
+//    			}
+//    		}
+//        }
+//        function findFileByName(ObjList, fileName){
+//        	var val = null;
+//        	ObjList.forEach(function(item){
+//    			if('name' in item){
+//    				var name = item.name;     
+//    				if(name != null && fileName != null) {
+//    					if(name == fileName){
+//    						//alert(JSON.stringify(item));
+//    						val = item;
+//    					}
+//    				}
+//    			}
+//    		});
+//        	return val;
+//        }
+//        //get item cate
+//        function fileCategory(fileName){
+//        	var type = fileType(fileName);
+//        	if(type == "jpg" || type == "jpeg" || type == "png" ){
+//        		return "image";
+//        	} else {
+//        		return "model";
+//        	}
+//        	
+//        }
+//        //get item type
+//        function fileType(fileName){
+//        	var partsArray = fileName.split('.');
+//        	var sizeArray = partsArray.length;
+//        	if(sizeArray != 2){
+//        		return null;
+//        	} 
+//        	var type = partsArray[1];
+//        	return type;
+//        	
+//        }
+//        function setFileUploading(fileName){
+//        	//find that file object varible se equal to current file being uploaded
+//        }
+//        function UploadFileAProjectFile(projectName,file){
+//        	var pass = AuthService.GetPassword();
+//        	var userName = AuthService.GetUser();
+//        	FileService.UploadFileAProjectFile(userName, projectName, pass, file);
+//        }
+//        function DeleteFileFromProject(fileName){
+//        	if(fileName == null){
+//        		return;
+//        	}
+//        	if(vm.pd.projectEditProjectDialog_projectName == null){
+//        		return;
+//        	}
+//        	var pass = AuthService.GetPassword();
+//        	var userName = AuthService.GetUser();
+//        	var projectName = vm.pd.projectEditProjectDialog_projectName;
+//        	
+//        	var fileObj = findFileIn_projectMetaData(projectName,fileName);
+//        	if(fileObj == null || fileObj.status == null || fileObj.status == "complete"){
+//	        	FileService.DeleteFile(userName,projectName,fileName,pass)
+//	        	.then(function (response) {
+//	                if (response.success) {
+//	                	//if success then also remove it from the current local project file list
+//	                	//vm.pd.projectMetaData[projectName] = response.message;	
+//	                	deleteAFileFrom_projectMetaData_list(projectName,fileName);
+//	                	
+//	                } else {			                	
+//	                	vm.error = response.message;
+//	                	onError(response.message);
+//	                }
+//				});	
+//        	} else if (fileObj.status == "queued"){
+//        		deleteAFileFrom_projectMetaData_list(projectName,fileName);
+//        	} else if (fileObj.status == "uploading"){
+//        		abortFileAProjectFile(projectName, fileName);
+//        	}
+//        }
+//        function GetAllFileMetaData(){
+//        	if(vm.pd.projectEditProjectDialog_projectName != null){
+//        		var projectName = vm.pd.projectEditProjectDialog_projectName;
+//        		var uPass = AuthService.GetPassword();
+//            	var userName = AuthService.GetUser();
+//            	
+//            	if(vm.pd.projectMetaData.hasOwnProperty(projectName)){
+//            		return;
+//            	}
+//            	if(vm.pd.projectMetaData[projectName] != null){
+//            		return;
+//            	}
+//            	
+//        		FileService.GetAllFileMetaData(userName,projectName,uPass)
+//        		.then(function (response) {
+//	                if (response.success) {
+//	                	vm.pd.projectMetaData[projectName] = response.message;			                	
+//	                } else {			                	
+//	                	vm.error = response.message;
+//	                	onError(response.message);
+//	                	vm.pd.projectMetaData[projectName] = null;
+//	                }
+//				});	 
+//        	}
+//        }    
         ///add members to a project dialog //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        function ProjectEditMemberDialog_AddMember (project, member){
-        	var pass = AuthService.GetPassword();
-        	var userName = AuthService.GetUser();
-        	ProjectMemberService.CreateAMember(userName,project,member,pass) 
-				.then(function (response) {
-	                if (response.success) {			
-	                	var databaseMembers = response.message;			                	
-	                	RefreshElements();
-	                	vm.projectEditMemberDialog_project = null;
-	                } else {			                	
-	                	vm.error = response.message;
-	                	onError(response.message);
-	                	vm.projectEditMemberDialog_members = null;
-	                }
-				});	        	
-        }
+//        function ProjectEditMemberDialog_AddMember (project, member){
+//        	var pass = AuthService.GetPassword();
+//        	var userName = AuthService.GetUser();
+//        	ProjectMemberService.CreateAMember(userName,project,member,pass) 
+//				.then(function (response) {
+//	                if (response.success) {			
+//	                	var databaseMembers = response.message;			                	
+//	                	RefreshElements();
+//	                	vm.projectEditMemberDialog_project = null;
+//	                } else {			                	
+//	                	vm.error = response.message;
+//	                	onError(response.message);
+//	                	vm.projectEditMemberDialog_members = null;
+//	                }
+//				});	        	
+//        }
         
                
     	function ProjectEditMemberDialog_Toggle (project,members) { 
@@ -436,69 +437,69 @@
     	}
     	
     	//base functions//////////////////
-        function GetProjectMembersHashmapByUserName() {     	
-        	var pass = AuthService.GetPassword();
-        	var userName = AuthService.GetUser();
-			ProjectMemberService.GetHashMapOfProjectAndMember(userName,pass) 
-				.then(function (response) {
-	                if (response.success) {			                   
-	                    vm.error = null;
-	                    vm.projectMember = response.message;
-	                } else {			                	
-	                	vm.error = response.message;
-	                	onError(response.message);
-	                	vm.projectMember = {};
-	                }
-		        });	
-        }
+//        function GetProjectMembersHashmapByUserName() {     	
+//        	var pass = AuthService.GetPassword();
+//        	var userName = AuthService.GetUser();
+//			ProjectMemberService.GetHashMapOfProjectAndMember(userName,pass) 
+//				.then(function (response) {
+//	                if (response.success) {			                   
+//	                    vm.error = null;
+//	                    vm.projectMember = response.message;
+//	                } else {			                	
+//	                	vm.error = response.message;
+//	                	onError(response.message);
+//	                	vm.projectMember = {};
+//	                }
+//		        });	
+//        }
         
-        function DeleteAProject (projectName){
-        	var pass = AuthService.GetPassword();
-        	var userName = AuthService.GetUser();
-			ProjectMemberService.DeleteAProject(userName,projectName,pass) 
-				.then(function (response) {
-	                if (response.success) {			                   
-	                    vm.error = null;
-	                    RefreshElements();
-	                } else {
-	                	 //alert(response);
-	                	onError(response.message);
-	                	vm.error = response.message;
-	                }
-	                
-		        });        	 	
-        }
+//        function DeleteAProject (projectName){
+//        	var pass = AuthService.GetPassword();
+//        	var userName = AuthService.GetUser();
+//			ProjectMemberService.DeleteAProject(userName,projectName,pass) 
+//				.then(function (response) {
+//	                if (response.success) {			                   
+//	                    vm.error = null;
+//	                    RefreshElements();
+//	                } else {
+//	                	 //alert(response);
+//	                	onError(response.message);
+//	                	vm.error = response.message;
+//	                }
+//	                
+//		        });        	 	
+//        }
         
-        function DeleteAMemberFromAProject (projectName, member){
-        	var pass = AuthService.GetPassword();
-        	var userName = AuthService.GetUser();
-			ProjectMemberService.DeleteAMemberFromAProject(userName,projectName,member,pass) 
-				.then(function (response) {
-	                if (response.success) {			                   
-	                    vm.error = null;
-	                    RefreshElements();
-	                } else {			
-	                	onError(response.message);
-	                	vm.error = response.message;
-	                }
-		        });      	       	 	
-        }
+//        function DeleteAMemberFromAProject (projectName, member){
+//        	var pass = AuthService.GetPassword();
+//        	var userName = AuthService.GetUser();
+//			ProjectMemberService.DeleteAMemberFromAProject(userName,projectName,member,pass) 
+//				.then(function (response) {
+//	                if (response.success) {			                   
+//	                    vm.error = null;
+//	                    RefreshElements();
+//	                } else {			
+//	                	onError(response.message);
+//	                	vm.error = response.message;
+//	                }
+//		        });      	       	 	
+//        }
         	
-        function CreateANewProject (projectName){
-        	var pass = AuthService.GetPassword();
-        	var userName = AuthService.GetUser();
-			ProjectMemberService.CreateANewProject(userName,projectName,pass) 
-				.then(function (response) {
-	                if (response.success) {			                   
-	                    vm.error = null;
-	                    RefreshElements();	             
-	                } else {			 
-	                	onError(response.message);
-	                	vm.error = response.message;
-	                }
-		        });     
-			vm.projectNameToAdd = "";
-        }
+//        function CreateANewProject (projectName){
+//        	var pass = AuthService.GetPassword();
+//        	var userName = AuthService.GetUser();
+//			ProjectMemberService.CreateANewProject(userName,projectName,pass) 
+//				.then(function (response) {
+//	                if (response.success) {			                   
+//	                    vm.error = null;
+//	                    RefreshElements();	             
+//	                } else {			 
+//	                	onError(response.message);
+//	                	vm.error = response.message;
+//	                }
+//		        });     
+//			vm.projectNameToAdd = "";
+//        }
 
     	
         //private functions/////////////////////////
@@ -506,16 +507,16 @@
         	GetProjectMembersHashmapByUserName();     	
         }
         
-        function SubtractBSetFromASet(aSet, bSet){
-        	bSet.forEach(function(bItem){
-        		var index = aSet.indexOf(bItem);
-        		if (index > -1) {
-        			aSet.splice(index, 1);
-        		}
-       		
-        	});
-        	return aSet;
-        }
+//        function SubtractBSetFromASet(aSet, bSet){
+//        	bSet.forEach(function(bItem){
+//        		var index = aSet.indexOf(bItem);
+//        		if (index > -1) {
+//        			aSet.splice(index, 1);
+//        		}
+//       		
+//        	});
+//        	return aSet;
+//        }
         
 
         return vm;

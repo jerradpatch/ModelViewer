@@ -31,6 +31,10 @@ public class MemberService {
 	@Qualifier("MemberDAO")
 	MemberDAO memberDAO;
 	
+	@Inject
+	@Qualifier("UserDAO")
+	UserDAO userDAO;
+	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -40,7 +44,9 @@ public class MemberService {
 		return "hello world";
 	}
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public Object readMember_userNamePassword(@RequestBody(required = true) MemberModel memberModel) throws Exception {
+	public Object readMember_userNamePassword(@RequestBody(required = true) Object obj) throws Exception {
+		
+		MemberModel memberModel = (MemberModel) obj;
 		MemberModel memberModelRet =  memberDAO.readMember_userNamePassword(memberModel);
 		if(memberModelRet == null){
 			ReturnedObject.sThrowException("Access Denied");
@@ -49,30 +55,36 @@ public class MemberService {
 	}
 	
 	@RequestMapping(value = "/createMember", method = RequestMethod.POST)
-	public void CreateAMember(@RequestBody(required = true) MemberModel memberModel) throws Exception{
+	public void CreateAMember(@RequestBody(required = true) Object obj) throws Exception{
+		MemberModel memberModel = (MemberModel) obj;
 		memberDAO.createMember(memberModel);
 	}	
 	@RequestMapping(value = "/readMemberList", method = RequestMethod.POST)
-	public Object readListOfMember(@RequestBody(required = true) MemberModel memberModel) throws Exception {
+	public Object readListOfMember(@RequestBody(required = true) Object obj) throws Exception {
+		MemberModel memberModel = (MemberModel) obj;
 		Set<MemberModel> members = memberDAO.readMemberList(memberModel);
 		return members;
 	}
 
 	@RequestMapping(value = "/readMember", method = RequestMethod.POST)
-	public Object readMember(@RequestBody(required = true) MemberModel memberModel) throws Exception {	
+	public Object readMember(@RequestBody(required = true) Object obj) throws Exception {	
+		MemberModel memberModel = (MemberModel) obj;
 		MemberModel memberRet = memberDAO.readMember(memberModel);
 		return memberRet;
 	}
-	@RequestMapping(value = "/readUserMembers", method = RequestMethod.POST)
-	public Object readUserMembers(@RequestBody(required = true) UserModel userModel) throws Exception {
-		return userModel.getMembers();
-	}
+//	@RequestMapping(value = "/readUserMembers", method = RequestMethod.POST)
+//	public Object readUserMembers(@RequestBody(required = true) Object obj) throws Exception {
+//		UserModel userModel = (UserModel) obj;
+//		return userDAO.readUser(userModel).getMemberModels();
+//	}
 	@RequestMapping(value = "/updateMember", method = RequestMethod.POST)
-	public void UpdateAMember(@RequestBody(required = true) MemberModel memberModel) throws Exception{
+	public void UpdateAMember(@RequestBody(required = true) Object obj) throws Exception{
+		MemberModel memberModel = (MemberModel) obj;
 		memberDAO.updateMember(memberModel);
 	}	
-	@RequestMapping(value = "/DeleteAMember", method = RequestMethod.GET)
-	public void DeleteAMember(@RequestBody(required = true) MemberModel memberModel) throws Exception {		
+	@RequestMapping(value = "/deleteAMember", method = RequestMethod.GET)
+	public void DeleteAMember(@RequestBody(required = true) Object obj) throws Exception {	
+		MemberModel memberModel = (MemberModel) obj;
 		memberDAO.deleteMember(memberModel);//TODO see if relational mapping deletes all member in other table
 	}
 		

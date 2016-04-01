@@ -64,104 +64,104 @@
     function Member_ProjectController($location,$cookieStore,AuthService, ProjectInfoService, MemberService, FileService) {
         var vm = this;
 
-        vm.GetAllFileMetaDataForAProject = GetAllFileMetaDataForAProject;	
+//        vm.GetAllFileMetaDataForAProject = GetAllFileMetaDataForAProject;	
         vm.modelImages = null;
         vm.projectMeta = null;
-        vm.GetProject = GetProject;
+//        vm.GetProject = GetProject;
         vm.projectStory = null;
-        vm.projectTitle = GetProject();
+//        vm.projectTitle = GetProject();
         
-        GetAllFileMetaDataForAProject();	
-        GetStory();
+//        GetAllFileMetaDataForAProject();	
+//        GetStory();
         
-        function GetProject(){
-        	return UserProfileInfo.get("currentProject");
-        }
+//        function GetProject(){
+//        	return UserProfileInfo.get("currentProject");
+//        }
         
-        function GetStory(){
-        	var pass = AuthService.GetPassword();
-        	var userName = AuthService.GetUser();
-        	var projectName = GetProject();
-        	var member = AuthService.GetMember();
-        	
-        	ProjectInfoService.ReadProjectInfo(userName,null,projectName,member,pass)
-			.then(function (response) {
-                if (response.success) {
-                	vm.projectStory = response.message;
-                } else {			                	
-                	vm.error = response.message;
-                }
-			});	        	
-        }
+//        function GetStory(){
+//        	var pass = AuthService.GetPassword();
+//        	var userName = AuthService.GetUser();
+//        	var projectName = GetProject();
+//        	var member = AuthService.GetMember();
+//        	
+//        	ProjectInfoService.ReadProjectInfo(userName,null,projectName,member,pass)
+//			.then(function (response) {
+//                if (response.success) {
+//                	vm.projectStory = response.message;
+//                } else {			                	
+//                	vm.error = response.message;
+//                }
+//			});	        	
+//        }
         
-        function GetImagesFromModelsFolders(ProjectMetaData){
-        	var models = ProjectMetaData.Models;      	
-    		var supportedImageTypes = [".jpg",".jpeg",".png",".unity"];
-    		var projectName = GetProject();
-    		
-    		if(models){
-    			var retVal = [];
-    			models.forEach(function(model){
-					var ret = {};
-					ret["dataType"] = "";
-    				model.list.forEach(function(itemInModelFolder){
-        				if("type" in itemInModelFolder){
-				        	var pass = AuthService.GetPassword();
-				        	var userName = AuthService.GetUser();
-				        	var member = AuthService.GetMember();
-				        	var projectName = GetProject();
-				        	
-        					supportedImageTypes.forEach(function(supportedType){
-        						
-        						if(itemInModelFolder["type"] == supportedType){
-        				        	var urlJpg =  "FileService/GetFileAProjectFile"+"?"+
-			        							"userName="+userName+"&"+
-			        							"projectName="+projectName+"&"+
-			        							"member="+member+"&"+
-			        							"memberP="+pass+"&"+
-			        							"fileName="+model.name+"/"+itemInModelFolder.name;
-        				        	ret["urlImage"] = urlJpg;
-        				        	ret["dataType"] = ret["dataType"] + " image ";
-        						}        	
-        					});
-    						if(itemInModelFolder["type"] == "folder" && "name" in itemInModelFolder && itemInModelFolder["type"].indexOf('.unity')){
-    							ret["urlUnity"] = 
-    								"FileService/GetFileAProjectFile"+"?"+
-        							"userName="+userName+"&"+
-        							"projectName="+projectName+"&"+
-        							"member="+member+"&"+
-        							"memberP="+pass+"&"+
-        							"fileName="+model.name+"/"+itemInModelFolder.name;
-    							ret["dataType"] = ret["dataType"] + " unity ";
-    						}
-        				}
-    				});
-					retVal.push(ret);
-				});
-    			vm.modelImages = retVal;
-    		}
+//        function GetImagesFromModelsFolders(ProjectMetaData){
+//        	var models = ProjectMetaData.Models;      	
+//    		var supportedImageTypes = [".jpg",".jpeg",".png",".unity"];
+//    		var projectName = GetProject();
+//    		
+//    		if(models){
+//    			var retVal = [];
+//    			models.forEach(function(model){
+//					var ret = {};
+//					ret["dataType"] = "";
+//    				model.list.forEach(function(itemInModelFolder){
+//        				if("type" in itemInModelFolder){
+//				        	var pass = AuthService.GetPassword();
+//				        	var userName = AuthService.GetUser();
+//				        	var member = AuthService.GetMember();
+//				        	var projectName = GetProject();
+//				        	
+//        					supportedImageTypes.forEach(function(supportedType){
+//        						
+//        						if(itemInModelFolder["type"] == supportedType){
+//        				        	var urlJpg =  "FileService/GetFileAProjectFile"+"?"+
+//			        							"userName="+userName+"&"+
+//			        							"projectName="+projectName+"&"+
+//			        							"member="+member+"&"+
+//			        							"memberP="+pass+"&"+
+//			        							"fileName="+model.name+"/"+itemInModelFolder.name;
+//        				        	ret["urlImage"] = urlJpg;
+//        				        	ret["dataType"] = ret["dataType"] + " image ";
+//        						}        	
+//        					});
+//    						if(itemInModelFolder["type"] == "folder" && "name" in itemInModelFolder && itemInModelFolder["type"].indexOf('.unity')){
+//    							ret["urlUnity"] = 
+//    								"FileService/GetFileAProjectFile"+"?"+
+//        							"userName="+userName+"&"+
+//        							"projectName="+projectName+"&"+
+//        							"member="+member+"&"+
+//        							"memberP="+pass+"&"+
+//        							"fileName="+model.name+"/"+itemInModelFolder.name;
+//    							ret["dataType"] = ret["dataType"] + " unity ";
+//    						}
+//        				}
+//    				});
+//					retVal.push(ret);
+//				});
+//    			vm.modelImages = retVal;
+//    		}
       	
-        }
-        
-    	function GetAllFileMetaDataForAProject(){
-        	var userName = AuthService.GetUser();
-        	var projectName = GetProject();
-        	if(projectName == null){
-        		return;
-        	}
-        	var member = AuthService.GetMember();
-        	var memberPass = AuthService.GetPassword();
-    		FileService.GetAllFileMetaData(userName,projectName,null,member,memberPass)
-    		.then(function (response) {
-                if (response.success) {
-                	GetImagesFromModelsFolders(response.message);
-                	vm.projectMeta = response.message;
-                } else {			                	
-                	vm.error = response.message;
-                	//onError(response.message);
-                }
-			});	  		  		
-    	}
+//        }
+//        
+//    	function GetAllFileMetaDataForAProject(){
+//        	var userName = AuthService.GetUser();
+//        	var projectName = GetProject();
+//        	if(projectName == null){
+//        		return;
+//        	}
+//        	var member = AuthService.GetMember();
+//        	var memberPass = AuthService.GetPassword();
+//    		FileService.GetAllFileMetaData(userName,projectName,null,member,memberPass)
+//    		.then(function (response) {
+//                if (response.success) {
+//                	GetImagesFromModelsFolders(response.message);
+//                	vm.projectMeta = response.message;
+//                } else {			                	
+//                	vm.error = response.message;
+//                	//onError(response.message);
+//                }
+//			});	  		  		
+//    	}
     	
     	
         return vm;

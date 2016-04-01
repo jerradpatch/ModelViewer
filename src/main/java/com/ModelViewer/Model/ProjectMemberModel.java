@@ -1,6 +1,7 @@
 package com.ModelViewer.Model;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,9 +17,10 @@ import javax.persistence.OneToMany;
 
 import com.ModelViewer.DAO.Validation.ValidateUtil;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
+import com.ModelViewer.Model.Support.JacksonDepthLimit;
 
 @Entity
-public class ProjectMemberModel implements Serializable{
+public class ProjectMemberModel extends JacksonDepthLimit implements Serializable{
 
 
 
@@ -90,14 +92,26 @@ public class ProjectMemberModel implements Serializable{
 	}
 	
 	public Set<MemberModel> getMembers() {
-		return members;
+		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+			return null;
+		} else {
+			for(MemberModel fmm : this.members){
+				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+			}
+			return members;
+		}
 	}
 	public void setMembers(Set<MemberModel> members) {
 		this.members = members;
 	}
 
 	public UserModel getUserModel() {
-		return userModel;
+		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+			return null;
+		} else {
+			userModel.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+			return userModel;
+		}
 	}
 
 	public void setUserModel(UserModel userModel) {
@@ -105,7 +119,14 @@ public class ProjectMemberModel implements Serializable{
 	}
 
 	public Set<FileMetaModel> getFileModels() {
-		return fileModels;
+		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+			return null;
+		} else {
+			for(FileMetaModel fmm : this.fileModels){
+				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+			}
+			return fileModels;
+		}
 	}
 
 	public void setFileModels(Set<FileMetaModel> fileModels) {
