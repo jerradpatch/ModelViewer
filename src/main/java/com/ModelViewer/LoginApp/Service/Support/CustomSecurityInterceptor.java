@@ -52,24 +52,32 @@ public class CustomSecurityInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		
 		logger.info("made it to the interceptor");
-		if(request.getParameter("auth") == null){
+
+		JsonNode inputNode = mapper.readTree(request.getReader());
+		JsonNode inputAuth = inputNode.get("auth");
+		
+		logger.info(mapper.writeValueAsString(inputNode));
+		if(inputAuth == null){
 			ReturnedObject.sThrowException("auth not availible");
 		}
-		String postAuth = request.getParameter("auth");
-		JsonNode memberModelN = mapper.readTree(postAuth).get("memberModel");
-		JsonNode userModelN = mapper.readTree(postAuth).get("userModel");
+
+		JsonNode memberModelN = inputAuth.get("memberModel");
+		JsonNode userModelN = inputAuth.get("userModel");
 		
 		if(userModelN != null){			
 			UserModel userModel = mapper.treeToValue(userModelN, UserModel.class);
 			String uuid = userModel.getUuid();
 			if(uuid != null){
 				UserModel readUserModel = (UserModel) getTransaction(UserModel.class, uuid);
+				logger.debug(readUserModel);
 				if(readUserModel != null){
+					logger.debug("password userModel "+userModel.getPassword());
+					logger.debug("password readUserModel "+readUserModel.getPassword());
 					if(userModel.getPassword().equals(readUserModel.getPassword())){
-						String data = request.getParameter("data");
-						JsonNode dataN =  mapper.readTree(data);
-						Object obj = nodeToObject(dataN);
+						JsonNode inputData = inputNode.get("data");
+						Object obj = nodeToObject(inputData);
 						request.setAttribute("obj", obj);
+						logger.debug(mapper.writeValueAsString(obj));
 						return true;
 					}	
 				}
@@ -80,11 +88,13 @@ public class CustomSecurityInterceptor extends HandlerInterceptorAdapter {
 			String uuid = memberModel.getUuid();
 			if(uuid != null){
 				MemberModel readMemberModel = (MemberModel) getTransaction(MemberModel.class, uuid);
+				logger.debug(readMemberModel);
 				if(readMemberModel != null){
+					logger.debug("password memberModel "+memberModel.getPassword());
+					logger.debug("password readMemberModel "+readMemberModel.getPassword());
 					if(memberModel.getPassword().equals(readMemberModel.getPassword())){
-						String data = request.getParameter("data");
-						JsonNode dataN =  mapper.readTree(data);
-						Object obj = nodeToObject(dataN);
+						JsonNode inputData = inputNode.get("data");
+						Object obj = nodeToObject(inputData);
 						request.setAttribute("obj", obj);
 						return true;
 					}

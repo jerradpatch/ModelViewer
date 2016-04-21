@@ -2,13 +2,17 @@ package com.ModelViewer.LoginApp.Service;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Set;
+
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -81,13 +85,24 @@ public class UserService {
 	}
 	
 	@RequestMapping(value = "/readUser", method = RequestMethod.POST)
-	public Object readUser(@RequestBody(required = true) Object obj) throws Exception {
+	public Object readUser(HttpServletRequest request) throws Exception {
+		Object obj = request.getAttribute("obj");
 		UserModel userModel = (UserModel) obj;
 		 return userDAO.readUser(userModel);	
 	}
 	
+	@RequestMapping(value = "/readMemberList", method = RequestMethod.POST)
+	public Object readListOfMember(HttpServletRequest request) throws Exception {
+		Object obj = request.getAttribute("obj");
+		UserModel userModel = (UserModel) obj;
+		logger.debug(mapper.writeValueAsString(userModel));
+		Set<MemberModel> members = userDAO.readMemberList(userModel);
+		return members;
+	}
+	
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-	public void updateUser(@RequestBody(required = true) Object obj) throws Exception {
+	public void updateUser(HttpServletRequest request) throws Exception {
+		Object obj = request.getAttribute("obj");
 		UserModel userModel = (UserModel) obj;
 		Long currentTime = System.currentTimeMillis();
 		userModel.setDateLastLoggedIn(new Timestamp(currentTime));

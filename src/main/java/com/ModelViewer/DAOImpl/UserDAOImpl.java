@@ -1,14 +1,22 @@
 package com.ModelViewer.DAOImpl;
 
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
 import com.ModelViewer.DAO.UserDAO;
+import com.ModelViewer.Model.MemberModel;
 import com.ModelViewer.Model.UserModel;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class UserDAOImpl implements UserDAO{
-
+	
+	private ObjectMapper mapper = new ObjectMapper();
+	private static final Logger logger = Logger.getLogger(UserDAOImpl.class);
+	
 	private SessionFactory sessionFactory;
 	public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -20,7 +28,11 @@ public class UserDAOImpl implements UserDAO{
 	}
 
 	public UserModel readUser(UserModel userModel) throws Exception {
-		return this.sessionFactory.getCurrentSession().get(UserModel.class,userModel.getUuid());
+		logger.debug(this.sessionFactory.getCurrentSession());
+		logger.debug("userModel "+userModel.getUuid());
+		UserModel userReturned = this.sessionFactory.getCurrentSession().get(UserModel.class,userModel.getUuid());
+		logger.debug("userReturned "+userReturned);
+		return userReturned;
 	}
 
 	public UserModel readUser_userNamePassword(UserModel userModel) {
@@ -33,6 +45,12 @@ public class UserDAOImpl implements UserDAO{
 	
 	public void updateUser(UserModel userModel) throws Exception {
 		this.sessionFactory.getCurrentSession().update(userModel);
+	}
+
+	public Set<MemberModel> readMemberList(UserModel userModel) throws Exception {
+		UserModel readUser = readUser(userModel);
+		logger.debug(mapper.writeValueAsString(readUser));
+		return readUser.getMemberModels();
 	}
 
 //	public void CreateUserByModel(UserModel user, ReturnedObject ro) {

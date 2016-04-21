@@ -13,15 +13,20 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.apache.log4j.Logger;
+
 import javax.persistence.Index;
 import javax.persistence.CascadeType;
 
 import com.ModelViewer.DAO.Validation.ValidateUtil;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
+import com.ModelViewer.LoginApp.Service.UserService;
 import com.ModelViewer.Model.Support.JacksonDepthLimit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -34,9 +39,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 public class UserModel extends JacksonDepthLimit implements Serializable{
 
-	/**org.hibernate.id.UUIDGenerator TODO
-	 * 
-	 */
+	@JsonIgnore
+	private static final Logger logger = Logger.getLogger(UserModel.class);
+	
+	
 	private static final long serialVersionUID = 8966262352528139382L;
 	
 	@Id
@@ -76,6 +82,7 @@ public class UserModel extends JacksonDepthLimit implements Serializable{
 	
 	public UserModel(){
 		super();
+		logger.debug("created uuid");
 		this.uuid = UUID.randomUUID().toString();
 		this.fileMetaModels = new HashSet<FileMetaModel>();
 		this.memberModels = new HashSet<MemberModel>();
@@ -87,6 +94,7 @@ public class UserModel extends JacksonDepthLimit implements Serializable{
 		return uuid;
 	}
 	public void setUuid(String uuid) {
+		logger.debug("set uuid");
 		this.uuid = uuid;
 	}
 	public String getUserName() {

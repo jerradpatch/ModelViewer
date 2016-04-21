@@ -17,6 +17,7 @@ import com.ModelViewer.LoginApp.Service.FileMetaService;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+//TODO make this AOP be around the transaction manager, instead of before it.
 @Component 
 @Aspect //AOP
 @EnableAspectJAutoProxy
@@ -27,7 +28,6 @@ public class LoggingAndReturnInterceptor {
 	
 	//inplace point-cut expression, aspect oriented programming
 	@Around("@annotation(org.springframework.web.bind.annotation.RequestMapping)") 
-	//aop is not passing parameters to service... in addition json "password" is not be deserialized due to jackson annotation on object
 	public Object aroundEachServiceCall(ProceedingJoinPoint pjp) throws Throwable {
 		logger.debug("begining AOP around");
 		int startTime = Calendar.getInstance().get(Calendar.MILLISECOND);
@@ -57,8 +57,10 @@ public class LoggingAndReturnInterceptor {
 			ret.put("message_string", re.getMessage());
 			whole.put("data",ret);
 			
-			logger.warn(mapper.writeValueAsString(whole));
-			return ret;
+			String value = mapper.writeValueAsString(whole);
+			//logger.warn(value);
+			//return ret;
+			throw new Exception(value);
 		} catch (Exception e){
 			int stopTime = Calendar.getInstance().get(Calendar.MILLISECOND);
 			meta.put("timeTakenMs_long", stopTime - startTime);
@@ -68,8 +70,10 @@ public class LoggingAndReturnInterceptor {
 			ret.put("message_string", e.getMessage());
 			whole.put("data",ret);
 			
-			logger.error(mapper.writeValueAsString(whole), e);
-			return whole;
+			String value = mapper.writeValueAsString(whole);
+			//logger.error(value, e);
+			throw new Exception(value);
+			//return whole;
 		}
 
 		int stopTime = Calendar.getInstance().get(Calendar.MILLISECOND);
@@ -82,6 +86,7 @@ public class LoggingAndReturnInterceptor {
 				
 		whole.put("data","");
 		logger.info( mapper.writeValueAsString(meta));//dont need success data in logs
+		logger.debug(mapper.writeValueAsString(whole));
 		logger.debug("AOP service request complete");
         return ret;
 	}

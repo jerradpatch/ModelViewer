@@ -5,8 +5,8 @@
         .module('app')
         .factory('UserService', UserService);
  
-    UserService.$inject = ['$http','AuthService','$q'];
-    function UserService($http, AuthService, $q) {
+    UserService.$inject = ['$http','AuthService','$q','MemberService'];
+    function UserService($http, AuthService, $q, MemberService) {
     	
     	var baseUrl = '/ModelViewer/UserService/';
     	
@@ -18,64 +18,107 @@
         service.createUser = createUser;
         service.readUser = readUser;
         service.updateUser = updateUser;
+        service.readMemberList = readMemberList;
         service.data = {};
         return service;
  
-        function newUserModel(args){
-        	return {
-        		"userName": args.userName,
-        		"password": args.password,
-        		"email": args.email
-        	};
-        }
 	    function login(userModel) {
-	    	return $http.post(baseUrl+'login', JSON.stringify(userModel)).then(function(dataRet){
-				if(dataRet.uuid){
-					service.data[dataRet.uuid] = dataRet;
-					return $q.resolve(dataRet);
+	    	return $http.post(baseUrl+'login', JSON.stringify(userModel)).then(function(userModelRet){
+	    		var deferred = $q.defer();
+	    		if(userModelRet.uuid){
+	    			userModelRet["password"] = userModel.password;
+					service.data[userModelRet.uuid] = userModelRet;
+					deferred.resolve(userModelRet);
 				} else {
 					console.log("login user no uuid");
-					return $q.reject();
+					deferred.reject();
 				}
+	    		return deferred.promise;
 			});
 	    }
 	    function createUser(userModel) {
 	    	return $http.post(
 	    			baseUrl+'createUser', 
 	    			userModel,
-	    			{headers: {'Content-Type': 'application/json'}}).then(function(dataRet){
-				if(dataRet.uuid){
-					service.data[dataRet.uuid] = dataRet;
+	    			{headers: {'Content-Type': 'application/json'}}).then(function(userModelRet){
+				var deferred = $q.defer();
+	    		if(userModelRet.uuid){
+	    			userModelRet["password"] = userModel.password;
+					service.data[userModelRet.uuid] = userModelRet;
+					deferred.resolve(userModelRet);
 				} else {
-					console.log("create user no uuid");
-				}				
+					console.log("login user no uuid");
+					deferred.reject();
+				}
+	    		return deferred.promise;				
 			});
 	    }
 	    function readUser(userModel) {
 	    	return $http.post(baseUrl+'readUser', 
 	    			{params:{"userModel": userModel}}).then(function(userModelRet){
-			    if(userModelRet.uuid){
-					if(service.data[userModelRet.uuid]){
-						angular.copy(userModelRet, service.data[userModelRet.uuid]);
-					} else {
-						service.data[userModelRet.uuid] = userModelRet;
-					}
+				var deferred = $q.defer();
+	    		if(userModelRet.uuid){
+	    			createUpdateUserModel(userModelRet);
+					deferred.resolve(userModelRet);
 				} else {
-					console.log("create user no uuid");
+					console.log("login user no uuid");
+					deferred.reject();
 				}
+	    		return deferred.promise;	
 			});  
 	    }
 	    function updateUser(userModel) {
 	    	return $http.post(baseUrl+'updateUser', 
-	    			{params:{"userModel": userModel}}).then(function(){
-        				service.data[updateUser.uuid] = updateUser;
-        			});
+	    			{params:{"userModel": userModel}}).then(function(userModelRet){
+				var deferred = $q.defer();
+	    		if(userModelRet.uuid){
+	    			createUpdateUserModel(userModelRet);
+					deferred.resolve(userModelRet);
+				} else {
+					console.log("login user no uuid");
+					deferred.reject();
+				}
+	    		return deferred.promise;
+			});
 	    }
+        function readMemberList(userModel) { //read member list from the user service
+        	return $http.post(
+        			baseUrl+"readMemberList",  
+        			{"userModel": userModel}).then(function(memberModelList){
+				var deferred = $q.defer();
+				memberModelList.forEach(function(model){
+					MemberService.createUpdateModel(model);
+				});
+				deferred.resolve(memberModelList);
+	    		return deferred.promise;	 
+			});	
+        }
 	    
+//////////////////////////////////////////////////////non service hitting functions
+        function newUserModel(args){
+        	return {
+        		"userName": args.userName,
+        		"password": args.password,
+        		"email": args.email,      		
+        	};
+        }       
+        function createUpdateUserModel(newUserModel){
+        	if(newUserModel.uuid != null){
+            	var updateUserModel = service.data[newUserModel.uuid];
+            	if(updateUserModel != null){
+	            	for(var key in newUserModel){
+	            		updateUserModel[key] = newUserModel[key];
+	            	}
+            	} else {
+            		service.data[newUserModel.uuid] = newUserModel;
+            	}
+        	}
+        }
+
 //        function ComparePasswordsForUser(userName, password) {
 //            return $http.get(baseUrl+'ComparePasswordsForUser', {params:{"userName": userName,"password": password }}).then(handleSuccess, handleError("No response from pasword compare"));
 //        }
-// 
+ 
 //        function CreateUser(userName,password,email) { 
 //            return $http.post(baseUrl+'CreateUser', {"userName": userName,"password": password, "email": email}).then(handleSuccess, handleError("Could not create user"));
 //        }

@@ -22,8 +22,8 @@
         	$rootScope.CONSTANTS_Company_MemberController = CONSTANTS_Company_MemberController;
         });
  
-    Company_MemberController.$inject = ['AuthService','$rootScope','$scope','MemberService'];
-    function Company_MemberController(AuthService, $rootScope, $scope, MemberService) {
+    Company_MemberController.$inject = ['AuthService','$rootScope','$scope','MemberService','UserService'];
+    function Company_MemberController(AuthService, $rootScope, $scope, MemberService, UserService) {
         var vm = this;       
 
         vm.createMemberDialog= false;
@@ -33,7 +33,8 @@
 //        vm.memberNameToCreateOld = "";
 //        vm.memberPasswordToCreateOld = "";      
         
-        MemberService.readMemberList();
+        var currentUser = AuthService.readUserModel();
+        vm.members = UserService.readMemberList(currentUser);
         vm.error = null;
        
 //        vm.MemberDialogAccept = MemberDialogAccept;

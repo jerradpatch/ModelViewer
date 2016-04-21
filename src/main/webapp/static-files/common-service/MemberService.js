@@ -96,6 +96,22 @@
         			});
         }
         
+        //////////////////////not service hitting functions
+        
+        function createUpdateModel(newModel){
+        	if(newUserModel.uuid != null){
+            	var updateModel = service.data[newModel.uuid];
+            	if(updateModel != null){
+	            	for(var key in newModel){
+	            		updateModel[key] = newModel[key];
+	            	}
+            	} else {
+            		service.data[newModel.uuid] = newModel;
+            	}
+        	}
+        }
+        
+        
         
 //        function GetAListOfMembers(userName, companyP) {
 //            return $http.get(baseUrlMember+'GetAListOfMembers', {params:{"userName": userName, "companyP": companyP}}).then(handleSuccess, handleError('Error MemberService.getAListOfMembers'));

@@ -61,7 +61,10 @@
         function RegisterCompany(companyName,passwordA,passwordB,email){
         	if(passwordA === passwordB){
         		var userModel = UserService.newUserModel({'userName':companyName,'password':passwordA,'email':email});
-        		UserService.createUser(userModel);
+        		UserService.createUser(userModel).then(function(umRet){
+        			AuthService.updateUserModel(umRet);
+            		$location.path('/Company_AccountView');	 	
+        		});
         	} 
         }
     }

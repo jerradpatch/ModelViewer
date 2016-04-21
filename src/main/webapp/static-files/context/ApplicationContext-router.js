@@ -79,30 +79,36 @@
     			if(config.method == 'POST'){
     				if(config.url.indexOf("login") < 0 && config.url.indexOf("createUser") < 0){
     					var postVal = config.data;
-    					if(AuthService.user){
-    						config.data =  {"auth": {"userModel": AuthService.userModel }, "data":postVal };
+    					var userModel = AuthService.readUserModel();
+    					var memeberModel = AuthService.readMemberModel();
+    					if(userModel){
+    						config.data =  {"auth": {"userModel": userModel }, "data":postVal };
     					} else {
-    						config.data =  {"auth": {"memberModel": AuthService.memberModel }, "data":postVal };    						
+    						config.data =  {"auth": {"memberModel": userModel }, "data":postVal };    						
     					}
     				}
     			}
     			return config;
 		    },
 		    'response': function(response) {
+		    	var deferred = $q.defer();
 		    	if(response.config.method == 'POST'){
-			    	if(response.data){
+			    	if(response.data && response.data != null){
 						var retStatus = response.data;			
 			    		if(retStatus.status_boolean){
-			    			return retStatus.message_string;
+			    			if(retStatus.message_string != null){
+			    				deferred.resolve(retStatus.message_string);
+			    			}
 			    		} else {
 			    			var errorModel = ErrorModel.getNewModel(false,retStatus.message_string);
 					  		ErrorModel.pushModel(errorModel); 
-					  		return $q.reject(false); //error model does not set the message on the screen????000227
 			    		}
 					}
-			    	return $q.reject(false);
+			    	deferred.reject();
+		    	} else {
+		    		deferred.resolve(response);
 		    	}
-		    	return response;
+		    	return deferred.promise;
 		    }
     	};
     };
