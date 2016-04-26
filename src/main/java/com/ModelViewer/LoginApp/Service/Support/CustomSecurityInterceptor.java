@@ -75,9 +75,11 @@ public class CustomSecurityInterceptor extends HandlerInterceptorAdapter {
 					logger.debug("password readUserModel "+readUserModel.getPassword());
 					if(userModel.getPassword().equals(readUserModel.getPassword())){
 						JsonNode inputData = inputNode.get("data");
+						logger.debug("get Data");
 						Object obj = nodeToObject(inputData);
+						logger.debug("setting attribute");
 						request.setAttribute("obj", obj);
-						logger.debug(mapper.writeValueAsString(obj));
+						logger.debug("returned true");
 						return true;
 					}	
 				}

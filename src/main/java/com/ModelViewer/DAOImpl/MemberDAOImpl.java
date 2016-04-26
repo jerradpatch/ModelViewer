@@ -19,8 +19,9 @@ public class MemberDAOImpl implements MemberDAO{
     }
 
 	
-	public void createMember(MemberModel memberModel){
+	public MemberModel createMember(MemberModel memberModel){
 		this.sessionFactory.getCurrentSession().persist(memberModel);
+		return memberModel;
 	}
 	public MemberModel readMember(MemberModel memberModel) throws Exception {
 		return this.sessionFactory.getCurrentSession().get(MemberModel.class,memberModel.getUuid());

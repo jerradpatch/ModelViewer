@@ -37,7 +37,7 @@
         vm.members = UserService.readMemberList(currentUser);
         vm.error = null;
        
-//        vm.MemberDialogAccept = MemberDialogAccept;
+        vm.MemberDialogAccept = MemberDialogAccept;
 //        vm.GetMemberData = GetMemberData;
         
 //        vm.GetAListOfMembers = GetAListOfMembers;
@@ -63,9 +63,10 @@
         }       
         
         ////////////dialog functions//////////////
-//        function MemberDialogAccept() {
-//        	CreateUpdateAMember(vm.memberNameToCreate,vm.memberPasswordToCreate);
-//        }
+        function MemberDialogAccept(memberName, password) {
+        	var memberModel = MemberService.newMemberModel({"memberName":memberName, "password":password})
+        	MemberService.createMember(memberModel);
+        }
 //        function GetMemberData(memberModel) {
 //        	updateMember
 //        	var pass = AuthService.GetPassword();

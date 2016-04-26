@@ -3,7 +3,9 @@ package com.ModelViewer.LoginApp.Service;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -18,6 +20,7 @@ import com.ModelViewer.DAO.MemberDAO;
 import com.ModelViewer.DAO.UserDAO;
 import com.ModelViewer.Model.MemberModel;
 import com.ModelViewer.Model.UserModel;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Controller
@@ -27,6 +30,9 @@ import com.ModelViewer.Model.UserModel;
 @Transactional(readOnly = false, rollbackFor=Exception.class, propagation = Propagation.REQUIRED)
 public class MemberService {
 
+	private ObjectMapper mapper = new ObjectMapper();
+	private static final Logger logger = Logger.getLogger(MemberService.class);
+	
 	@Inject
 	@Qualifier("MemberDAO")
 	MemberDAO memberDAO;
@@ -55,35 +61,39 @@ public class MemberService {
 	}
 	
 	@RequestMapping(value = "/createMember", method = RequestMethod.POST)
-	public void CreateAMember(@RequestBody(required = true) Object obj) throws Exception{
+	public Object CreateAMember(HttpServletRequest request) throws Exception{
+		logger.debug("CreateAMember");
+		Object obj = request.getAttribute("obj");
 		MemberModel memberModel = (MemberModel) obj;
-		memberDAO.createMember(memberModel);
+		logger.debug("CreateAMember Model "+mapper.writeValueAsString(memberModel));
+		
+		MemberModel memberModelRet = memberDAO.createMember(memberModel);
+		return memberModelRet;
 	}	
 	@RequestMapping(value = "/readMemberList", method = RequestMethod.POST)
-	public Object readListOfMember(@RequestBody(required = true) Object obj) throws Exception {
+	public Object readListOfMember(HttpServletRequest request) throws Exception {
+		Object obj = request.getAttribute("obj");
 		MemberModel memberModel = (MemberModel) obj;
 		Set<MemberModel> members = memberDAO.readMemberList(memberModel);
 		return members;
 	}
 
 	@RequestMapping(value = "/readMember", method = RequestMethod.POST)
-	public Object readMember(@RequestBody(required = true) Object obj) throws Exception {	
+	public Object readMember(HttpServletRequest request) throws Exception {	
+		Object obj = request.getAttribute("obj");
 		MemberModel memberModel = (MemberModel) obj;
 		MemberModel memberRet = memberDAO.readMember(memberModel);
 		return memberRet;
 	}
-//	@RequestMapping(value = "/readUserMembers", method = RequestMethod.POST)
-//	public Object readUserMembers(@RequestBody(required = true) Object obj) throws Exception {
-//		UserModel userModel = (UserModel) obj;
-//		return userDAO.readUser(userModel).getMemberModels();
-//	}
 	@RequestMapping(value = "/updateMember", method = RequestMethod.POST)
-	public void UpdateAMember(@RequestBody(required = true) Object obj) throws Exception{
+	public void UpdateAMember(HttpServletRequest request) throws Exception{
+		Object obj = request.getAttribute("obj");
 		MemberModel memberModel = (MemberModel) obj;
 		memberDAO.updateMember(memberModel);
 	}	
 	@RequestMapping(value = "/deleteAMember", method = RequestMethod.GET)
-	public void DeleteAMember(@RequestBody(required = true) Object obj) throws Exception {	
+	public void DeleteAMember(HttpServletRequest request) throws Exception {
+		Object obj = request.getAttribute("obj");
 		MemberModel memberModel = (MemberModel) obj;
 		memberDAO.deleteMember(memberModel);//TODO see if relational mapping deletes all member in other table
 	}

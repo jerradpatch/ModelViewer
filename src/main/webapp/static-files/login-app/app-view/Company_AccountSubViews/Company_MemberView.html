@@ -66,17 +66,17 @@
 			<H4>Create/Update Member</H4>
 		</div>
 		<div class="panel-body">
-			<form name="newMemberForm" ng-submit="vm.MemberDialogAccept(currentMemberName, currentMememberPassword);vm.createMemberDialog=false;" role="form">
+			<form name="newMemberForm" ng-submit="vm.MemberDialogAccept(memberNameToCreate, memberPasswordToCreate);vm.createMemberDialog=false;" role="form">
 				<div class="form-group"  style="margin-bottom: 5px;" 
 					ng-class="{ 'has-error': newMemberForm.memberName.$dirty && (newMemberForm.memberName.$error.required || newMemberForm.memberName.$error.pattern || newMemberForm.memberName.$error.maxlength || newMemberForm.memberName.$error.minlength )}">
-					<input type="text" name="memberName" style="margin-bottom:5px" class="form-control" placeholder="Name" ng-model="vm.memberNameToCreate"
+					<input type="text" name="memberName" style="margin-bottom:5px" class="form-control" placeholder="Name" ng-model="memberNameToCreate"
 					ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.MEMBER.MAXIMUM_LENGTH}}"
 					ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.MEMBER.MINIMUM_LENGTH}}" 
 					ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.MEMBER.VALID_PATTERN}}" required />
 				</div>
 				<div class="form-group" style="margin-bottom: 5px;" 
 					ng-class="{ 'has-error': newMemberForm.memberPassword.$dirty && (newMemberForm.memberPassword.$error.required || newMemberForm.memberPassword.$error.pattern || newMemberForm.memberPassword.$error.maxlength || newMemberForm.memberPassword.$error.minlength )}">
-					<input type="text" name="memberPassword" style="margin-bottom:5px" class="form-control" placeholder="Password" ng-model="vm.memberPasswordToCreate"
+					<input type="text" name="memberPassword" style="margin-bottom:5px" class="form-control" placeholder="Password" ng-model="memberPasswordToCreate"
 						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.PASSWORD.MAXIMUM_LENGTH}}"
 						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.PASSWORD.MINIMUM_LENGTH}}"
 						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.PASSWORD.VALID_PATTERN}}" required />

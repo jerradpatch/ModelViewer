@@ -99,7 +99,7 @@
         	return {
         		"userName": args.userName,
         		"password": args.password,
-        		"email": args.email,      		
+        		"email": args.email      		
         	};
         }       
         function createUpdateUserModel(newUserModel){

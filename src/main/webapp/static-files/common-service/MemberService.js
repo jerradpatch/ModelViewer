@@ -21,7 +21,7 @@
         service.readMember = readMember;
     	service.updateMember = updateMember;
     	service.deleteAMember = deleteAMember;
-        
+    	service.newMemberModel = newMemberModel;
     	service.data = {};
     	
         return service;
@@ -39,13 +39,19 @@
 	    }
         function createMember(memberModel) {
         	return $http.post(
-        			baseUrlMember+"createMember",  
-        			{params:{"memberModel": memberModel}}).then(function(memberModelRet){
-        				if(memberModelRet.uuid){
+        			baseUrlMember+'createMember', 
+	    			{"memberModel": memberModel},
+        			{headers: {'Content-Type': 'application/json'}}).then(function(memberModelRet){
+        				var deferred = $q.defer();
+        	    		if(memberModelRet.uuid){
+        	    			memberModelRet["password"] = memberModel.password;
         					service.data[memberModelRet.uuid] = memberModelRet;
+        					deferred.resolve(memberModelRet);
         				} else {
-        					console.log("createMember no uuid");
+        					console.log("could not create member "+memberModel.memberName);
+        					deferred.reject();
         				}
+        	    		return deferred.promise;	
         			});     	
         }
         function readMemberList(memberModel) {
@@ -97,7 +103,13 @@
         }
         
         //////////////////////not service hitting functions
-        
+        function newMemberModel(args){
+        	return {
+        		"memberName": args.memberName,
+        		"password": args.password,
+        		"email": args.email     		
+        	};
+        }  
         function createUpdateModel(newModel){
         	if(newUserModel.uuid != null){
             	var updateModel = service.data[newModel.uuid];
@@ -110,6 +122,7 @@
             	}
         	}
         }
+        
         
         
         
