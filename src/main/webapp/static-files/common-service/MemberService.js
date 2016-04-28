@@ -5,8 +5,8 @@
         .module('app')
         .factory('MemberService', MemberService);
  
-    MemberService.$inject = ['$http', 'AuthService'];
-    function MemberService($http, AuthService) {
+    MemberService.$inject = ['$q','$http', 'AuthService'];
+    function MemberService($q, $http, AuthService) {
     	
     	var baseUrlMember = '/ModelViewer/MemberService/';
 //    	var baseUrlHybrid = '/ModelViewer/MemberAndProjectMemberHybridService/';
@@ -43,62 +43,54 @@
 	    			{"memberModel": memberModel},
         			{headers: {'Content-Type': 'application/json'}}).then(function(memberModelRet){
         				var deferred = $q.defer();
-        	    		if(memberModelRet.uuid){
-        	    			memberModelRet["password"] = memberModel.password;
-        					service.data[memberModelRet.uuid] = memberModelRet;
-        					deferred.resolve(memberModelRet);
-        				} else {
-        					console.log("could not create member "+memberModel.memberName);
-        					deferred.reject();
-        				}
+        				createUpdateModel(memberModel, memberModelRet);
+    					deferred.resolve(memberModelRet);
         	    		return deferred.promise;	
         			});     	
         }
         function readMemberList(memberModel) {
-        	return $http.post(
-        			baseUrlMember+"readMemberList",  
-        			{params:{"memberModel": memberModel}}).then(function(memberModelList){
+        	return $http(
+        				createMemberPostObj("readMemberList", memberModel)
+        			).then(function(memberModelList){
+        				var deferred = $q.defer();
         				memberModelList.forEach(function(memberModelRet){
-            				if(memberModelRet.uuid){
-            					if(service.data[memberModelRet.uuid]){
-            						angular.copy(memberModelRet, service.data[memberModelRet.uuid]);
-            					} else {
-            						service.data[memberModelRet.uuid] = memberModelRet;
-            					}
-            				} else {
-            					console.log("createMember no uuid");
-            				}
+            				createUpdateModel(memberModel, memberModelRet);
         				});
+        				deferred.resolve(memberModelList);
+        				return deferred.promise;	
         			});	
         }
         function readMember(memberModel) {
         	return $http.post(
         			baseUrlMember+"readMember",  
-        			{params:{"memberModel": memberModel}}).then(function(memberModelRet){
-    				    if(memberModelRet.uuid){
-        					if(service.data[memberModelRet.uuid]){
-        						angular.copy(memberModelRet, service.data[memberModelRet.uuid]);
-        					} else {
-        						service.data[memberModelRet.uuid] = memberModelRet;
-        					}
-        				} else {
-        					console.log("createMember no uuid");
-        				}
+        			{"memberModel": memberModel},
+        			{headers: {'Content-Type': 'application/json'}}).then(function(memberModelRet){
+        				var deferred = $q.defer();
+        				createUpdateModel(memberModel, memberModelRet);
+    					deferred.resolve(memberModelRet);
+        	    		return deferred.promise;	
         			});     	
         }
         function updateMember(memberModel) {
         	return $http.post(
         			baseUrlMember+"updateMember",  
-        			{params:{"memberModel": memberModel}}).then(function(){
-        				service.data[memberModel.uuid] = memberModel;
+        			{"memberModel": memberModel},
+        			{headers: {'Content-Type': 'application/json'}}).then(function(){
+        				var deferred = $q.defer();
+        				createUpdateModel(memberModel, memberModelRet);
+    					deferred.resolve(memberModelRet);
+        	    		return deferred.promise;	
         			});        	
         }
         function deleteAMember(memberModel) {
         	return $http.post(
         			baseUrlMember+"deleteAMember",  
-        			{params:{"memberModel": memberModel}}).then(function(){
-        				var index = service.data.indexOf(memberModel.uuid);
-        				service.data.splice(index,1);
+        			{"memberModel": memberModel},
+        			{headers: {'Content-Type': 'application/json'}}).then(function(){
+        				if(memberModel.uuid != null){
+        					var index = service.data.indexOf(memberModel.uuid);
+        					service.data.splice(index,1);
+        				}
         			});
         }
         
@@ -110,19 +102,31 @@
         		"email": args.email     		
         	};
         }  
-        function createUpdateModel(newModel){
-        	if(newUserModel.uuid != null){
+        function createUpdateModel(oldModel, newModel){
+        	if(newModel.uuid != null){
             	var updateModel = service.data[newModel.uuid];
             	if(updateModel != null){
 	            	for(var key in newModel){
 	            		updateModel[key] = newModel[key];
 	            	}
             	} else {
+            		if(oldModel != null && oldModel.password != null){
+            			newModel["password"] = oldModel.password;
+            		}
             		service.data[newModel.uuid] = newModel;
             	}
         	}
         }
         
+        function createMemberPostObj (endpointName, model) {
+        	return {
+        		  method: 'POST',
+        		  url: baseUrlMember+endpointName,	
+        		  data: {"memberModel": model},
+        		  headers: {'Content-Type': 'application/json'}
+        	}
+        	
+        }
         
         
         

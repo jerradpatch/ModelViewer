@@ -65,7 +65,9 @@
         ////////////dialog functions//////////////
         function MemberDialogAccept(memberName, password) {
         	var memberModel = MemberService.newMemberModel({"memberName":memberName, "password":password})
-        	MemberService.createMember(memberModel);
+        	MemberService.createMember(memberModel).then(function(retMemberModel){
+        		MemberService.readMemberList(retMemberModel);
+        	});
         }
 //        function GetMemberData(memberModel) {
 //        	updateMember

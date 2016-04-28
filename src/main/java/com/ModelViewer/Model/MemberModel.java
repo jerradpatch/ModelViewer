@@ -106,7 +106,7 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 	}
 
 	public void setFirstName(String firstName) throws ReturnedObject {
-		ValidateUtil.validateUserName(firstName);
+		//ValidateUtil.validateUserName(firstName);
 		this.firstName = firstName;
 	}
 
@@ -115,7 +115,7 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 	}
 
 	public void setLastName(String lastName) throws ReturnedObject {
-		ValidateUtil.validateUserName(lastName);
+		//ValidateUtil.validateUserName(lastName);
 		this.lastName = lastName;
 	}
 
@@ -124,7 +124,7 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 	}
 
 	public void setRole(String role) throws ReturnedObject {
-		ValidateUtil.validateFileName(role);
+		//ValidateUtil.validateFileName(role);
 		this.role = role;
 	}
 
@@ -133,7 +133,7 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 	}
 
 	public void setEmail(String email) throws ReturnedObject {
-		ValidateUtil.validateEmail(email);
+		//ValidateUtil.validateEmail(email);
 		this.email = email;
 	}
 

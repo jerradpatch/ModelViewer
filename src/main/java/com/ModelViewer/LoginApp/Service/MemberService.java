@@ -72,14 +72,18 @@ public class MemberService {
 	}	
 	@RequestMapping(value = "/readMemberList", method = RequestMethod.POST)
 	public Object readListOfMember(HttpServletRequest request) throws Exception {
+		logger.debug("readMemberList");
 		Object obj = request.getAttribute("obj");
 		MemberModel memberModel = (MemberModel) obj;
+		logger.debug("readMemberList Model "+mapper.writeValueAsString(memberModel));
+		
 		Set<MemberModel> members = memberDAO.readMemberList(memberModel);
 		return members;
 	}
 
 	@RequestMapping(value = "/readMember", method = RequestMethod.POST)
 	public Object readMember(HttpServletRequest request) throws Exception {	
+		logger.debug("readMember");
 		Object obj = request.getAttribute("obj");
 		MemberModel memberModel = (MemberModel) obj;
 		MemberModel memberRet = memberDAO.readMember(memberModel);
