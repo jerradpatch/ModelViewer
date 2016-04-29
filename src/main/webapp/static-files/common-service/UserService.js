@@ -23,71 +23,57 @@
         return service;
  
 	    function login(userModel) {
-	    	return $http.post(baseUrl+'login', JSON.stringify(userModel)).then(function(userModelRet){
+	    	return $http(
+	    			createUserPostObj('login',userModel)
+	    	).then(function(userModelRet){
 	    		var deferred = $q.defer();
-	    		if(userModelRet.uuid){
-	    			userModelRet["password"] = userModel.password;
-					service.data[userModelRet.uuid] = userModelRet;
-					deferred.resolve(userModelRet);
-				} else {
-					console.log("login user no uuid");
-					deferred.reject();
-				}
+				createUpdateModel(userModel, userModelRet);
+				deferred.resolve(userModelRet);
 	    		return deferred.promise;
 			});
 	    }
 	    function createUser(userModel) {
-	    	return $http.post(
-	    			baseUrl+'createUser', 
-	    			userModel,
-	    			{headers: {'Content-Type': 'application/json'}}).then(function(userModelRet){
+	    	return $http(
+	    			{
+	          		  method: 'POST',
+	          		  url: baseUrl+'createUser',	
+	          		  data: userModel,
+	          		  headers: {'Content-Type': 'application/json'}
+	    			}
+	    	).then(function(userModelRet){
 				var deferred = $q.defer();
-	    		if(userModelRet.uuid){
-	    			userModelRet["password"] = userModel.password;
-					service.data[userModelRet.uuid] = userModelRet;
-					deferred.resolve(userModelRet);
-				} else {
-					console.log("login user no uuid");
-					deferred.reject();
-				}
+				createUpdateModel(userModel, userModelRet);
+				deferred.resolve(userModelRet);
 	    		return deferred.promise;				
 			});
 	    }
 	    function readUser(userModel) {
-	    	return $http.post(baseUrl+'readUser', 
-	    			{params:{"userModel": userModel}}).then(function(userModelRet){
+	    	return $http(
+	    			createUserPostObj('readUser',userModel)
+	    	).then(function(userModelRet){
 				var deferred = $q.defer();
-	    		if(userModelRet.uuid){
-	    			createUpdateUserModel(userModelRet);
-					deferred.resolve(userModelRet);
-				} else {
-					console.log("login user no uuid");
-					deferred.reject();
-				}
-	    		return deferred.promise;	
+				createUpdateModel(userModel, userModelRet);
+				deferred.resolve(userModelRet);
+	    		return deferred.promise;
 			});  
 	    }
 	    function updateUser(userModel) {
-	    	return $http.post(baseUrl+'updateUser', 
-	    			{params:{"userModel": userModel}}).then(function(userModelRet){
+	    	return $http(
+	    			createUserPostObj('updateUser',userModel)
+			).then(function(userModelRet){
 				var deferred = $q.defer();
-	    		if(userModelRet.uuid){
-	    			createUpdateUserModel(userModelRet);
-					deferred.resolve(userModelRet);
-				} else {
-					console.log("login user no uuid");
-					deferred.reject();
-				}
+				createUpdateModel(userModel, userModelRet);
+				deferred.resolve(userModelRet);
 	    		return deferred.promise;
 			});
 	    }
         function readMemberList(userModel) { //read member list from the user service
-        	return $http.post(
-        			baseUrl+"readMemberList",  
-        			{"userModel": userModel}).then(function(memberModelList){
+        	return $http(
+	    			createUserPostObj('readMemberList',userModel)
+			).then(function(memberModelList){
 				var deferred = $q.defer();
 				memberModelList.forEach(function(model){
-					MemberService.createUpdateModel(model);
+					MemberService.createUpdateModel(null,model);
 				});
 				deferred.resolve(memberModelList);
 	    		return deferred.promise;	 
@@ -102,17 +88,29 @@
         		"email": args.email      		
         	};
         }       
-        function createUpdateUserModel(newUserModel){
-        	if(newUserModel.uuid != null){
-            	var updateUserModel = service.data[newUserModel.uuid];
-            	if(updateUserModel != null){
-	            	for(var key in newUserModel){
-	            		updateUserModel[key] = newUserModel[key];
+        function createUpdateModel(oldModel, newModel){
+        	if(newModel.uuid != null){
+            	var updateModel = service.data[newModel.uuid];
+            	if(updateModel != null){
+	            	for(var key in newModel){
+	            		updateModel[key] = newModel[key];
 	            	}
             	} else {
-            		service.data[newUserModel.uuid] = newUserModel;
+            		if(oldModel != null && oldModel.password != null){
+            			newModel["password"] = oldModel.password;
+            		}
+            		service.data[newModel.uuid] = newModel;
             	}
         	}
+        }
+        function createUserPostObj (endpointName, model) {
+        	return {
+        		  method: 'POST',
+        		  url: baseUrl+endpointName,	
+        		  data: {"userModel": model},
+        		  headers: {'Content-Type': 'application/json'}
+        	}
+        	
         }
 
 //        function ComparePasswordsForUser(userName, password) {

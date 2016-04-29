@@ -54,17 +54,18 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 	@ManyToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<ProjectMemberModel> projectMemberModels;
 	
-	@JoinColumn (name = "userModel_uuid_fk", referencedColumnName="uuid")
-	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinColumn (nullable=false, name = "userModel_uuid_fk", referencedColumnName="uuid")
+	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.DETACH)
 	private UserModel userModel;
 	
 
-	public MemberModel(String memberName, String password, String firstName, String lastName){
+	public MemberModel(String memberName, String password, String firstName, String lastName, UserModel userModel){
 		this.uuid = UUID.randomUUID().toString();
 		this.memberName = memberName;
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.setUserModel(userModel);
 	}
 	
 	public MemberModel() {

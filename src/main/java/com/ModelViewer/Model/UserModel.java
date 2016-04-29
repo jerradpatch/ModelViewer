@@ -132,11 +132,13 @@ public class UserModel extends JacksonDepthLimit implements Serializable{
 	}
 	public Set<MemberModel> getMemberModels() {
 		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+			logger.debug("getMemberModels null");
 			return null;
 		} else {
 			for(MemberModel fmm : this.memberModels){
 				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
 			}
+			logger.debug("getMemberModels "+memberModels);
 			return Collections.unmodifiableSet(memberModels);
 		}
 	}

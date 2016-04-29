@@ -99,7 +99,8 @@
         	return {
         		"memberName": args.memberName,
         		"password": args.password,
-        		"email": args.email     		
+        		"email": args.email,
+        		"userModel": args.userModel 
         	};
         }  
         function createUpdateModel(oldModel, newModel){
@@ -124,7 +125,7 @@
         		  url: baseUrlMember+endpointName,	
         		  data: {"memberModel": model},
         		  headers: {'Content-Type': 'application/json'}
-        	}
+        	};
         	
         }
         

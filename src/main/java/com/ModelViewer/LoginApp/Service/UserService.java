@@ -77,7 +77,7 @@ public class UserService {
 		Long currentTime = System.currentTimeMillis();
 		userModel.setDateCreated(new Timestamp(currentTime));
 		userModel.setDateLastLoggedIn(new Timestamp(currentTime));
-		MemberModel memberModel = new MemberModel("global", "global", "global", "global");	
+		MemberModel memberModel = new MemberModel("global", "global", "global", "global",userModel);	
 		userModel.addMemberModel(memberModel);
 		
 		userDAO.createUser(userModel);
@@ -96,7 +96,9 @@ public class UserService {
 		Object obj = request.getAttribute("obj");
 		UserModel userModel = (UserModel) obj;
 		logger.debug(mapper.writeValueAsString(userModel));
+		
 		Set<MemberModel> members = userDAO.readMemberList(userModel);
+		logger.debug(mapper.writeValueAsString(members));
 		return members;
 	}
 	
