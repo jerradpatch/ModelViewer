@@ -6,7 +6,7 @@
 	<appender name="console" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-5p: [%-10c : %-10M] - %m%n" />
+			<param name="ConversionPattern" value="%L %-5p: [%-10c : %-10M] - %m%n" />
 		</layout>
 	</appender>
 	
@@ -41,7 +41,7 @@
 	</logger>
 	
 	<logger name="logger.org.hibernate">
-		<level value="info" />
+		<level value="debug" />
 	</logger>
 
 	<!-- Root Logger -->

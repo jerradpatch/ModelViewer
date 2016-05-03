@@ -38,10 +38,10 @@
 		<!-- repeat for all members -->	 	
 		<div class = "btn-group-vertical" style="width:100%">						
 			
-			<div ng-repeat="member in vm.members" class="animate-repeat" >
+			<div ng-repeat="member in vm.memberService.service.data" class="animate-repeat" >
 				<div class="input-group" style="padding:2px">
 					<input type="text" class="form-control" style="background-color:transparent;cursor: default;" 
-						id="exampleInputAmount" placeholder="{{member}}" 
+						id="exampleInputAmount" placeholder="{{member.memberName}}" 
 						ng-bind="member" readonly>
 					<span class="input-group-btn">
 					    <button type = "button" 

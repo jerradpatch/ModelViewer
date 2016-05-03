@@ -14,7 +14,6 @@
         var service = {};
  
     	service.baseUrlMember = baseUrlMember;
-//    	service.baseUrlHybrid = baseUrlHybrid;
     	
         service.createMember = createMember;
         service.readMemberList = readMemberList;
@@ -22,6 +21,7 @@
     	service.updateMember = updateMember;
     	service.deleteAMember = deleteAMember;
     	service.newMemberModel = newMemberModel;
+    	service.createUpdateModel = createUpdateModel;
     	service.data = {};
     	
         return service;

@@ -31,7 +31,7 @@ public class UserDAOImpl implements UserDAO{
 		logger.debug(this.sessionFactory.getCurrentSession());
 		logger.debug("userModel "+userModel.getUuid());
 		UserModel userReturned = this.sessionFactory.getCurrentSession().get(UserModel.class,userModel.getUuid());
-		logger.debug("userReturned "+userReturned);
+		logger.debug("userReturned "+mapper.writeValueAsString(userReturned));
 		return userReturned;
 	}
 

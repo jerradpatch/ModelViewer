@@ -13,17 +13,30 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
+import org.apache.log4j.Logger;
 
 import com.ModelViewer.DAO.Validation.ValidateUtil;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
 import com.ModelViewer.Model.Support.JacksonDepthLimit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Entity
 public class MemberModel extends JacksonDepthLimit implements Serializable{
 	
 	private static final long serialVersionUID = 6676621279977420137L;
+	
+	@Transient
+	@JsonIgnore
+	private static final Logger logger = Logger.getLogger(MemberModel.class);
+	@Transient
+	@JsonIgnore
+	private ObjectMapper mapper = new ObjectMapper();
 	
 	@Id
 //	@GeneratedValue(generator="system-uuid") //this is so I can keep the transactional manager to roll back any 
@@ -50,10 +63,11 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 	@Column(nullable = true, length=150)
 	private String email;	
 	
-	
+	@JsonIgnoreProperties({"members"})
 	@ManyToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<ProjectMemberModel> projectMemberModels;
 	
+	@JsonIgnoreProperties({"memberModels"})
 	@JoinColumn (nullable=false, name = "userModel_uuid_fk", referencedColumnName="uuid")
 	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.DETACH)
 	private UserModel userModel;
@@ -65,13 +79,18 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.setUserModel(userModel);
+		this.userModel = userModel;
+		this.projectMemberModels = new HashSet<ProjectMemberModel>();
+
+		logger.debug("member created" + uuid +memberName+password+firstName+lastName+userModel);
 	}
 	
 	public MemberModel() {
 		super();
 		this.uuid = UUID.randomUUID().toString();
-		this.projectMemberModels = new HashSet<ProjectMemberModel>();
+		//this.projectMemberModels = new HashSet<ProjectMemberModel>();
+		
+		logger.debug("member created " + uuid);
 	}	
 	
 
@@ -81,6 +100,7 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+		logger.debug("uuid set: "+ uuid);
 	}
 
 	public String getmemberName() {
@@ -139,31 +159,38 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 	}
 
 	public Set<ProjectMemberModel> getProjectMemberModel() {
-		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
-			return null;
-		} else {
-			for(ProjectMemberModel fmm : this.projectMemberModels){
-				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
-			}
+//		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+//			return null;
+//		} else {
+//			for(ProjectMemberModel fmm : this.projectMemberModels){
+//				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+//			}
 			return projectMemberModels;
-		}
+//		}
 	}
 
 	public void setProjectMemberModel(Set<ProjectMemberModel> projectMemberModel) throws ReturnedObject {
 		this.projectMemberModels = projectMemberModel;
+		logger.debug("setProjectMemberModel");
 	}
 
 	public UserModel getUserModel() {
-		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
-			return null;
-		} else {
-			userModel.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+//		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+//			return null;
+//		} else {
+//			userModel.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
 			return userModel;
-		}
-	}
+//		}
+	}	
 
-	public void setUserModel(UserModel userModel) {
+	public void setUserModel(UserModel userModel){
 		this.userModel = userModel;
+		try {
+			logger.debug("setUserModel "+mapper.writeValueAsString(userModel));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	

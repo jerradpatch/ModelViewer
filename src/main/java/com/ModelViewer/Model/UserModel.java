@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 
@@ -21,11 +22,11 @@ import javax.persistence.CascadeType;
 
 import com.ModelViewer.DAO.Validation.ValidateUtil;
 import com.ModelViewer.LoginApp.Service.ReturnedObject;
-import com.ModelViewer.LoginApp.Service.UserService;
 import com.ModelViewer.Model.Support.JacksonDepthLimit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -39,8 +40,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Entity
 public class UserModel extends JacksonDepthLimit implements Serializable{
 
+	@Transient
 	@JsonIgnore
 	private static final Logger logger = Logger.getLogger(UserModel.class);
+	@Transient
+	@JsonIgnore
+	private ObjectMapper mapper = new ObjectMapper();
 	
 	
 	private static final long serialVersionUID = 8966262352528139382L;
@@ -68,7 +73,7 @@ public class UserModel extends JacksonDepthLimit implements Serializable{
 	private Timestamp dateLastLoggedIn;
 
 	@JsonIgnoreProperties({"userModel"})
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="userModel", cascade = CascadeType.ALL)
+	@OneToMany(targetEntity=MemberModel.class, fetch=FetchType.EAGER, mappedBy="userModel", cascade = CascadeType.ALL)
     private Set<MemberModel> memberModels;
 
 	@JsonIgnoreProperties({"userModel"})
@@ -84,7 +89,7 @@ public class UserModel extends JacksonDepthLimit implements Serializable{
 		super();
 		logger.debug("created uuid");
 		this.uuid = UUID.randomUUID().toString();
-		this.fileMetaModels = new HashSet<FileMetaModel>();
+		this.fileMetaModels = new HashSet<FileMetaModel>(); //members are being pulled from db but not set in the model... ?
 		this.memberModels = new HashSet<MemberModel>();
 		this.projectMemberModels = new HashSet<ProjectMemberModel>();
 	}
@@ -103,13 +108,16 @@ public class UserModel extends JacksonDepthLimit implements Serializable{
 	public void setUserName(String userName) throws ReturnedObject {
 		ValidateUtil.validateUserName(userName);
 		this.userName = userName;
+		logger.debug("setUserName "+ userName);
 	}
 	public String getPassword() {
 		return password;
+		
 	}
 	public void setPassword(String password) throws ReturnedObject {
 		ValidateUtil.validatePassword(password);
 		this.password = password;
+		logger.debug("setPassword "+ password);
 	}
 	public String getEmail() {
 		return email;
@@ -117,6 +125,7 @@ public class UserModel extends JacksonDepthLimit implements Serializable{
 	public void setEmail(String email) throws ReturnedObject {
 		ValidateUtil.validateEmail(email);
 		this.email = email;
+		logger.debug("setEmail "+ email);
 	}
 	public Timestamp getDateCreated() {
 		return dateCreated;
@@ -130,34 +139,43 @@ public class UserModel extends JacksonDepthLimit implements Serializable{
 	public void setDateLastLoggedIn(Timestamp dateLastLoggedIn) {
 		this.dateLastLoggedIn = dateLastLoggedIn;
 	}
+	
 	public Set<MemberModel> getMemberModels() {
-		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
-			logger.debug("getMemberModels null");
-			return null;
-		} else {
-			for(MemberModel fmm : this.memberModels){
-				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
-			}
-			logger.debug("getMemberModels "+memberModels);
-			return Collections.unmodifiableSet(memberModels);
-		}
-	}
+//		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+//			logger.debug("getMemberModels null, CurrentDepthLimit="+this.getCurrentDepthLimit()+"max depth="+this.getMaxDepthLimit());
+//			return new HashSet<MemberModel>();
+//		} else {
+//			logger.debug("getMemberModels "+memberModels);
+//			for(MemberModel fmm : this.memberModels){
+//				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+//			}
+			
+			return memberModels;
+//		}
+	}	
 	public void addMemberModel(MemberModel memberModel){
 		this.memberModels.add(memberModel);
 		memberModel.setUserModel(this);
 	}
 	public void setMemberModels(Set<MemberModel> members) {
+		try {
+			logger.debug("members being written " + mapper.writeValueAsString(members));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.memberModels = members;
 	}
+	
 	public Set<ProjectMemberModel> getProjectMemberModels() {
-		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
-			return null;
-		} else {
-			for(ProjectMemberModel fmm : this.projectMemberModels){
-				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
-			}
-			return Collections.unmodifiableSet(projectMemberModels);
-		}
+//		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+//			return new HashSet<ProjectMemberModel>();
+//		} else {
+//			for(ProjectMemberModel fmm : this.projectMemberModels){
+//				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+//			}
+			return projectMemberModels;
+//		}
 	}
 	public void addProjectMemberModel(ProjectMemberModel projectMemberModel){
 		this.projectMemberModels.add(projectMemberModel);
@@ -166,15 +184,16 @@ public class UserModel extends JacksonDepthLimit implements Serializable{
 	public void setProjectMemberModel(Set<ProjectMemberModel> projectMemberModels) {
 		this.projectMemberModels = projectMemberModels;
 	}	
+	
 	public Set<FileMetaModel> getFileMetaModels() {
-		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
-			return null;
-		} else {
-			for(FileMetaModel fmm : this.fileMetaModels){
-				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
-			}
-			return Collections.unmodifiableSet(fileMetaModels);
-		}
+//		if(this.getMaxDepthLimit() <= this.getCurrentDepthLimit()){
+//			return new HashSet<FileMetaModel>();
+//		} else {
+//			for(FileMetaModel fmm : this.fileMetaModels){
+//				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
+//			}
+			return fileMetaModels;
+//		}
 	}
 	public void setFileMetaModels(Set<FileMetaModel> fileMetaModels) {
 		this.fileMetaModels = fileMetaModels;

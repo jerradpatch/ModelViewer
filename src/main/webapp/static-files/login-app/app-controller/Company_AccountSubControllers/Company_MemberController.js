@@ -26,6 +26,7 @@
     function Company_MemberController(AuthService, $rootScope, $scope, MemberService, UserService) {
         var vm = this;       
 
+        vm.memberService = MemberService;
         vm.createMemberDialog= false;
         
 //        vm.memberNameToCreate = "";
@@ -68,7 +69,7 @@
         	var memberModel = MemberService.newMemberModel({
         		"memberName":memberName, 
         		"password":password,
-        		"userModel":userModel})
+        		"userModel":userModel});
         	MemberService.createMember(memberModel).then(function(retMemberModel){
         		UserService.readMemberList(AuthService.readUserModel());
         	});

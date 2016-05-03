@@ -71,7 +71,7 @@ public class LoggingAndReturnInterceptor {
 			whole.put("data",ret);
 			
 			String value = mapper.writeValueAsString(whole);
-			//logger.error(value, e);
+			logger.error(value, e);
 			throw new Exception(value);
 			//return whole;
 		}
