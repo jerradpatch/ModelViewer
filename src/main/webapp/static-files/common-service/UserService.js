@@ -24,7 +24,12 @@
  
 	    function login(userModel) {
 	    	return $http(
-	    			createUserPostObj('login',userModel)
+	    			{
+	          		  method: 'POST',
+	          		  url: baseUrl+'login',	
+	          		  data: userModel,
+	          		  headers: {'Content-Type': 'application/json'}
+	    			}
 	    	).then(function(userModelRet){
 	    		var deferred = $q.defer();
 				createUpdateModel(userModel, userModelRet);

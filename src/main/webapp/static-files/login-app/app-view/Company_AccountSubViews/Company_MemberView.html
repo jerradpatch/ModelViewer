@@ -38,7 +38,7 @@
 		<!-- repeat for all members -->	 	
 		<div class = "btn-group-vertical" style="width:100%">						
 			
-			<div ng-repeat="member in vm.memberService.service.data" class="animate-repeat" >
+			<div ng-repeat="member in vm.memberService.data" class="animate-repeat" >
 				<div class="input-group" style="padding:2px">
 					<input type="text" class="form-control" style="background-color:transparent;cursor: default;" 
 						id="exampleInputAmount" placeholder="{{member.memberName}}" 
@@ -48,7 +48,7 @@
 					    	class = "glyphicon glyphicon-edit btn btn-default"		
 					    	uib-tooltip="Edit memeber"			   	
 						   	ng-click="vm.createMemberDialog = true;
-									  vm.GetMemberData(member);">
+									  vm.currentMemberSelected = member;">
 					   	</button>
 					   	<button type = "button" 
 					   		class = "glyphicon glyphicon-remove btn btn-default memberDeleteButtons" 	
@@ -69,14 +69,14 @@
 			<form name="newMemberForm" ng-submit="vm.MemberDialogAccept(memberNameToCreate, memberPasswordToCreate);vm.createMemberDialog=false;" role="form">
 				<div class="form-group"  style="margin-bottom: 5px;" 
 					ng-class="{ 'has-error': newMemberForm.memberName.$dirty && (newMemberForm.memberName.$error.required || newMemberForm.memberName.$error.pattern || newMemberForm.memberName.$error.maxlength || newMemberForm.memberName.$error.minlength )}">
-					<input type="text" name="memberName" style="margin-bottom:5px" class="form-control" placeholder="Name" ng-model="memberNameToCreate"
+					<input type="text" name="memberName" style="margin-bottom:5px" class="form-control" placeholder="Name" ng-model="vm.currentMemberSelected.memberName"
 					ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.MEMBER.MAXIMUM_LENGTH}}"
 					ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.MEMBER.MINIMUM_LENGTH}}" 
 					ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.MEMBER.VALID_PATTERN}}" required />
 				</div>
 				<div class="form-group" style="margin-bottom: 5px;" 
 					ng-class="{ 'has-error': newMemberForm.memberPassword.$dirty && (newMemberForm.memberPassword.$error.required || newMemberForm.memberPassword.$error.pattern || newMemberForm.memberPassword.$error.maxlength || newMemberForm.memberPassword.$error.minlength )}">
-					<input type="text" name="memberPassword" style="margin-bottom:5px" class="form-control" placeholder="Password" ng-model="memberPasswordToCreate"
+					<input type="text" name="memberPassword" style="margin-bottom:5px" class="form-control" placeholder="Password" ng-model="vm.currentMemberSelected.password"
 						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.PASSWORD.MAXIMUM_LENGTH}}"
 						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.PASSWORD.MINIMUM_LENGTH}}"
 						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.PASSWORD.VALID_PATTERN}}" required />

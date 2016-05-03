@@ -62,11 +62,11 @@ public class FileMetaModel extends JacksonDepthLimit implements Serializable {
 	private Timestamp dateLastDownloaded;
 	
 	@JoinColumn (name = "userModel_uuid_fk", referencedColumnName="uuid")
-	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	private UserModel userModel;
 
 	@JoinColumn (name = "projectMemberModel_uuid_fk", referencedColumnName="uuid")
-	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	private ProjectMemberModel projectMemberModel;
 	
 	@Transient

@@ -42,14 +42,14 @@ public class ProjectMemberModel extends JacksonDepthLimit implements Serializabl
 	private String story;	
 
 	@JoinColumn (name = "userModel_uuid_fk", referencedColumnName="uuid")
-	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	private UserModel userModel;
 	
-	@ManyToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany (cascade=CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<MemberModel> members;
 	
 	@JoinColumn(name="projectMemberModel_uuid_fk", referencedColumnName="uuid")
-	@OneToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany (cascade=CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<FileMetaModel> fileModels;	
 	
 	

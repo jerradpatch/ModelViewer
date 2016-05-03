@@ -47,7 +47,6 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
     @Column(nullable = false, length=50)
 	private String memberName;
 	
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(nullable = false, length=50)
 	private String password;
 	
@@ -64,12 +63,12 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 	private String email;	
 	
 	@JsonIgnoreProperties({"members"})
-	@ManyToMany (cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany (cascade=CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<ProjectMemberModel> projectMemberModels;
 	
 	@JsonIgnoreProperties({"memberModels"})
 	@JoinColumn (nullable=false, name = "userModel_uuid_fk", referencedColumnName="uuid")
-	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.DETACH)
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.DETACH)
 	private UserModel userModel;
 	
 
@@ -165,7 +164,7 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 //			for(ProjectMemberModel fmm : this.projectMemberModels){
 //				fmm.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
 //			}
-			return projectMemberModels;
+			return this.projectMemberModels;
 //		}
 	}
 
@@ -179,7 +178,7 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 //			return null;
 //		} else {
 //			userModel.setCurrentDepthLimit(this.getCurrentDepthLimit() + 1);
-			return userModel;
+			return this.userModel;
 //		}
 	}	
 

@@ -77,11 +77,11 @@ public class UserModel extends JacksonDepthLimit implements Serializable{
     private Set<MemberModel> memberModels;
 
 	@JsonIgnoreProperties({"userModel"})
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="userModel", cascade = CascadeType.ALL)
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="userModel", cascade = CascadeType.ALL)
 	private Set<ProjectMemberModel> projectMemberModels;
 	
 	@JsonIgnoreProperties({"userModel"})
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="userModel", cascade = CascadeType.ALL)
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="userModel", cascade = CascadeType.ALL)
     private Set<FileMetaModel> fileMetaModels;
 	
 	
