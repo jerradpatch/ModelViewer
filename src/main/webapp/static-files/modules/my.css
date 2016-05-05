@@ -17,9 +17,6 @@
 	line-height: inherit;
 }
  
-.panel-heading {
-	font-family: 'Montserrat', sans-serif;
-}
 p{
 	font-weight: 400;
     font-size: small;
@@ -32,6 +29,16 @@ p{
     font-size: small;
 }
 
+.panel {
+	margin-bottom: 0px;
+}
+.panel-heading {
+	font-family: 'Montserrat', sans-serif;
+}
+.panel-footer {
+    background-color: #fff;
+    text-align: right;
+}
 .panel-default>.panel-heading {
     background: linear-gradient(to bottom right, rgba(200, 223, 230, 0.74), white);
     border-color: rgba(221, 221, 221, 0.44);

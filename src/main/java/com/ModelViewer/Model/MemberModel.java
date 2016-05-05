@@ -62,6 +62,21 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 	@Column(nullable = true, length=150)
 	private String email;	
 	
+	@Column(nullable = true, length=50)
+	private String website;	
+	
+	@Column(nullable = true, length=50)
+	private String address;	
+	
+	@Column(nullable = true, length=10)
+	private String unit;	
+	
+	@Column(nullable = true, length=2)
+	private String state;	
+	
+	@Column(nullable = true, length=15)
+	private String zipcode;
+	
 	@JsonIgnoreProperties({"members"})
 	@ManyToMany (cascade=CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<ProjectMemberModel> projectMemberModels;
@@ -155,6 +170,38 @@ public class MemberModel extends JacksonDepthLimit implements Serializable{
 	public void setEmail(String email) throws ReturnedObject {
 		//ValidateUtil.validateEmail(email);
 		this.email = email;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getZipcode() {
+		return zipcode;
+	}
+
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
 	}
 
 	public Set<ProjectMemberModel> getProjectMemberModel() {

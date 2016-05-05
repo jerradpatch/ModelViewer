@@ -18,38 +18,27 @@
         	}
          })
         .controller('Company_MemberController', Company_MemberController)
+        .controller('ModalInstanceCtrl', ModalInstanceCtrl)
         .run(function ($rootScope, CONSTANTS_Company_MemberController) {
         	$rootScope.CONSTANTS_Company_MemberController = CONSTANTS_Company_MemberController;
         });
  
-    Company_MemberController.$inject = ['AuthService','$rootScope','$scope','MemberService','UserService'];
-    function Company_MemberController(AuthService, $rootScope, $scope, MemberService, UserService) {
+    Company_MemberController.$inject = ['AuthService','$rootScope','$scope','MemberService','UserService','$uibModal','$log'];
+    function Company_MemberController(AuthService, $rootScope, $scope, MemberService, UserService, $uibModal, $log) {
         var vm = this;       
 
         vm.memberService = MemberService;
         vm.createMemberDialog= false;
-        
-//        vm.memberNameToCreate = "";
-//        vm.memberPasswordToCreate = "";	 
-//        vm.memberNameToCreateOld = "";
-//        vm.memberPasswordToCreateOld = "";      
-        
+           
         var currentUser = AuthService.readUserModel();
         vm.members = UserService.readMemberList(currentUser);
         vm.error = null;
        
-        vm.MemberDialogAccept = MemberDialogAccept;
-//        vm.GetMemberData = GetMemberData;
-        
-//        vm.GetAListOfMembers = GetAListOfMembers;
-//    	vm.DeleteMember = DeleteMember;
-//    	vm.CreateUpdateAMember = CreateUpdateAMember;
-//    	vm.RefreshElements = RefreshElements;
+       // vm.MemberDialogAccept = MemberDialogAccept;
 
     	//messages//////////////////////////////
         //recieving message
         $scope.$on('refreshElementsEvent_child', function() { 
-        	//alert("reieved on child");
         	MemberService.readMemberList();       
         });
         
@@ -74,82 +63,64 @@
         		UserService.readMemberList(AuthService.readUserModel());
         	});
         }
-//        function GetMemberData(memberModel) {
-//        	updateMember
-//        	var pass = AuthService.GetPassword();
-//        	var userName = AuthService.GetUser();
-//			MemberService.GetMemberData(userName,member,pass) 
-//				.then(function (response) {
-//	                if (response.success) {
-//	                    var message = response.message;
-//	                    vm.memberNameToCreateOld = message.member;
-//	                    vm.memberPasswordToCreateOld = message.password;
-//	                    vm.memberNameToCreate = message.member;
-//	                    vm.memberPasswordToCreate = message.password;
-//	                } else {
-//	                	onError(response.message);
-//	                	vm.memberNameToCreate = "";
-//	                    vm.memberPasswordToCreate = "";
-//	                	vm.memberNameToCreateOld = "";
-//	                    vm.memberPasswordToCreateOld = "";
-//	                	vm.error = response.message;
-//	                }
-//	            });	       	
-//        }
-//        
-//        function GetAListOfMembers() {   	
-//        	var pass = AuthService.GetPassword();
-//        	var userName = AuthService.GetUser();
-//			MemberService.GetAListOfMembers(userName,pass) 
-//				.then(function (response) {
-//	                if (response.success) {
-//	                    vm.members = response.message;
-//	                    vm.error = null;
-//	                } else {
-//	                	onError(response.message);
-//	                	vm.members = null;
-//	                	vm.error = response.message;
-//	                }
-//	            });	
-//        }
-        //////////////hybrid services////////////////////////
-//        function DeleteMember (member){
-//        	var pass = AuthService.GetPassword();
-//        	var userName = AuthService.GetUser();
-//			MemberService.DeleteMember(userName,member,pass) 
-//				.then(function (response) {
-//	                if (response.success) {			                   
-//	                    vm.error = null;
-//	                    RefreshPageElements();
-//	                } else {	
-//	                	onError(response.message);
-//	                	vm.error = response.message;
-//	                }
-//		        });       	 	
-//        }
-        
-//        function CreateUpdateAMember (member,password){
-//        	var userPass = AuthService.GetPassword();
-//        	var userName = AuthService.GetUser();
-//      	
-//			MemberService.CreateUpdateAMember(userName,member,password,userPass,vm.memberNameToCreateOld,vm.memberPasswordToCreateOld) 
-//		
-//				.then(function (response) {
-//	                if (response.success) {			                   
-//	                    vm.error = null;
-//	                    RefreshElements();
-//	                } else {
-//	                	onError(response.message);
-//	                	vm.error = response.message;
-//	                }
-//		        });      	 	
-//        }
-        
-        ////////////////private functions  /////////////////////// 
-//        function RefreshElements() { 
-//        	GetAListOfMembers();
-//        }
+
+        $scope.items = ['item1', 'item2', 'item3'];
+
+        $scope.animationsEnabled = true;
+
+        $scope.open = function (size) {
+
+          var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'myModalContent.html',
+            controller: 'ModalInstanceCtrl',
+            size: size,
+            resolve: {
+              items: function () {
+                return $scope.items;
+              }
+            }
+          });
+
+          modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+          }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+          });
+        };
+
+        $scope.toggleAnimation = function () {
+          $scope.animationsEnabled = !$scope.animationsEnabled;
+        };        
         
         return vm;
     }
+    
+    ModalInstanceCtrl.$inject = ['$scope','$uibModalInstance','items'];
+    function ModalInstanceCtrl($scope, $uibModalInstance, items) {
+
+    	  $scope.items = items;
+    	  $scope.selected = {
+    	    item: $scope.items[0]
+    	  };
+
+    	  $scope.ok = function () {
+    	    $uibModalInstance.close($scope.selected.item);
+    	  };
+
+    	  $scope.cancel = function () {
+    	    $uibModalInstance.dismiss('cancel');
+    	  };
+    }
+
 })();
+
+
+
+
+
+
+
+
+
+
