@@ -23,6 +23,34 @@ p{
     font-family: 'Montserrat', sans-serif;
 }
 
+.navbar-btn.disabled {
+	border-color: transparent;
+}
+.navbar-btn {
+	border: none;
+    background: transparent;
+    background-color: transparent;
+    font-size: 20px;
+    color: #566C81;
+    text-align:center;
+    cursor: pointer;
+    vertical-align: middle;
+    padding: 6px 12px;
+    display: inline-block;
+    border: 1px solid transparent;
+}
+
+.navbar-btn:hover {
+	color: #333;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    white-space: nowrap;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 .jumbotron p {
 	margin-bottom: 0px;
 	font-weight: 400;
