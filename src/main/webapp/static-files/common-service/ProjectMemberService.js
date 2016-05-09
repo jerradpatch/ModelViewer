@@ -21,8 +21,26 @@
         service.updateProject = updateProject;
         service.deleteProject = deleteProject;
         
+        testService();
+        
         return service;
  
+        function testService(){
+        	var userModel = AuthService.readUserModel();
+        	var projectmemberModel = newProjectMemberModel({"memberName":"anna", "password":"12345", "email": "anna@anna.com", "userModel": userModel});
+        	projectmemberModel.uuid = "0";
+        	createUpdateModel(null,projectmemberModel);
+        	projectmemberModel = newProjectMemberModel({"memberName":"anna1", "password":"12345", "email": "anna1@anna.com", "userModel": userModel});
+        	projectmemberModel.uuid = "1";
+        	createUpdateModel(null,projectmemberModel);
+        	projectmemberModel = newProjectMemberModel({"memberName":"anna2", "password":"12345", "email": "anna2@anna.com", "userModel": userModel});
+        	projectmemberModel.uuid = "2";
+        	createUpdateModel(null,projectmemberModel);
+        	projectmemberModel = newProjectMemberModel({"memberName":"anna3", "password":"12345", "email": "anna3@anna.com", "userModel": userModel});
+        	projectmemberModel.uuid = "3";
+        	createUpdateModel(null,projectmemberModel);
+        }
+        
 	    function createProject(projectMemberModel){
 	    	return $http.get(baseUrl+'createProject', 
 	    			{params:{"projectMemberModel": projectMemberModel}}).then(function(projectMemberModelRet){
@@ -95,44 +113,41 @@
         			});      	
 		}
 
+//////////////////////not service hitting functions
+        function newProjectMemberModel(args){
+        	return {
+        		"projectName": args.projectName,
+        		"password": args.password,
+        		"userModel": args.userModel,
+        		"memberModel": args.memberModel 
+        	};
+        } 
         
-//        function GetProjectsMemberIsAPartOf(userName,member, companyMemberP){
-//            return $http.get(baseUrl+'GetProjectsMemberIsAPartOf', {params:{"userName": userName,"member": member, "companyP": companyMemberP }}).then(handleSuccess, handleError('Error ProjectMemberService.GetProjectsMemberIsAPartOf'));       	
-//        }
-//        
-//        function GetHashMapOfProjectAndMember(userName, companyP) {
-//            return $http.get(baseUrl+'GetHashMapOfProjectAndMember', {params:{"userName": userName, "companyP": companyP }}).then(handleSuccess, handleError('Error ProjectMemberService.GetHashMapOfProjectAndMember'));
-//        }
-//        
-//        function GetAListOfMembers(userName, companyP) {
-//            return $http.get(baseUrl+'getAListOfMembers', {params:{"userName": userName, "companyP": companyP }}).then(handleSuccess, handleError('Error ProjectMemberService.getAListOfMembers'));
-//        }
-//        
-//        function DeleteAProject(userName,projectName, companyP) {
-//        	return $http.get(baseUrl+'DeleteAProject', {params:{"userName": userName, "projectName":projectName, "companyP": companyP }}).then(handleSuccess, handleError('Error ProjectMemberService.DeleteAProject'));
-//        }
-//        function DeleteAMemberFromAProject(userName,projectName, member, companyP) {
-//        	return $http.get(baseUrl+'DeleteAMemberFromAProject', {params:{"userName": userName, "projectName":projectName, "member":member, "companyP": companyP }}).then(handleSuccess, handleError('Error ProjectMemberService.DeleteAMember'));
-//        }
-//        
-//        function CreateANewProject(userName,projectName, companyP) {
-//        	return $http.get(baseUrl+'CreateANewProject', {params:{"userName": userName, "projectName":projectName, "companyP": companyP }}).then(handleSuccess, handleError('Error ProjectMemberService.CreateANewProject'));
-//        }
-//        function CreateAMember(userName,projectName,member, companyP) {
-//        	return $http.get(baseUrl+'CreateAMember', {params:{"userName": userName,"projectName": projectName,"member":member, "companyP": companyP }}).then(handleSuccess, handleError('Error ProjectMemberService.CreateAMember'));
-//        }               
- 
-        // private functions
- 
-//        function handleSuccess(res) {
-//            return res.data;
-//        }
- 
-//        function handleError(error) {
-//            return function () {
-//                return { success: false, message: error };
-//            };
-//        }
+        function createUpdateModel(oldModel, newModel){
+        	if(newModel.uuid != null){
+            	var updateModel = service.data[newModel.uuid];
+            	if(updateModel != null){
+	            	for(var key in newModel){
+	            		updateModel[key] = newModel[key];
+	            	}
+            	} else {
+            		if(oldModel != null && oldModel.password != null){
+            			newModel["password"] = oldModel.password;
+            		}
+            		service.data[newModel.uuid] = newModel;
+            	}
+        	}
+        }
+        
+        function createProjectMemberPostObj (endpointName, model) {
+        	return {
+        		  method: 'POST',
+        		  url: baseUrlMember+endpointName,	
+        		  data: {"memberModel": model},
+        		  headers: {'Content-Type': 'application/json'}
+        	};
+        	
+        }       
 
     }
  

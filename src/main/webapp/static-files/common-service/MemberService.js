@@ -24,8 +24,26 @@
     	service.createUpdateModel = createUpdateModel;
     	service.data = {};
     	
+    	testService();
+    	
         return service;
        
+        function testService(){
+        	var userModel = AuthService.readUserModel();
+        	var memberModel = newMemberModel({"memberName":"anna", "password":"12345", "email": "anna@anna.com", "userModel": userModel});
+        	memberModel.uuid = "0";
+        	createUpdateModel(null,memberModel);
+        	memberModel = newMemberModel({"memberName":"anna1", "password":"12345", "email": "anna1@anna.com", "userModel": userModel});
+        	memberModel.uuid = "1";
+        	createUpdateModel(null,memberModel);
+        	memberModel = newMemberModel({"memberName":"anna2", "password":"12345", "email": "anna2@anna.com", "userModel": userModel});
+        	memberModel.uuid = "2";
+        	createUpdateModel(null,memberModel);
+        	memberModel = newMemberModel({"memberName":"anna3", "password":"12345", "email": "anna3@anna.com", "userModel": userModel});
+        	memberModel.uuid = "3";
+        	createUpdateModel(null,memberModel);
+        }
+        
 	    function login(userName,memberName,password) {
 	    	var userModel = UserService.newUserModel(userName);
 	    	var memberModel = MemberService.newUserModel(memberName,password);

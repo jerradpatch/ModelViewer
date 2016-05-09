@@ -54,7 +54,7 @@
         
         ////////////dialog functions//////////////
         function MemberDialogAccept(memberName, password) {
-        	var userModel = AuthService.readUserModel()
+        	var userModel = AuthService.readUserModel();
         	var memberModel = MemberService.newMemberModel({
         		"memberName":memberName, 
         		"password":password,

@@ -1,0 +1,308 @@
+
+	<ng-controller="navControllerS">
+	
+		<div style="position:absolution;width:100%;">			
+			<nav class="navbar navbar-default navbar-fixed-top" style="position:relative;padding-top: 20px;border:none;background-color:transparent;border-style: solid;border-left: 0px;border-right: 0px;border-bottom-width: 1px;border-top-width: 1px;">
+				<div style="position: relative;overflow: hidden;width: 100%;height: 100%;">
+					<img style="position: absolute;z-index: -1;right: 57%;"src="static-files/images/400h800w.jpg" alt="Could not locate image." >
+			  		<div class="" style="
+						background: rgb(255, 255, 255); 
+						background: -webkit-linear-gradient(left, rgba(255,0,0,0),rgba(255,0,0,0), rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255), rgba(255,0,0,0));
+						background: -o-linear-gradient(right, rgba(255,0,0,0),rgba(255,0,0,0), rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255), rgba(255,0,0,0));
+						background: -moz-linear-gradient(right, rgba(255,0,0,0),rgba(255,0,0,0), rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255), rgba(255,0,0,0));			
+						background: linear-gradient(to right, rgba(255,0,0,0),rgba(255,0,0,0), rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255),rgb(255, 255, 255), rgba(255,0,0,0));
+						text-align: center;
+						display:flex;">
+						<div class="col-md-4"></div>						
+						<div class="col-md-4">
+				  			<button ng-show="nc.st" type="button" class="btn btn-default navbar-btn disabled">Tutorial</button>
+				  			<button ng-show="nc.srb" type="button" class="btn btn-default navbar-btn disabled">Report Blog</button>
+				  			<button ng-show="nc.scl" type="button" class="btn btn-default navbar-btn disabled">Change Log</button>	
+						</div>
+						<div class="col-md-4">
+							<button uib-tooltip="Notifications" tooltip-placement="bottom" tooltip-append-to-body=true ng-show="nc.sn" type="button" class="btn btn-default navbar-btn glyphicon glyphicon-info-sign" ng-click="openNotifications()"></button>
+							<button uib-tooltip="Settings" tooltip-placement="bottom" tooltip-append-to-body=true ng-show="nc.ss" type="button" class="btn btn-default navbar-btn glyphicon glyphicon-cog" ng-click="openSettings()"></button>
+							<button uib-tooltip="logout" tooltip-placement="bottom" tooltip-append-to-body=true ng-show="nc.lo" type="button" class="btn btn-default navbar-btn glyphicon glyphicon glyphicon-off" ng-click=""></button>
+						</div>
+					</div>
+				</div>
+			</nav>
+			<div ng-cloak data-ng-show="ErrorModel.errorModels.length > 0" style="position:relative">
+				<div  ng-repeat="em in ErrorModel.errorModels" ng-hide=true 
+					class="alert alert-danger alert-dismissible animate-hide" role="alert" id="mainError"
+					style="width: 80%;left:10%;position:absolute;">
+				  <p class="alert-text" style="text-align: center;">{{em.model.data.message}}</p>
+				</div>
+			</div>
+		</div>	
+		
+		
+    
+    
+    
+    
+    <script type="text/ng-template" id="navNotificationsModalContent.html">
+	<div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <h4 class="modal-title">Notifications</h4>
+        </div>
+	    <div class="panel-body" style="overflow:auto;">
+			<uib-accordion close-others="oneAtATime">
+				<uib-accordion-group heading="Current Notificaitons" template-url="navCurrentNotificationsModalContent.html"></uib-accordion-group>
+				<uib-accordion-group heading="Past Notifications" template-url="navPastNotificationsModalContent.html"></uib-accordion-group>
+			<uib-accordion>
+		</div>
+        <div class="panel-footer">
+            <button class="btn btn-default memberCreateMemberButtons" type="button" ng-click="ok()">OK</button>
+            <button class="btn btn-default memberDeleteButtons" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+	</div>
+    </script>
+    
+    <script type="text/ng-template" id="navCurrentNotificationsModalContent.html">
+	<div class="panel panel-default" ng-init="isOpen=true">
+        <div class="panel-heading clearfix " tabindex="0" ng-click="toggleOpen()" uib-accordion-transclude="status">
+            <h4 class="modal-title" uib-accordion-transclude="heading">{{heading}}
+			<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i></h4>
+        </div>
+		<div class="panel-collapse collapse" uib-collapse="!isOpen">   
+        	<div class="panel-body container-fluid">
+				<button type="button" class="col-md-12 btn btn-default memberDeleteButtons" ng-click="">Test Notification</button>
+        	</div>	
+		</div>
+	</div>
+    </script>
+  
+    <script type="text/ng-template" id="navPastNotificationsModalContent.html">
+	<div class="panel panel-default">
+        <div class="panel-heading clearfix " tabindex="0" ng-click="toggleOpen()" uib-accordion-transclude="status">
+            <h4 class="modal-title" uib-accordion-transclude="heading">{{heading}}
+			<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i></h4>
+        </div>   
+		<div class="panel-collapse collapse" uib-collapse="!isOpen">  
+        	<div class="panel-body container-fluid">
+				<button type="button" class="col-md-12 btn btn-default memberDeleteButtons" ng-click="">Test Notification</button>
+       		</div>
+		</div>
+	</div>
+    </script>
+  
+
+
+
+  
+  
+    
+    <script type="text/ng-template" id="navSettingsModalContent.html">
+	<div class="panel panel-default">
+        <div class="panel-heading clearfix ">
+            <h4 class="modal-title">Settings</h4>
+        </div>
+	    <div class="panel-body" style="overflow:auto;">
+			<uib-accordion close-others="oneAtATime">
+				<uib-accordion-group heading="Personal" template-url="navDirective-personalTemplate.html"></uib-accordion-group>
+				<uib-accordion-group heading="Payment" template-url="navDirective-paymentTemplate.html"></uib-accordion-group>
+				<uib-accordion-group heading="Account" template-url="navDirective-accountTemplate.html"></uib-accordion-group>	
+			<uib-accordion>
+		</div>
+        <div class="panel-footer">
+            <button class="btn btn-default memberCreateMemberButtons" type="button" ng-click="ok()">OK</button>
+            <button class="btn btn-default memberDeleteButtons" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+	</div>
+    </script>
+    
+    <script type="text/ng-template" id="navDirective-paymentTemplate.html">
+	<div class="panel panel-default">
+        <div class="panel-heading clearfix " tabindex="0" ng-click="toggleOpen()" uib-accordion-transclude="status">
+            <h4 class="modal-title" uib-accordion-transclude="heading">{{heading}}
+			<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i></h4>
+        </div>
+		<div class="panel-collapse collapse" uib-collapse="!isOpen">
+	        <div class="panel-body" style="overflow:auto;">
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberFirstName.$dirty && (newMemberForm.memberFirstName.$error.required || newMemberForm.memberFirstName.$error.pattern || newMemberForm.memberFirstName.$error.maxlength || newMemberForm.memberFirstName.$error.minlength )}">
+					<input type="text" name="memberFirstName" style="margin-bottom:5px" class="form-control" placeholder="First Name" ng-model="vm.currentMemberSelected.FIRSTNAME"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.FIRSTNAME.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.FIRSTNAME.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.FIRSTNAME.VALID_PATTERN}}" />
+				</div>
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberLastName.$dirty && (newMemberForm.memberLastName.$error.required || newMemberForm.memberLastName.$error.pattern || newMemberForm.memberLastName.$error.maxlength || newMemberForm.memberLastName.$error.minlength )}">
+					<input type="text" name="memberLastName" style="margin-bottom:5px" class="form-control" placeholder="Last Name" ng-model="vm.currentMemberSelected.LASTNAME"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.LASTNAME.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.LASTNAME.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.LASTNAME.VALID_PATTERN}}" />
+				</div>
+	
+				<label class="form-group col-xs-12">Location</label>
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberADDRESS.$dirty && (newMemberForm.memberADDRESS.$error.required || newMemberForm.memberADDRESS.$error.pattern || newMemberForm.memberADDRESS.$error.maxlength || newMemberForm.memberADDRESS.$error.minlength )}">
+					<input type="text" name="memberADDRESS" style="margin-bottom:5px" class="form-control" placeholder="Address" ng-model="vm.currentMemberSelected.ADDRESS"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.ADDRESS.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.ADDRESS.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.ADDRESS.VALID_PATTERN}}" required />
+				</div>
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberUNIT.$dirty && (newMemberForm.memberUNIT.$error.required || newMemberForm.memberUNIT.$error.pattern || newMemberForm.memberUNIT.$error.maxlength || newMemberForm.memberUNIT.$error.minlength )}">
+					<input type="text" name="memberUNIT" style="margin-bottom:5px" class="form-control" placeholder="Unit/Suite/Apt" ng-model="vm.currentMemberSelected.UNIT"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.UNIT.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.UNIT.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.UNIT.VALID_PATTERN}}" required />
+				</div>
+	
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberSTATE.$dirty && (newMemberForm.memberSTATE.$error.required || newMemberForm.memberSTATE.$error.pattern || newMemberForm.memberSTATE.$error.maxlength || newMemberForm.memberSTATE.$error.minlength )}">
+					<input type="text" name="memberSTATE" style="margin-bottom:5px" class="form-control" placeholder="State" ng-model="vm.currentMemberSelected.STATE"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.STATE.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.STATE.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.STATE.VALID_PATTERN}}" />
+				</div>
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberZIPCODE.$dirty && (newMemberForm.memberZIPCODE.$error.required || newMemberForm.memberZIPCODE.$error.pattern || newMemberForm.memberZIPCODE.$error.maxlength || newMemberForm.memberZIPCODE.$error.minlength )}">
+					<input type="text" name="memberZIPCODE" style="margin-bottom:5px" class="form-control" placeholder="Zipcode" ng-model="vm.currentMemberSelected.ZIPCODE"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.ZIPCODE.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.ZIPCODE.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.ZIPCODE.VALID_PATTERN}}" />
+				</div>
+
+				<label class="form-group col-xs-12">Card Info</label>
+				<div class="form-group col-xs-12" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberCARDNUMBER.$dirty && (newMemberForm.memberCARDNUMBER.$error.required || newMemberForm.memberCARDNUMBER.$error.pattern || newMemberForm.memberCARDNUMBER.$error.maxlength || newMemberForm.memberCARDNUMBER.$error.minlength )}">
+					<input type="text" name="memberCARDNUMBER" style="margin-bottom:5px" class="form-control" placeholder="Card#" ng-model="vm.currentMemberSelected.CARDNUMBER"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.CARDNUMBER.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.CARDNUMBER.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.CARDNUMBER.VALID_PATTERN}}" />
+				</div>
+				<div class="form-group col-xs-4" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberCARDEXPMONTH.$dirty && (newMemberForm.memberCARDEXPMONTH.$error.required || newMemberForm.memberCARDEXPMONTH.$error.pattern || newMemberForm.memberCARDEXPMONTH.$error.maxlength || newMemberForm.memberCARDEXPMONTH.$error.minlength )}">
+					<input type="text" name="memberCARDEXPMONTH" style="margin-bottom:5px" class="form-control" placeholder="Exp Month" ng-model="vm.currentMemberSelected.CARDEXPMONTH"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.CARDEXPMONTH.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.CARDEXPMONTH.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.CARDEXPMONTH.VALID_PATTERN}}" />
+				</div>
+				<div class="form-group col-xs-4" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberCARDEXPYEAR.$dirty && (newMemberForm.memberCARDEXPYEAR.$error.required || newMemberForm.memberCARDEXPYEAR.$error.pattern || newMemberForm.memberCARDEXPYEAR.$error.maxlength || newMemberForm.memberCARDEXPYEAR.$error.minlength )}">
+					<input type="text" name="memberCARDEXPYEAR" style="margin-bottom:5px" class="form-control" placeholder="Exp Year" ng-model="vm.currentMemberSelected.CARDEXPYEAR"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.CARDEXPYEAR.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.CARDEXPYEAR.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.CARDEXPYEAR.VALID_PATTERN}}" />
+				</div>
+				<div class="form-group col-xs-4" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberCARDCSV.$dirty && (newMemberForm.memberCARDCSV.$error.required || newMemberForm.memberCARDCSV.$error.pattern || newMemberForm.memberCARDCSV.$error.maxlength || newMemberForm.memberCARDCSV.$error.minlength )}">
+					<input type="text" name="memberCARDCSV" style="margin-bottom:5px" class="form-control" placeholder="CSV" ng-model="vm.currentMemberSelected.CARDCSV"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.CARDCSV.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.CARDCSV.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.CARDCSV.VALID_PATTERN}}" />
+				</div>
+	        </div>
+	    </div>
+	</div>
+    </script>
+    
+     <script type="text/ng-template" id="navDirective-accountTemplate.html">
+	<div class="panel panel-default">
+        <div class="panel-heading clearfix " tabindex="0" ng-click="toggleOpen()" uib-accordion-transclude="status">
+            <h4 class="modal-title" uib-accordion-transclude="heading">{{heading}}
+			<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i></h4>
+        </div>
+		<div class="panel-collapse collapse" uib-collapse="!isOpen">
+	        <div class="panel-body" style="overflow:auto;">
+				<button style="margin-bottom: 5px;" class="btn btn-default memberDeleteButtons col-md-4 col-md-offset-8">Delete Account</button>
+				<textarea style="margin-bottom:5px;width:100%" rows=6 placeholder="What's up?" required></textarea>
+	        </div>
+	    </div>
+	</div>
+    </script>
+         
+    <script type="text/ng-template" id="navDirective-personalTemplate.html">
+	<div class="panel panel-default" ng-init="isOpen=true">
+        <div class="panel-heading clearfix " tabindex="0" ng-click="toggleOpen()" uib-accordion-transclude="status">
+            <h4 class="modal-title" uib-accordion-transclude="heading">{{heading}}
+			<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i></h4>
+        </div>
+		<div class="panel-collapse collapse" uib-collapse="!isOpen">
+	        <div class="panel-body" style="overflow:auto;">
+	    		<div class="form-group col-xs-12"  style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberName.$dirty && (newMemberForm.memberName.$error.required || newMemberForm.memberName.$error.pattern || newMemberForm.memberName.$error.maxlength || newMemberForm.memberName.$error.minlength )}">
+					<input type="text" name="memberName" style="margin-bottom:5px" class="form-control" placeholder="Member Name" ng-model="vm.currentMemberSelected.memberName"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.MEMBER.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.MEMBER.MINIMUM_LENGTH}}" 
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.MEMBER.VALID_PATTERN}}" required />
+				</div>
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberFirstName.$dirty && (newMemberForm.memberFirstName.$error.required || newMemberForm.memberFirstName.$error.pattern || newMemberForm.memberFirstName.$error.maxlength || newMemberForm.memberFirstName.$error.minlength )}">
+					<input type="text" name="memberFirstName" style="margin-bottom:5px" class="form-control" placeholder="First Name" ng-model="vm.currentMemberSelected.FIRSTNAME"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.FIRSTNAME.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.FIRSTNAME.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.FIRSTNAME.VALID_PATTERN}}" />
+				</div>
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberLastName.$dirty && (newMemberForm.memberLastName.$error.required || newMemberForm.memberLastName.$error.pattern || newMemberForm.memberLastName.$error.maxlength || newMemberForm.memberLastName.$error.minlength )}">
+					<input type="text" name="memberLastName" style="margin-bottom:5px" class="form-control" placeholder="Last Name" ng-model="vm.currentMemberSelected.LASTNAME"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.LASTNAME.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.LASTNAME.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.LASTNAME.VALID_PATTERN}}" />
+				</div>
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberPassword.$dirty && (newMemberForm.memberPassword.$error.required || newMemberForm.memberPassword.$error.pattern || newMemberForm.memberPassword.$error.maxlength || newMemberForm.memberPassword.$error.minlength )}">
+					<input type="text" name="memberPassword" style="margin-bottom:5px" class="form-control" placeholder="Password" ng-model="vm.currentMemberSelected.password"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.PASSWORD.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.PASSWORD.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.PASSWORD.VALID_PATTERN}}" required />
+				</div>
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberEmail.$dirty && (newMemberForm.memberEmail.$error.required || newMemberForm.memberEmail.$error.pattern || newMemberForm.memberEmail.$error.maxlength || newMemberForm.memberEmail.$error.minlength )}">
+					<input type="text" name="memberEmail" style="margin-bottom:5px" class="form-control" placeholder="Email" ng-model="vm.currentMemberSelected.EMAIL"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.EMAIL.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.EMAIL.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.EMAIL.VALID_PATTERN}}" required />
+				</div>
+				<div class="form-group col-xs-12" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberWEBSITE.$dirty && (newMemberForm.memberWEBSITE.$error.required || newMemberForm.memberWEBSITE.$error.pattern || newMemberForm.memberWEBSITE.$error.maxlength || newMemberForm.memberWEBSITE.$error.minlength )}">
+					<input type="text" name="memberWEBSITE" style="margin-bottom:5px" class="form-control" placeholder="Website" ng-model="vm.currentMemberSelected.WEBSITE"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.WEBSITE.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.WEBSITE.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.WEBSITE.VALID_PATTERN}}" required />
+				</div>
+	
+				<label class="form-group col-xs-12">Location</label>
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberADDRESS.$dirty && (newMemberForm.memberADDRESS.$error.required || newMemberForm.memberADDRESS.$error.pattern || newMemberForm.memberADDRESS.$error.maxlength || newMemberForm.memberADDRESS.$error.minlength )}">
+					<input type="text" name="memberADDRESS" style="margin-bottom:5px" class="form-control" placeholder="Address" ng-model="vm.currentMemberSelected.ADDRESS"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.ADDRESS.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.ADDRESS.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.ADDRESS.VALID_PATTERN}}" required />
+				</div>
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberUNIT.$dirty && (newMemberForm.memberUNIT.$error.required || newMemberForm.memberUNIT.$error.pattern || newMemberForm.memberUNIT.$error.maxlength || newMemberForm.memberUNIT.$error.minlength )}">
+					<input type="text" name="memberUNIT" style="margin-bottom:5px" class="form-control" placeholder="Unit/Suite/Apt" ng-model="vm.currentMemberSelected.UNIT"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.UNIT.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.UNIT.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.UNIT.VALID_PATTERN}}" required />
+				</div>
+	
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberSTATE.$dirty && (newMemberForm.memberSTATE.$error.required || newMemberForm.memberSTATE.$error.pattern || newMemberForm.memberSTATE.$error.maxlength || newMemberForm.memberSTATE.$error.minlength )}">
+					<input type="text" name="memberSTATE" style="margin-bottom:5px" class="form-control" placeholder="State" ng-model="vm.currentMemberSelected.STATE"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.STATE.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.STATE.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.STATE.VALID_PATTERN}}" />
+				</div>
+				<div class="form-group col-xs-6" style="margin-bottom: 5px;" 
+					ng-class="{ 'has-error': newMemberForm.memberZIPCODE.$dirty && (newMemberForm.memberZIPCODE.$error.required || newMemberForm.memberZIPCODE.$error.pattern || newMemberForm.memberZIPCODE.$error.maxlength || newMemberForm.memberZIPCODE.$error.minlength )}">
+					<input type="text" name="memberZIPCODE" style="margin-bottom:5px" class="form-control" placeholder="Zipcode" ng-model="vm.currentMemberSelected.ZIPCODE"
+						ng-maxlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.ZIPCODE.MAXIMUM_LENGTH}}"
+						ng-minlength="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.ZIPCODE.MINIMUM_LENGTH}}"
+						ng-pattern="{{CONSTANTS_Company_MemberController.Company_MemberController.CREATE_MEMBER_FORM.ZIPCODE.VALID_PATTERN}}" />
+				</div>
+	        </div>
+	    </div>
+	</div>
+    </script>
+</ng-controller>
+
+
+
+
+
