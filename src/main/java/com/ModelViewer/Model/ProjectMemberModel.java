@@ -30,8 +30,6 @@ public class ProjectMemberModel extends JacksonDepthLimit implements Serializabl
 	private static final long serialVersionUID = 1065589547453243877L;
 
 	@Id
-//	@GeneratedValue(generator="system-uuid")
-//	@GenericGenerator(name="system-uuid", strategy = "uuid")
 	@Column(unique = true, nullable = false)
 	private String uuid;
 	

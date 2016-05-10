@@ -103,6 +103,7 @@
 				<uib-accordion-group heading="Personal" template-url="navDirective-personalTemplate.html"></uib-accordion-group>
 				<uib-accordion-group heading="Payment" template-url="navDirective-paymentTemplate.html"></uib-accordion-group>
 				<uib-accordion-group heading="Account" template-url="navDirective-accountTemplate.html"></uib-accordion-group>	
+				<uib-accordion-group heading="Integrations" template-url="navDirective-integrationsTemplate.html"></uib-accordion-group>	
 			<uib-accordion>
 		</div>
         <div class="panel-footer">
@@ -111,6 +112,21 @@
         </div>
 	</div>
     </script>
+
+    <script type="text/ng-template" id="navDirective-integrationsTemplate.html">
+	<div class="panel panel-default">
+        <div class="panel-heading clearfix " tabindex="0" ng-click="toggleOpen()" uib-accordion-transclude="status">
+            <h4 class="modal-title" uib-accordion-transclude="heading">{{heading}}
+			<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i></h4>
+        </div>
+		<div class="panel-collapse collapse" uib-collapse="!isOpen">
+	        <div class="panel-body" style="overflow:auto;">
+				<div> somthing</div>
+	        </div>
+	    </div>
+	</div>
+    </script>    
+    
     
     <script type="text/ng-template" id="navDirective-paymentTemplate.html">
 	<div class="panel panel-default">

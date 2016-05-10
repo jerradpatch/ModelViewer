@@ -5,8 +5,8 @@
         .module('app')
         .factory('ProjectMemberService', ProjectMemberService);
  
-    ProjectMemberService.$inject = ['$http'];
-    function ProjectMemberService($http) {
+    ProjectMemberService.$inject = ['$http', 'AuthService'];
+    function ProjectMemberService($http, AuthService) {
     	
     	var baseUrl = '/ModelViewer/ProjectMemberService/';
     	
@@ -20,6 +20,7 @@
         service.readUserProjectsAndMembers = readUserProjectsAndMembers;
         service.updateProject = updateProject;
         service.deleteProject = deleteProject;
+        service.data = {};
         
         testService();
         
@@ -27,17 +28,17 @@
  
         function testService(){
         	var userModel = AuthService.readUserModel();
-        	var projectmemberModel = newProjectMemberModel({"memberName":"anna", "password":"12345", "email": "anna@anna.com", "userModel": userModel});
-        	projectmemberModel.uuid = "0";
+        	var projectmemberModel = newProjectMemberModel({"projectName":"anna", "password":"12345", "email": "anna@anna.com", "memberModels":null, "userModel": userModel});
+        	projectmemberModel["uuid"] = "0";
         	createUpdateModel(null,projectmemberModel);
-        	projectmemberModel = newProjectMemberModel({"memberName":"anna1", "password":"12345", "email": "anna1@anna.com", "userModel": userModel});
-        	projectmemberModel.uuid = "1";
+        	projectmemberModel = newProjectMemberModel({"projectName":"anna1", "password":"12345", "email": "anna1@anna.com", "memberModels":null, "userModel": userModel});
+        	projectmemberModel["uuid"]= "1";
         	createUpdateModel(null,projectmemberModel);
-        	projectmemberModel = newProjectMemberModel({"memberName":"anna2", "password":"12345", "email": "anna2@anna.com", "userModel": userModel});
-        	projectmemberModel.uuid = "2";
+        	projectmemberModel = newProjectMemberModel({"projectName":"anna2", "password":"12345", "email": "anna2@anna.com", "memberModels":null, "userModel": userModel});
+        	projectmemberModel["uuid"] = "2";
         	createUpdateModel(null,projectmemberModel);
-        	projectmemberModel = newProjectMemberModel({"memberName":"anna3", "password":"12345", "email": "anna3@anna.com", "userModel": userModel});
-        	projectmemberModel.uuid = "3";
+        	projectmemberModel = newProjectMemberModel({"projectName":"anna3", "password":"12345", "email": "anna3@anna.com", "memberModels":null, "userModel": userModel});
+        	projectmemberModel["uuid"] = "3";
         	createUpdateModel(null,projectmemberModel);
         }
         
@@ -119,7 +120,7 @@
         		"projectName": args.projectName,
         		"password": args.password,
         		"userModel": args.userModel,
-        		"memberModel": args.memberModel 
+        		"memberModels": args.memberModels 
         	};
         } 
         
